@@ -6,12 +6,12 @@ namespace FribergRentalCars.Models
     {
         public int BookingId { get; set; }
 
-        public DateTime StartDate { get; set; }
+        public DateOnly StartDate { get; set; }
 
-        public DateTime EndDate { get; set; }
+        public DateOnly EndDate { get; set; }
 
-        [ForeignKey("User")]
-        public int UserId { get; set; }
+        [ForeignKey("Customer")]
+        public int CustomerId { get; set; }
 
         [ForeignKey("Car")]
         public int CarId { get; set; }
