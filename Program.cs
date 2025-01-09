@@ -9,7 +9,7 @@ namespace FribergRentalCars
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            var _connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=FribergCarsDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False";
+           //ar _connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=FribergCarsDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False";
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
