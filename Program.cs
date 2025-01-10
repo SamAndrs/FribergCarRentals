@@ -19,10 +19,8 @@ namespace FribergRentalCars
                                                 .Build()
                                                 .GetSection("ConnectionStrings")["FribergCarsDB"])
                 );
-
+            builder.Services.AddTransient<ICarRepository, CarRepository>();
             
-
-
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

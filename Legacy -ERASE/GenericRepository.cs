@@ -3,11 +3,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FribergRentalCars.Data
 {
-    public class GenCarRepository<T> : IRepository<T> where T : class
+    public class GenericRepository<T> : IRepository<T> where T : class
     {
         private readonly ApplicationDBContext _appDbContext;
         
-        public GenCarRepository(ApplicationDBContext applicationDBContext)
+        public GenericRepository(ApplicationDBContext applicationDBContext)
         {
             this._appDbContext = applicationDBContext;
         }
@@ -17,7 +17,6 @@ namespace FribergRentalCars.Data
             await _appDbContext.AddAsync(entity);
             await _appDbContext.SaveChangesAsync();
             return entity;
-
         }
 
         public async Task DeleteAsync(int id)
@@ -28,7 +27,6 @@ namespace FribergRentalCars.Data
                 _appDbContext.Set<T>().Remove(entity);
                 await _appDbContext.SaveChangesAsync();
             }
-            
         }
 
         public async Task<List<T>> GetAllAsync()
