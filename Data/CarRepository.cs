@@ -17,14 +17,14 @@ namespace FribergRentalCars.Data
 
         public async Task AddAsync(Car car)
         {
-            /*await _appDbContext.Cars.AddAsync(car);*/
-            await _appDbContext.Set<Car>().AddAsync(car);
+            await _appDbContext.Cars.AddAsync(car);
             await _appDbContext.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(Car car)
         {
-            _appDbContext.Set<Car>().Remove(car);
+            /*_appDbContext.Set<Car>().Remove(car);*/
+            _appDbContext.Cars.Remove(car);
             await _appDbContext.SaveChangesAsync();
         }
 
@@ -35,14 +35,14 @@ namespace FribergRentalCars.Data
 
         public async Task<IEnumerable<Car>> GetAllAvailable()
         {
-            return await _appDbContext.Set<Car>().Where(c => c.IsAvailable).ToListAsync();
+            return await _appDbContext.Cars.Where(c => c.IsAvailable).ToListAsync();
 
             /*return await _appDbContext.Cars.Where(c => c.IsAvailable).ToListAsync();*/
         }
 
         public async Task<Car> GetIdByAsync(int id)
         {
-            return await _appDbContext.Set<Car>().FindAsync(id);
+            return await _appDbContext.Cars.FindAsync(id);
             /*return await _appDbContext.Set<Car>().FirstOrDefaultAsync(c => c.CarId == id);*/
         }
 

@@ -8,10 +8,7 @@
 
 <p>
     <a asp-action="Create">Create New</a>
-</p>
-
-<p>
-    <a asp-action="GetAvailable">Available</a>
+    <a asp-action="GetAvailable">Available Cars</a>
 </p>
 <table class="table">
     <thead>
@@ -22,9 +19,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.ModelYear)
             </th>
-            @*<th>
-                @Html.DisplayNameFor(model => model.CarImages)
-            </th>*@
+            <th>
+                @Html.DisplayNameFor(model => model.Image)
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.Price)
             </th>
@@ -46,12 +43,19 @@
             <td>
                 @Html.DisplayFor(modelItem => item.ModelYear)
             </td>
-           @* <td>
-                @foreach(var image in item.CarImages)
-                {
-                    @Html.DisplayFor(modelItem => image)
-                }
-            </td>*@
+            <td>
+                @* @Html.DisplayFor(modelItem => item.Image) *@
+                    @if (!string.IsNullOrEmpty(item.Image))
+                    {
+                        <div>
+                            <img src="@item.Image" alt="bild på bil" class="img-fluid" width="150" height="150"/>
+                        </div>
+                    }
+                    else
+                    {
+                        <p>No image available</p>
+                    }
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Price)
             </td>

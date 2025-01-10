@@ -22,6 +22,20 @@
                 <input asp-for="ModelYear" class="form-control" />
                 <span asp-validation-for="ModelYear" class="text-danger"></span>
             </div>
+
+            <div class="form-group">
+                <label asp-for="Image" class="control-label"></label>
+                <input asp-for="Image" class="form-control" placeholder="Enter image URL" />
+                <span asp-validation-for="Image" class="text-danger"></span>
+            </div>
+
+            @*
+            <div class="form-group">
+                <label asp-for="Image" class="control-label"></label>
+                <input asp-for="Image" class="form-control" />
+                <span asp-validation-for="Image" class="text-danger"></span>
+            </div>
+            *@
             <div class="form-group">
                 <label asp-for="Price" class="control-label"></label>
                 <input asp-for="Price" class="form-control" />
