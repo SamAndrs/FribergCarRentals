@@ -26,7 +26,7 @@
             @Html.DisplayNameFor(model => model.Image)
         </dt>
         <dd class = "col-sm-10">
-           @*
+            @*
             @Html.DisplayFor(model => model.Image)
             *@
             <td>
@@ -59,6 +59,14 @@
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.IsAvailable)
+            @if(Model.IsAvailable)
+            {
+                <a>Kan Hyras</a>
+            }
+            else
+            {
+                <a>För närvarande uthyrd</a>
+            }
         </dd>
     </dl>
 </div>

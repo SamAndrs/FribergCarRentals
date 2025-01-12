@@ -42,7 +42,16 @@
                         @Html.DisplayFor(modelItem => item.ModelYear)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Image)
+                        @if (!string.IsNullOrEmpty(item.Image))
+                        {
+                            <div>
+                                <img src="@item.Image" alt="bild på bil" class="img-fluid" />
+                            </div>
+                        }
+                        else
+                        {
+                            <p>No image available</p>
+                        }
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Price)

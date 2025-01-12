@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace FribergRentalCars.Migrations
 {
     /// <inheritdoc />
-    public partial class initial2 : Migration
+    public partial class initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -45,23 +45,6 @@ namespace FribergRentalCars.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Customers",
-                columns: table => new
-                {
-                    CustomerId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AdressId = table.Column<int>(type: "int", nullable: false),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Customers", x => x.CustomerId);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
@@ -75,6 +58,28 @@ namespace FribergRentalCars.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.UserId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Customers",
+                columns: table => new
+                {
+                    CustomerId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AdressId = table.Column<int>(type: "int", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Customers", x => x.CustomerId);
+                    table.ForeignKey(
+                        name: "FK_Customers_Adresses_AdressId",
+                        column: x => x.AdressId,
+                        principalTable: "Adresses",
+                        principalColumn: "AdressId");
                 });
 
             migrationBuilder.CreateTable(
@@ -103,14 +108,16 @@ namespace FribergRentalCars.Migrations
                 name: "IX_Bookings_CustomerId",
                 table: "Bookings",
                 column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Customers_AdressId",
+                table: "Customers",
+                column: "AdressId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Adresses");
-
             migrationBuilder.DropTable(
                 name: "Bookings");
 
@@ -122,6 +129,9 @@ namespace FribergRentalCars.Migrations
 
             migrationBuilder.DropTable(
                 name: "Customers");
+
+            migrationBuilder.DropTable(
+                name: "Adresses");
         }
     }
 }

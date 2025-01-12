@@ -20,6 +20,7 @@ namespace FribergRentalCars
                                                 .GetSection("ConnectionStrings")["FribergCarsDB"])
                 );
             builder.Services.AddTransient<ICarRepository, CarRepository>();
+            builder.Services.AddTransient<ICustomer, CustomerRepository>();
             
             var app = builder.Build();
 

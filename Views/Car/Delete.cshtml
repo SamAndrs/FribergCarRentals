@@ -23,9 +23,18 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.ModelYear)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Image)
-        </dt>
+        <td>
+            @if (!string.IsNullOrEmpty(Model.Image))
+            {
+                <div>
+                    <img src="@Model.Image" alt="bild på bil" class="img-fluid" />
+                </div>
+            }
+            else
+            {
+                <p>No image available</p>
+            }
+        </td>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Image)
         </dd>

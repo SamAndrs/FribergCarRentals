@@ -114,11 +114,10 @@ namespace FribergRentalCars.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CustomerId"));
 
-                    b.Property<int>("AdressId")
+                    b.Property<int?>("AdressId")
                         .HasColumnType("int");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FirstName")
@@ -130,10 +129,11 @@ namespace FribergRentalCars.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("CustomerId");
+
+                    b.HasIndex("AdressId");
 
                     b.ToTable("Customers");
                 });
@@ -172,6 +172,15 @@ namespace FribergRentalCars.Migrations
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("FribergRentalCars.Models.Customer", b =>
+                {
+                    b.HasOne("FribergRentalCars.Models.Adress", "Adress")
+                        .WithMany()
+                        .HasForeignKey("AdressId");
+
+                    b.Navigation("Adress");
                 });
 
             modelBuilder.Entity("FribergRentalCars.Models.Customer", b =>
