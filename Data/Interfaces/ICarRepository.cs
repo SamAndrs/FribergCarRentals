@@ -1,6 +1,6 @@
 ﻿using FribergRentalCars.Models;
 
-namespace FribergRentalCars.Data
+namespace FribergRentalCars.Data.Interfaces
 {
     public interface ICarRepository
     {
@@ -14,6 +14,6 @@ namespace FribergRentalCars.Data
 
         Task DeleteAsync(Car car);
 
-        Task<IEnumerable<Car>> GetAllAvailable(); 
+        Task<IEnumerable<Car>> GetAllAvailable();
     }
 }

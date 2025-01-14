@@ -1,4 +1,4 @@
-﻿using FribergRentalCars.Data;
+﻿using FribergRentalCars.Data.Interfaces;
 using FribergRentalCars.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -8,9 +8,9 @@ namespace FribergRentalCars.Controllers
 {
     public class CustomerController : Controller
     {
-        private readonly ICustomer _repository;
+        private readonly ICustomerRepository _repository;
 
-        public CustomerController(ICustomer customerRepository)
+        public CustomerController(ICustomerRepository customerRepository)
         {
             this._repository = customerRepository;
         }
@@ -24,7 +24,6 @@ namespace FribergRentalCars.Controllers
         }
 
         // GET: CustomerController/Details/5
-        //public async Task <IActionResult> Details(int id)
         public async Task <IActionResult> Details(int id)
         {
             /*var customer = await _repository.GetIdByAsync(id);*/
@@ -35,36 +34,7 @@ namespace FribergRentalCars.Controllers
             }
             return View(customer);
         }
-
-        // GET: CustomerController/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: CustomerController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        /*public ActionResult Create([Bind("FirstName, LastName, PhoneNumber, Email, Bookings," +
-            "Adress.Street, Adress.City, Adress.PostalCode")] Customer customer)*/
-        public async Task<ActionResult> Create(Customer customer)
-          {
-            if (ModelState.IsValid)
-            {
-                //return RedirectToAction(nameof(Index));
-                try
-                {
-                    await _repository.AddAsync(customer);
-                    return RedirectToAction(nameof(Index));
-                }
-                catch (Exception ex)
-                {
-                    ModelState.AddModelError("", $"Error creating customer: {ex.Message}");
-                }
-            }
-            return View(customer);
-        }
-
+        
         // GET: CustomerController/Edit/5
         public async Task<IActionResult> Edit(int id)
         {

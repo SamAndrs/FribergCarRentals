@@ -1,4 +1,5 @@
 ﻿
+using FribergRentalCars.Data.Interfaces;
 using FribergRentalCars.Models;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;

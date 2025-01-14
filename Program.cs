@@ -1,4 +1,5 @@
 ﻿using FribergRentalCars.Data;
+using FribergRentalCars.Data.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace FribergRentalCars
@@ -20,8 +21,10 @@ namespace FribergRentalCars
                                                 .GetSection("ConnectionStrings")["FribergCarsDB"])
                 );
             builder.Services.AddTransient<ICarRepository, CarRepository>();
-            builder.Services.AddTransient<ICustomer, CustomerRepository>();
-            
+            builder.Services.AddTransient<ICustomerRepository, CustomerRepository>();
+            builder.Services.AddTransient<IRegisterRepository, RegisterVMRepository>();
+            builder.Services.AddTransient < ILoginRepository, LoginVMRepository>();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

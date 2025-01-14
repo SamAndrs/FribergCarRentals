@@ -1,11 +1,11 @@
-﻿using FribergRentalCars.Data;
+﻿using FribergRentalCars.Data.Interfaces;
 using FribergRentalCars.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace FribergRentalCars.Controllers
-{   
+{
     public class CarController : Controller
     {
         private readonly ICarRepository _carRepository;

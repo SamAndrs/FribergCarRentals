@@ -1,9 +1,10 @@
-﻿using FribergRentalCars.Models;
+﻿using FribergRentalCars.Data.Interfaces;
+using FribergRentalCars.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace FribergRentalCars.Data
 {
-    public class CustomerRepository : ICustomer
+    public class CustomerRepository : ICustomerRepository
     {
         private readonly ApplicationDBContext _appDbContext;
 
@@ -12,6 +13,7 @@ namespace FribergRentalCars.Data
             this._appDbContext = applicationDbContext;
         }
 
+        /*
         public async Task AddAsync(Customer customer)
         {
             await _appDbContext.Adresses.AddAsync(customer.Adress);
@@ -22,7 +24,7 @@ namespace FribergRentalCars.Data
             await _appDbContext.Customers.AddAsync(customer);
             await _appDbContext.SaveChangesAsync();
         }
-
+        */
         public async Task DeleteAsync(Customer customer)
         {
             _appDbContext.Customers.Remove(customer);

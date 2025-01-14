@@ -1,8 +1,8 @@
 ﻿using FribergRentalCars.Models;
 
-namespace FribergRentalCars.Data
+namespace FribergRentalCars.Data.Interfaces
 {
-    public interface ICustomer
+    public interface ICustomerRepository
     {
         Task<IEnumerable<Customer>> GetAllAsync();
 
@@ -10,7 +10,7 @@ namespace FribergRentalCars.Data
 
         Task<Customer> GetWithAdressAsync(int id);
 
-        Task AddAsync(Customer customer);
+        /*Task AddAsync(Customer customer);*/
 
         Task UpdateAsync(Customer customer);
 
