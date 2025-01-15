@@ -10,5 +10,6 @@ namespace FribergRentalCars.Data.Interfaces
         Task<User> GetUserByIdAsync(int id);
 
         Task<Customer> GetCustomerByEmail(string email);
+
     }
 }

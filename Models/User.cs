@@ -9,18 +9,24 @@ namespace FribergRentalCars.Models
         [Key]
         public int UserId { get; set; }
 
-        [ForeignKey("Customer")]
+        //[ForeignKey("Customer")]
         public int CustomerId { get; set; }
 
-        public Customer Customer { get; set; }
+        //public virtual Customer Customer { get; set; }
 
         public bool IsAdmin { get; set; } = false;
 
         [Required(ErrorMessage = "Username is required.")]
         public string UserName { get; set; } = "";
-
+        
         [Required(ErrorMessage = "Password is required")]
+        [StringLength(16, MinimumLength = 1)]
         [DataType(DataType.Password)]
-        public string PassWord { get; set; } = "";
+        public string Password { get; set; }
+        
+        [Required]
+        [DataType(DataType.Password)]
+        [Compare("Password", ErrorMessage = "Passwords doesn't match!")]
+        public string ConfirmPassword { get; set; }
     }
 }

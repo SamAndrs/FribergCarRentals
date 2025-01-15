@@ -9,19 +9,19 @@ namespace FribergRentalCars.ViewModels
         public Customer Customer { get; set; }
 
         public User User { get; set; }
-
+        
         [Required(ErrorMessage = "Username is required.")]
         public string UserName { get; set; } = "";
 
         [Required(ErrorMessage = "Password is required")]
         [DataType(DataType.Password)]
-        public string PassWord { get; set; } = "";
+        public string Password { get; set; } = "";
 
         [Required(ErrorMessage = "Must confirm Password")]
         [DataType(DataType.Password)]
-        [Compare("PassWord", ErrorMessage = "Password does not match!")]
-        public string ConfirmPassWord { get; set; } = "";
-
+        [Compare("Password", ErrorMessage = "Password does not match!")]
+        public string ConfirmPassword { get; set; } = "";
+        
         [DisplayName(displayName: "Remember Me?")]
         public bool RememberMe { get; set; }
     }

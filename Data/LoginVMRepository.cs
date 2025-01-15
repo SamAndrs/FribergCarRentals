@@ -1,6 +1,7 @@
 ﻿using FribergRentalCars.Data.Interfaces;
 using FribergRentalCars.Models;
 using FribergRentalCars.ViewModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace FribergRentalCars.Data
 {
@@ -15,9 +16,8 @@ namespace FribergRentalCars.Data
 
         public async Task<Customer> GetCustomerByEmail(string email)
         {
-            var customer = _appDbContext.Customers.FirstOrDefault(c => c.Email == email);
-            var user = _appDbContext.Users.FirstOrDefault(u => u.Customer.CustomerId == UserId);
-            return user;
+           var customer = _appDbContext.Customers.FirstOrDefault(c => c.Email == email);
+            return customer;
         }
 
         public async Task<Customer> GetCustomerByIdAsync(int id)

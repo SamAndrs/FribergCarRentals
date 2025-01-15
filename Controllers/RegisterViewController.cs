@@ -1,4 +1,5 @@
 ﻿using FribergRentalCars.Data.Interfaces;
+using FribergRentalCars.Models;
 using FribergRentalCars.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,36 +14,37 @@ namespace FribergRentalCars.Controllers
         {
             this._repository = registerRepository;
         }
-
-        // GET: RegisterViewController/Create
-        public ActionResult Create()
+        
+        public ActionResult Register()
         {
             return View();
         }
 
+        /*
         public ActionResult Success()
         {
             return View();
-        }
+        }*/
 
-        // POST: RegisterViewController/Create
+        // POST: RegisterViewController/Register
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(RegisterViewModel registerVM)
+        public async Task<ActionResult> Register(RegisterViewModel registerVM)
         {
             if(ModelState.IsValid)
             {
                 try
                 {
                     await _repository.AddAsync(registerVM);
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Success", "LoginView");
+                    //return RedirectToAction("Index", "Home");
                 }
                 catch (Exception ex)
                 {
                     ModelState.AddModelError("", $"Error creating customer: {ex.Message}");
                 }
             }
-            return View();
+            return View(registerVM);
         }
     }
 }

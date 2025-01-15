@@ -1,9 +1,10 @@
-﻿using FribergRentalCars.ViewModels;
+﻿using FribergRentalCars.Models;
+using FribergRentalCars.ViewModels;
 
 namespace FribergRentalCars.Data.Interfaces
 {
     public interface IRegisterRepository
     {
-        Task AddAsync(RegisterViewModel registervm);
+        Task AddAsync(RegisterViewModel registerVM);
     }
 }

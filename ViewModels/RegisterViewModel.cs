@@ -10,9 +10,6 @@ namespace FribergRentalCars.ViewModels
 
         public User User { get; set; }
 
-        [Required(ErrorMessage = "Must confirm password.")]
-        [DataType(DataType.Password)]
-        //[Compare("Password", ErrorMessage = "Password does not match!")]
-        public string ConfirmPassword { get; set; }
+
     }
 }
