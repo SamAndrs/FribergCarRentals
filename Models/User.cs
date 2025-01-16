@@ -12,8 +12,6 @@ namespace FribergRentalCars.Models
         //[ForeignKey("Customer")]
         public int CustomerId { get; set; }
 
-        //public virtual Customer Customer { get; set; }
-
         public bool IsAdmin { get; set; } = false;
 
         [Required(ErrorMessage = "Username is required.")]

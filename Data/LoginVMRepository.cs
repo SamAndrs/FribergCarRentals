@@ -14,20 +14,16 @@ namespace FribergRentalCars.Data
             this._appDbContext = applicationDBContext;
         }
 
-        public async Task<Customer> GetCustomerByEmail(string email)
+        public async Task<User> GetUserByUserNameAsync(string userName)
         {
-           var customer = _appDbContext.Customers.FirstOrDefault(c => c.Email == email);
-            return customer;
+            return await _appDbContext.Users.FirstOrDefaultAsync(u => u.UserName == userName);
         }
-
-        public async Task<Customer> GetCustomerByIdAsync(int id)
+        
+        public async Task<User> GetUserByEmailAsync(string email)
         {
-            return await _appDbContext.Customers.FindAsync(id);
-        }
-
-        public async Task<User> GetUserByIdAsync(int id)
-        {
-            return await _appDbContext.Users.FindAsync(id);
+            var customer = await _appDbContext.Customers.FirstOrDefaultAsync(c => c.Email == email);
+            var user = await _appDbContext.Users.FirstOrDefaultAsync(u => u.CustomerId == customer.CustomerId);
+            return user;
         }
     }
 }

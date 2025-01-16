@@ -5,6 +5,7 @@ using FribergRentalCars.ViewModels;
 using FribergRentalCars.Models;
 using FribergRentalCars.Data.Interfaces;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Text.Json;
 
 namespace FribergRentalCars.Controllers
 {
@@ -18,42 +19,47 @@ namespace FribergRentalCars.Controllers
             this._repository = loginRepository;
         }
 
-        public async Task<IActionResult> Login(LoginViewModel loginVM)
+        public ActionResult Success()
+        {
+            return View();
+        }
+
+        public async Task<ActionResult> Login(LoginViewModel loginVM)
         {
             if(ModelState.IsValid)
             {
-                var user = await _repository.GetUserByIdAsync(loginVM.Customer.CustomerId);
-                var email = await _repository.GetCustomerByEmail(loginVM.Customer.Email);
-                
-                if(user != null)
+                var userName = await _repository.GetUserByUserNameAsync(loginVM.EmailOrUserName);
+
+                if(userName == null)
                 {
-                    if(user.UserName == loginVM.User.UserName || user.Customer.Email == loginVM.Customer.Email)
+                    try
                     {
-                        if(user.Password == loginVM.User.Password)
-                        {
-                            return RedirectToAction("Success", "LoginView");
-                        }
-                        else
-                        {
-                            ModelState.AddModelError("", "Lösenordet är inkorrekt.");
-                        }
+                        userName = await _repository.GetUserByEmailAsync(loginVM.EmailOrUserName);
                     }
-                    else
+                    catch
                     {
-                        ModelState.AddModelError("", "Användarnamnet eller Email adressen är inkorrekt.");
+                        ModelState.AddModelError("", "Användaren finns inte.");
                     }
+                }
+
+                if (loginVM.Password == userName.Password)
+                {
+                    //Session["UserId"] == userName.UserId;
+                    // Session setup
+                    string json = JsonSerializer.Serialize(userName);
+                    HttpContext.Session.SetString("sessionUser", json);
+
+
+                    return RedirectToAction("Success");
                 }
                 else
                 {
-                    ModelState.AddModelError("", "Användaren finns inte.");
+                    ModelState.AddModelError("", "Lösenordet eller användarnamn/ email är inkorrekt.");
                 }
             }
             return View(loginVM);
         }
                 
-        public ActionResult Success()
-        {
-            return View();
-        }
+       
     }
 }

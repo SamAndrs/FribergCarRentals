@@ -4,14 +4,14 @@
     ViewData["Title"] = "Logga in";
 }
 
-<h1>Index</h1>
+@*<h1>Index</h1>*@
 
 <h4>Login</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        @*<form asp-action="Login">*@
-            <form asp-action="Login" method="post">
+        <form asp-action="Login">
+            @*<form asp-action="Login" method="post">*@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             
             @*<div class="form-group">
@@ -26,29 +26,27 @@
                 </label>
             </div>*@
             <div class="form-group">
-                <label asp-for="Customer.Email" class="control-label">Enter your email.</label>
-                <input asp-for="Customer.Email" class="form-control" />
-                <span asp-validation-for="Customer.Email" class="text-danger"></span>
-            </div>
-            
-            
-            <div class="form-group">
-                <label asp-for="User.Password" class="control-label">Enter your password.</label>
-                <input asp-for="User.Password" class="form-control" />
-                <span asp-validation-for="User.Password" class="text-danger"></span>
+                <label asp-for="EmailOrUserName" class="control-label">Enter email or username.</label>
+                <input asp-for="EmailOrUserName" class="form-control" />
+                <span asp-validation-for="EmailOrUserName" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="User.ConfirmPassword" class="control-label">Confirm password</label>
-                <input asp-for="User.ConfirmPassword" class="form-control" />
-                <span asp-validation-for="User.ConfirmPassword" class="text-danger"></span>
+                <label asp-for="Password" class="control-label">Enter your password.</label>
+                <input asp-for="Password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
             </div>
 
+            <div class="form-group">
+                <label asp-for="ConfirmPassword" class="control-label">Confirm password</label>
+                <input asp-for="ConfirmPassword" class="form-control" />
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
+                                  
             <div class="form-group">
                 <label class="form-check-label"></label>
                 <input asp-for="RememberMe" class="form-check-input"/>
                 @Html.DisplayNameFor(u => u.RememberMe)
-
             </div>
 
             <div class="form-group">

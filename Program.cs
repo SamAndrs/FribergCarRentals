@@ -10,7 +10,11 @@ namespace FribergRentalCars
         {
             var builder = WebApplication.CreateBuilder(args);
 
-           //ar _connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=FribergCarsDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False";
+            //ar _connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=FribergCarsDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False";
+
+            // Session state setup
+            builder.Services.AddMemoryCache();
+            builder.Services.AddSession();
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
@@ -41,6 +45,9 @@ namespace FribergRentalCars
             app.UseRouting();
 
             app.UseAuthorization();
+
+            // Enable Session state
+            app.UseSession();
 
             app.MapControllerRoute(
                 name: "default",

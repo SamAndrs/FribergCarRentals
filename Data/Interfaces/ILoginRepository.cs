@@ -5,11 +5,9 @@ namespace FribergRentalCars.Data.Interfaces
 {
     public interface ILoginRepository
     {
-        Task<Customer> GetCustomerByIdAsync(int id);
+        Task<User> GetUserByUserNameAsync(string userName);
 
-        Task<User> GetUserByIdAsync(int id);
-
-        Task<Customer> GetCustomerByEmail(string email);
+        Task<User> GetUserByEmailAsync(string email);
 
     }
 }
