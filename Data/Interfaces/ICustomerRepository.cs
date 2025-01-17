@@ -10,10 +10,12 @@ namespace FribergRentalCars.Data.Interfaces
 
         Task<Customer> GetWithAdressAsync(int id);
 
-        /*Task AddAsync(Customer customer);*/
+        Task AddAsync(Customer customer);
 
         Task UpdateAsync(Customer customer);
 
         Task DeleteAsync(Customer customer);
+
+        Task<bool> EmailAvailability(string email);
     }
 }

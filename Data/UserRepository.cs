@@ -13,13 +13,13 @@ namespace FribergRentalCars.Data
         {
             this._appDbContext = applicationDBContext;
         }
-        /*
+        
         public async Task AddAsync(User user)
         {
             await _appDbContext.Users.AddAsync(user);
             await _appDbContext.SaveChangesAsync();
         }
-        */
+        
         public async Task DeleteAsync(User user)
         {
             _appDbContext.Remove(user);
@@ -35,6 +35,27 @@ namespace FribergRentalCars.Data
         {
             return await _appDbContext.Users.FindAsync(id);
         }
+
+
+
+        public async Task<User> GetUserByEmailAsync(string email)
+        {
+            var customer = await _appDbContext.Customers.FirstOrDefaultAsync(c => c.Email == email);
+            var user = await _appDbContext.Users.FirstOrDefaultAsync(u => u.CustomerId == customer.CustomerId);
+            return user;
+        }
+
+        public async Task<User> GetUserByUserNameAsync(string userName)
+        {
+            return await _appDbContext.Users.FirstOrDefaultAsync(u => u.UserName == userName);
+        }
+
+        public async Task<bool> UserNameAvailaibility(string userName)
+        {
+            var isTaken = await _appDbContext.Users.AnyAsync(c => c.UserName == userName);
+            return isTaken;
+        }
+
 
         public async Task UpdateAsync(User user)
         {

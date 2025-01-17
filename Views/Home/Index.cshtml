@@ -7,11 +7,19 @@
 <div>
     @*<p>Session Id:  @Context.Session.GetInt32("sessionId")</p>*@
     @{
-        string json = Context.Session.GetString("sessionUser");
-        User user = JsonSerializer.Deserialize<User>(json);
+        string json;
+        if (!string.IsNullOrEmpty(json = Context.Session.GetString("sessionUser")))
+        {
+            User? user = JsonSerializer.Deserialize<User>(json);
+            <p>@user.UserName</p>
+        }
+        else
+        {
+            <p>Inloggad som: Gäst</p>
+        }
     }
 </div>
-<p>Session for: @user.UserName</p>
+
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>

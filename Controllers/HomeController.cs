@@ -17,6 +17,7 @@ namespace FribergRentalCars.Controllers
         public IActionResult Index()
         {
             // Read from session variable
+            /*
             int? sessionId = HttpContext.Session.GetInt32("sessionId");
             if(sessionId == null)
             {
@@ -27,7 +28,16 @@ namespace FribergRentalCars.Controllers
                 sessionId += 1;
             }
             HttpContext.Session.SetInt32("sessionId", (int)sessionId!);
-            return View();
+            */
+            if(string.IsNullOrEmpty(HttpContext.Session.GetString("sessionUser")))
+            {
+                return View();
+            }
+            else
+            {
+                return View();
+            }
+            
         }
 
         public IActionResult Privacy()

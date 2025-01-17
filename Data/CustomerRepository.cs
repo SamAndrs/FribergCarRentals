@@ -13,7 +13,7 @@ namespace FribergRentalCars.Data
             this._appDbContext = applicationDbContext;
         }
 
-        /*
+        
         public async Task AddAsync(Customer customer)
         {
             await _appDbContext.Adresses.AddAsync(customer.Adress);
@@ -24,7 +24,7 @@ namespace FribergRentalCars.Data
             await _appDbContext.Customers.AddAsync(customer);
             await _appDbContext.SaveChangesAsync();
         }
-        */
+       
         public async Task DeleteAsync(Customer customer)
         {
             _appDbContext.Customers.Remove(customer);
@@ -53,5 +53,12 @@ namespace FribergRentalCars.Data
             _appDbContext.Update(customer);
             await _appDbContext.SaveChangesAsync();
         }
+
+        public async Task<bool> EmailAvailability(string email)
+        {
+            var isTaken = await _appDbContext.Customers.AnyAsync(c => c.Email == email);
+            return isTaken;
+        }
+            
     }
 }

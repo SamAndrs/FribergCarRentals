@@ -15,6 +15,12 @@ namespace FribergRentalCars
             // Session state setup
             builder.Services.AddMemoryCache();
             builder.Services.AddSession();
+            builder.Services.AddSession(options =>
+            {
+                // Auto-end session after 10m of User idling.
+                options.IdleTimeout = TimeSpan.FromSeconds(60 *10);
+                options.Cookie.IsEssential = true;
+            });
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
@@ -26,8 +32,7 @@ namespace FribergRentalCars
                 );
             builder.Services.AddTransient<ICarRepository, CarRepository>();
             builder.Services.AddTransient<ICustomerRepository, CustomerRepository>();
-            builder.Services.AddTransient<IRegisterRepository, RegisterVMRepository>();
-            builder.Services.AddTransient < ILoginRepository, LoginVMRepository>();
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
 
             var app = builder.Build();
 

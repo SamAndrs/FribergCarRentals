@@ -8,10 +8,16 @@ namespace FribergRentalCars.Data.Interfaces
 
         Task<User> GetIdByAsync(int id);
 
-        /*Task AddAsync(User user);*/
+        Task AddAsync(User user);
 
         Task UpdateAsync(User user);
 
         Task DeleteAsync(User user);
+
+        Task<User> GetUserByUserNameAsync(string userName);
+
+        Task<User> GetUserByEmailAsync(string email);
+
+        Task<bool> UserNameAvailaibility(string userName);
     }
 }
