@@ -7,11 +7,9 @@
 <div>
     @*<p>Session Id:  @Context.Session.GetInt32("sessionId")</p>*@
     @{
-        string json;
-        if (!string.IsNullOrEmpty(json = Context.Session.GetString("sessionUser")))
+        if (!string.IsNullOrEmpty(Context.Session.GetString("user")))
         {
-            User? user = JsonSerializer.Deserialize<User>(json);
-            <p>@user.UserName</p>
+            <p>Inloggad som: @Context.Session.GetString("user")</p>
         }
         else
         {

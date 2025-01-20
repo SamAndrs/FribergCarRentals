@@ -1,33 +1,31 @@
-﻿@*model FribergRentalCars.ViewModels.RegisterViewModel*@
-@model FribergRentalCars.Models.Customer
+﻿@model FribergRentalCars.Models.Customer
 
 @{
     ViewData["Title"] = "Details";
-    var user = Context.Session.GetString("user");
 }
 
 
 <h1>Konto uppgifter</h1>
 
 <div>
-    <h4>@user</h4>
+    <h4>@Context.Session.GetString("user")</h4>
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.FirstName)
+            <a>Förnamn</a>
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.FirstName)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.LastName)
+            <a>Efternamn</a>
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.LastName)
         </dd>
         
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Adress)
+            <a>Adress</a>
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Adress.Street)
@@ -37,13 +35,13 @@
 
 
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.PhoneNumber)
+            <a>Telefon-nummer</a>
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.PhoneNumber)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Email)
+            <a>Email</a>
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Email)
@@ -52,6 +50,7 @@
         
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.CustomerId">Edit</a> |
-    <a asp-controller="Home" asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model?.CustomerId">Ändra uppgifter</a>
+    <a asp-action="Rentals" asp-route-id="@Model?.CustomerId">Se mina bokningar</a>
+    <a asp-controller="Home" asp-action="Index">Tillbaka</a>
 </div>

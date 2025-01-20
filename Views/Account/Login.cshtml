@@ -6,7 +6,7 @@
 
 @*<h1>Index</h1>*@
 
-<h4>Login</h4>
+<h4>Logga in</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -26,31 +26,24 @@
                 </label>
             </div>*@
             <div class="form-group">
-                <label asp-for="EmailOrUserName" class="control-label">Enter email or username.</label>
+                <label asp-for="EmailOrUserName" class="control-label">Ange email eller användarnamn.</label>
                 <input asp-for="EmailOrUserName" class="form-control" />
                 <span asp-validation-for="EmailOrUserName" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="Password" class="control-label">Enter your password.</label>
+                <label asp-for="Password" class="control-label">Lösenord.</label>
                 <input asp-for="Password" class="form-control" />
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="ConfirmPassword" class="control-label">Confirm password</label>
+                <label asp-for="ConfirmPassword" class="control-label">Bekräfta lösenord</label>
                 <input asp-for="ConfirmPassword" class="form-control" />
                 <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
             </div>
-
             <div class="form-group">
-                <label class="form-check-label"></label>
-                <input asp-for="RememberMe" class="form-check-input" />
-                @Html.DisplayNameFor(u => u.RememberMe)
-            </div>
-
-            <div class="form-group">
-                <input type="submit" value="Login" class="btn btn-primary" />
+                <input type="submit" value="Logga in" class="btn btn-primary" />
             </div>
 
             
@@ -58,9 +51,9 @@
     </div>
 </div>
 <div>
-    <a asp-controller="RegisterView" asp-action="Create">Register new account.</a>
+    <a asp-controller="RegisterView" asp-action="Create">Nytt konto.</a>
 </div>
 <div>
-    <a asp-controller="Home" asp-action="Index">Back to List</a>
+    <a asp-controller="Home" asp-action="Index">Tillbaka</a>
 </div>
 

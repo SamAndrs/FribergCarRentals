@@ -11,19 +11,19 @@
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Model)
+            <a>Modell</a>
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Model)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ModelYear)
+            <a>Årtal</a>
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.ModelYear)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Image)
+            <a></a>
         </dt>
         <dd class = "col-sm-10">
             @*
@@ -43,25 +43,25 @@
             </td>
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Price)
+            <a>Pris/ dag</a>
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Price)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
+            <a>Beskrivning</a>
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Description)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IsAvailable)
+            <a>Boka</a>
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IsAvailable)
+            @*@Html.DisplayFor(model => model.IsAvailable)*@
             @if(Model.IsAvailable)
             {
-                <a>Kan Hyras</a>
+                <input type="submit" value="Boka" class="btn btn-primary" />
             }
             else
             {
@@ -71,6 +71,6 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.CarId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    @*<a asp-action="Edit" asp-route-id="@Model?.CarId">Edit</a> |*@
+    <a asp-action="Index">Tillbaka</a>
 </div>

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FribergRentalCars.Models
 {
@@ -10,10 +11,8 @@ namespace FribergRentalCars.Models
 
         public DateOnly EndDate { get; set; }
 
-        [ForeignKey("Customer")]
         public int CustomerId { get; set; }
 
-        [ForeignKey("Car")]
         public int CarId { get; set; }
     }
 }

@@ -28,6 +28,11 @@ namespace FribergRentalCars.Controllers
             return View();
         }
 
+        public ActionResult ChangePassword(PasswordVM passwordVM)
+        {
+            return View();
+        }
+
         // GET: AccountController/Details/5
         public async Task <IActionResult> Details(int id)
         {
@@ -67,32 +72,25 @@ namespace FribergRentalCars.Controllers
             {
                 NotFound();
             }
-
+            
             if (ModelState.IsValid)
             {
-                if (await _customRepo.EmailAvailability(customer.Email))
+                try
                 {
-                    ModelState.AddModelError("", "Den här emailadressen är redan registrerad.");
+                    await _customRepo.UpdateAsync(customer);
                 }
-                else
+                catch (DbUpdateConcurrencyException)
                 {
-                    try
+                    if (customer.CustomerId == null)
                     {
-                        await _customRepo.UpdateAsync(customer);
+                        return NotFound();
                     }
-                    catch (DbUpdateConcurrencyException)
+                    else
                     {
-                        if (customer.CustomerId == null)
-                        {
-                            return NotFound();
-                        }
-                        else
-                        {
-                            throw;
-                        }
+                        throw;
                     }
-                    return RedirectToAction(nameof(Details));
                 }
+                return RedirectToAction(nameof(Details));
             }
             return View(customer);
         }
@@ -118,12 +116,7 @@ namespace FribergRentalCars.Controllers
             }
         }
 
-
-        public ActionResult LoginSuccess()
-        {
-            return View();
-        }
-
+        
         public ActionResult Login()
         {
             return View();
@@ -186,14 +179,7 @@ namespace FribergRentalCars.Controllers
         public ActionResult Logout()
         {
             return View();
-        }
-
-
-        // POST: AccountController/RegisterSuccess
-        public ActionResult RegisterSuccess()
-        {
-            return View();
-        }
+        }   
 
         // POST: AccountController/Register
         public ActionResult Register()
@@ -229,10 +215,8 @@ namespace FribergRentalCars.Controllers
                             registerVM.User.CustomerId = registerVM.Customer.CustomerId;
                             await _userRepo.AddAsync(registerVM.User);
 
-                            string json = JsonSerializer.Serialize(registerVM.User);
-                            HttpContext.Session.SetString("sessionUser", json);
-                            return RedirectToAction("RegisterSuccess"); // TO DO: Fixa register success till Account details page instead
-                                                                        //return RedirectToAction("Index", "Home");
+                            HttpContext.Session.SetString("user", registerVM.User.UserName);
+                            return RedirectToAction(nameof(Details));
                         }
                     }
                 }

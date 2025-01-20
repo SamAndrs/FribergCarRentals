@@ -20,11 +20,6 @@ namespace FribergRentalCars.ViewModels
         [Required]
         [DataType(DataType.Password)]
         [Compare("Password", ErrorMessage = "Password does not match!")]
-        public string ConfirmPassword { get; set; } = "";
-        
-        
-        [DisplayName(displayName: "Remember Me?")]
-        public bool RememberMe { get; set; }
-        
+        public string ConfirmPassword { get; set; } = "";        
     }
 }

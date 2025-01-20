@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FribergRentalCars.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20250115104907_initial")]
+    [Migration("20250120115459_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -171,8 +171,6 @@ namespace FribergRentalCars.Migrations
 
                     b.HasKey("UserId");
 
-                    b.HasIndex("CustomerId");
-
                     b.ToTable("Users");
                 });
 
@@ -192,17 +190,6 @@ namespace FribergRentalCars.Migrations
                         .HasForeignKey("AdressId");
 
                     b.Navigation("Adress");
-                });
-
-            modelBuilder.Entity("FribergRentalCars.Models.User", b =>
-                {
-                    b.HasOne("FribergRentalCars.Models.Customer", "Customer")
-                        .WithMany()
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Customer");
                 });
 
             modelBuilder.Entity("FribergRentalCars.Models.Customer", b =>
