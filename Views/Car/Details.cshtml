@@ -46,7 +46,7 @@
             <a>Pris/ dag</a>
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Price)
+            @Html.DisplayFor(model => model.PricePerDay)
         </dd>
         <dt class = "col-sm-2">
             <a>Beskrivning</a>
@@ -61,7 +61,10 @@
             @*@Html.DisplayFor(model => model.IsAvailable)*@
             @if(Model.IsAvailable)
             {
-                <input type="submit" value="Boka" class="btn btn-primary" />
+                <form asp-controller="Booking" asp-action="Create" asp-route-data=@Model.CarId>
+                    <input type="submit" value="Boka" class="btn btn-primary" />
+                </form>
+                
             }
             else
             {

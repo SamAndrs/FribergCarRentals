@@ -33,6 +33,7 @@ namespace FribergRentalCars
             builder.Services.AddTransient<ICarRepository, CarRepository>();
             builder.Services.AddTransient<ICustomerRepository, CustomerRepository>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 
             var app = builder.Build();
 

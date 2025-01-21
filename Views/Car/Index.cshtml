@@ -13,6 +13,9 @@
 <table class="table">
     <thead>
         <tr>
+            <th class="visually-hidden">
+                @Html.DisplayNameFor(model => model.CarId)
+            </th>
             <th>
                 <a>Modell</a>
             </th>
@@ -41,16 +44,19 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Model)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ModelYear)
-            </td>
-            <td>
-                @* @Html.DisplayFor(modelItem => item.Image) *@
+        @foreach (var item in Model) {
+            <tr>
+                <td class="visually-hidden">
+                    @Html.DisplayFor(modelItem => item.CarId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Model)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ModelYear)
+                </td>
+                <td>
+                    @* @Html.DisplayFor(modelItem => item.Image) *@
                     @if (!string.IsNullOrEmpty(item.Image))
                     {
                         <div>
@@ -59,23 +65,27 @@
                     }
                     else
                     {
-                        <p>No image available</p>
+                        <p>Bild saknas</p>
                     }
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td class="visually-hidden">
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td class="visually-hidden">
-                @Html.DisplayFor(modelItem => item.IsAvailable)
-            </td>
-            <td>
-               @if(item.IsAvailable)
-               {
-                    <form asp-controller="Booking" , asp-action="Create" asp-route-id="@item.CarId">
-                     <input type="submit" value="Boka" class="btn btn-primary" />
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PricePerDay)
+                </td>
+                <td class="visually-hidden">
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td class="visually-hidden">
+                    @Html.DisplayFor(modelItem => item.IsAvailable)
+                </td>
+                <td>
+                    @if(item.IsAvailable)
+                    {
+                        <form asp-controller="Booking" asp-action="Create">
+                            @{
+                                Context.Session.SetInt32("carID", item.CarId);
+                            }
+
+                            <input type="submit" value="Boka" class="btn btn-primary" />
                    </form> 
                }
                else

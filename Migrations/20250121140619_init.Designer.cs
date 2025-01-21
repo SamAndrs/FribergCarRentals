@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FribergRentalCars.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20250120115459_initial")]
-    partial class initial
+    [Migration("20250121140619_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -70,7 +70,12 @@ namespace FribergRentalCars.Migrations
                     b.Property<DateOnly>("StartDate")
                         .HasColumnType("date");
 
+                    b.Property<int>("TotalCost")
+                        .HasColumnType("int");
+
                     b.HasKey("BookingId");
+
+                    b.HasIndex("CarId");
 
                     b.HasIndex("CustomerId");
 
@@ -101,7 +106,7 @@ namespace FribergRentalCars.Migrations
                     b.Property<int>("ModelYear")
                         .HasColumnType("int");
 
-                    b.Property<int>("Price")
+                    b.Property<int>("PricePerDay")
                         .HasColumnType("int");
 
                     b.HasKey("CarId");
@@ -176,11 +181,19 @@ namespace FribergRentalCars.Migrations
 
             modelBuilder.Entity("FribergRentalCars.Models.Booking", b =>
                 {
+                    b.HasOne("FribergRentalCars.Models.Car", "Car")
+                        .WithMany()
+                        .HasForeignKey("CarId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("FribergRentalCars.Models.Customer", null)
                         .WithMany("Bookings")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Car");
                 });
 
             modelBuilder.Entity("FribergRentalCars.Models.Customer", b =>

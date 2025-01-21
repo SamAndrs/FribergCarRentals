@@ -29,15 +29,7 @@ namespace FribergRentalCars.Controllers
             }
             HttpContext.Session.SetInt32("sessionId", (int)sessionId!);
             */
-            if(string.IsNullOrEmpty(HttpContext.Session.GetString("sessionUser")))
-            {
                 return View();
-            }
-            else
-            {
-                return View();
-            }
-            
         }
 
         public IActionResult Privacy()

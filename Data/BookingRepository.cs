@@ -1,5 +1,6 @@
 ﻿using FribergRentalCars.Data.Interfaces;
 using FribergRentalCars.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace FribergRentalCars.Data
 {
@@ -12,9 +13,10 @@ namespace FribergRentalCars.Data
             this._appDbContext = applicationDBContext;
         }
 
-        public Task AddAsync(Booking booking)
+        public async Task AddAsync(Booking booking)
         {
-            throw new NotImplementedException();
+            await _appDbContext.Bookings.AddAsync(booking);
+            await _appDbContext.SaveChangesAsync();
         }
 
         public Task DeleteAsync(Booking booking)
@@ -22,9 +24,9 @@ namespace FribergRentalCars.Data
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Booking>> GetAllAsync()
+        public async Task<IEnumerable<Booking>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _appDbContext.Bookings.ToListAsync();
         }
 
         public Task<Booking> GetIdByAsync(int id)

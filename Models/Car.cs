@@ -11,11 +11,13 @@ namespace FribergRentalCars.Models
 
         public int ModelYear { get; set; }
 
-        /*public virtual List<string> CarImages { get; set; }*/
+        //public string RegNumber { get; set; }
+
+        //public virtual List<string> CarImages { get; set; }
 
         public string? Image { get; set; }
 
-        public int Price { get; set; }
+        public int PricePerDay { get; set; }
 
         public string? Description { get; set; }
 

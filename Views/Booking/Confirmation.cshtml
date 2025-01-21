@@ -1,0 +1,87 @@
+﻿@model FribergRentalCars.Models.Booking
+
+@{
+    ViewData["Title"] = "Confirmation";
+}
+
+<h1>Boknings bekräftelse för @Context.Session.GetString("user")</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <p>Bild</p>
+            </th>
+           <th>
+                <p>Modell</p>
+           </th>
+            <th>
+                <p>Årsmodell</p>
+            </th>
+            <th>
+                <p>RegNr</p>
+            </th>
+            <th>
+                <p>Pris/ dag</p>
+            </th>
+            <th>
+                <p>Från datum</p>
+            </th>
+            <th>
+                <p>Till datum</p>
+            </th>
+            <th class="visually-hidden">
+                @Html.DisplayNameFor(model => model.CarId)
+            </th>
+            <th>
+                <p>Total kostnad</p>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                @if (!string.IsNullOrEmpty(Model.Car.Image))
+                {
+                    <div>
+                        <img src="@Model.Car.Image" alt="bild på bil" class="img-fluid" width="150" height="150" />
+                    </div>
+                }
+                else
+                {
+                    <p>Bild saknas</p>
+                }
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.Car.Model)
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.Car.ModelYear)
+            </td>
+            <td class=" = visually-hidden">
+                @*@Html.DisplayFor(model => model.Car.RegNumber)*@
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.Car.PricePerDay)
+            </td>
+            
+            <td>
+                @Html.DisplayFor(model => model.StartDate)
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.EndDate)
+            </td>
+            <td class="visually-hidden">
+                @Html.DisplayFor(model => model.CarId)
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.TotalCost)
+            </td>
+        </tr>
+
+    </tbody>
+</table>
+<p>
+    <a asp-action="Details" asp-controller="Account">Till Mina uppgifter</a>
+</p>

@@ -155,6 +155,7 @@ namespace FribergRentalCars.Controllers
                         HttpContext.Session.SetString("sessionUser", json);
                         */
                         HttpContext.Session.SetString("user", user.UserName);
+                        HttpContext.Session.SetInt32("customerID", user.CustomerId);
                         return RedirectToAction("Index", "Home"); // TO-DO Admin page  and controller redirect
                     }
                     else
@@ -164,6 +165,7 @@ namespace FribergRentalCars.Controllers
                         HttpContext.Session.SetString("sessionUser", json);
                         */
                         HttpContext.Session.SetString("user", user.UserName);
+                        HttpContext.Session.SetInt32("customerID", user.CustomerId);
                         return RedirectToAction("Details");
                     }
                 }
@@ -216,6 +218,7 @@ namespace FribergRentalCars.Controllers
                             await _userRepo.AddAsync(registerVM.User);
 
                             HttpContext.Session.SetString("user", registerVM.User.UserName);
+                            HttpContext.Session.SetInt32("customerID", registerVM.Customer.CustomerId);
                             return RedirectToAction(nameof(Details));
                         }
                     }
