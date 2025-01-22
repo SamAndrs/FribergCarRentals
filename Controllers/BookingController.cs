@@ -20,24 +20,12 @@ namespace FribergRentalCars.Controllers
             this._custRepo = customerRepository;
             this._bookRepo = bookingRepository;
         }
-        // GET: BookingController
-        public ActionResult Index()
-        {
-            return View();
-        }
 
-        // GET: BookingController
+        // GET: BookingController  TO DO: REMOVE (admin functionality)
         public async Task<ActionResult> ListAll()
         {
             var bookings = await _bookRepo.GetAllAsync();
             return View(bookings);
-        }
-
-
-        // GET: BookingController/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
         }
 
         public async Task<ActionResult> Confirmation(Booking booking)
@@ -56,18 +44,18 @@ namespace FribergRentalCars.Controllers
             BookingViewModel bookVM = new BookingViewModel
             {
                 CarId = car.CarId,
-                TotalCost = car.PricePerDay, // TO DO: räkna ut kostnaden för totala antalet dagar
+                TotalCost = car.PricePerDay,
                 StartDate = DateOnly.FromDateTime(DateTime.Today),
                 EndDate = DateOnly.FromDateTime(DateTime.Today)
             };
             return View(bookVM);
         }
 
-        // POST: BookingController/Create
+        // POST: BookingController/ConfirmBooking
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> ConfirmBooking(BookingViewModel bookVM)
-        {
+        {            
             Booking newBooking = new Booking
             {
                 CustomerId = (int)HttpContext.Session.GetInt32("customerID")!,
@@ -95,89 +83,58 @@ namespace FribergRentalCars.Controllers
                     return View("Create", bookVM);
                 }
                 else
-                { 
+                {
+                    var booked = await IsOverlapping(newBooking.CarId, newBooking);
+                    if (booked)
+                    {
+                        ModelState.AddModelError("", "Bilen är redan bokad under dessa datum.");
+                        return View("Create", bookVM);
+                    }
+
+                    newBooking.TotalCost = (newBooking.EndDate.DayNumber - newBooking.StartDate.DayNumber) * newBooking.Car.PricePerDay;
                     await _bookRepo.AddAsync(newBooking);
+                    //customer.Bookings.Add(newBooking);
                     return View("Confirmation", newBooking);
                 }
             }
             return View(bookVM);
-
-
-
-            /* CHATGPT
-              if (ModelState.IsValid)
-    {
-        var existingBooking = _context.Bookings
-            .Where(b => b.CarId == model.CarId &&
-                        (b.StartDate < model.EndDate && b.EndDate > model.StartDate))
-            .FirstOrDefault();
-
-        if (existingBooking != null)
-        {
-            ModelState.AddModelError("", "Den valda bilen är redan bokad under den perioden.");
-            return View(model);
         }
 
-        var booking = new Booking
+        public async Task<ActionResult> ListAccountBookings(int id)
         {
-            CarId = model.CarId,
-            CustomerId = model.CustomerId,
-            StartDate = model.StartDate,
-            EndDate = model.EndDate
-        };
-
-        _context.Bookings.Add(booking);
-        _context.SaveChanges();
-
-        return RedirectToAction("Index", "Cars");
-    }
-
-    return View(model);
-             * */
-        }
-
-        // GET: BookingController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: BookingController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
+            var bookings = await _bookRepo.GetBookingsByCustomerIdAsync(id);
+            if(id == null)
             {
-                return RedirectToAction(nameof(Index));
+                return NotFound();
             }
-            catch
+            
+            foreach (var item in bookings)
             {
-                return View();
+                try
+                {
+                    item.Car = await _carRepo.GetIdByAsync(item.CarId);
+                }
+                catch(Exception)
+                {
+                    ModelState.AddModelError("", "Bilen är inte tillgänglig att hyra.");
+                }
             }
+            return View(bookings);
         }
 
-        // GET: BookingController/Delete/5
-        public ActionResult Delete(int id)
+        #region HELPER METHODS ---------------------------------------------------
+        public async Task<bool> IsOverlapping(int carID, Booking booking)
         {
-            return View();
-        }
+            var existingBookings = await _bookRepo.GetBookingsByCarIdAsync(carID);
 
-        // POST: BookingController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+            bool isOverlapping = existingBookings.Any(b =>
+            (b.StartDate < booking.EndDate && b.EndDate > booking.StartDate));
 
-       
+            return isOverlapping;
+
+        }
+        #endregion
+
+
     }
 }

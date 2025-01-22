@@ -29,6 +29,16 @@ namespace FribergRentalCars.Data
             return await _appDbContext.Bookings.ToListAsync();
         }
 
+        public async Task<IEnumerable<Booking>> GetBookingsByCarIdAsync(int id)
+        {
+            return await _appDbContext.Bookings.Where(b => b.CarId == id).ToListAsync();
+        }
+
+        public async Task<IEnumerable<Booking>> GetBookingsByCustomerIdAsync(int id)
+        {
+            return await _appDbContext.Bookings.Where(b => b.CustomerId == id).ToListAsync();
+        }
+
         public Task<Booking> GetIdByAsync(int id)
         {
             throw new NotImplementedException();

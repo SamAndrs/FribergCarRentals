@@ -80,19 +80,27 @@
                 <td>
                     @if(item.IsAvailable)
                     {
-                        <form asp-controller="Booking" asp-action="Create">
-                            @{
-                                Context.Session.SetInt32("carID", item.CarId);
-                            }
+                        @if (!string.IsNullOrEmpty(Context.Session.GetString("user")))
+                        {
+                            <form asp-controller="Booking" asp-action="Create">
+                                @{
+                                    Context.Session.SetInt32("carID", item.CarId);
+                                }
 
-                            <input type="submit" value="Boka" class="btn btn-primary" />
-                   </form> 
-               }
-               else
-               {
-                   <a>Ej bokningsbar</a>
-               }
-
+                                <input type="submit" value="Boka" class="btn btn-primary" />
+                            </form>
+                        }
+                        else
+                        {
+                            <form asp-controller="Account" asp-action="Register">
+                                <input type="submit" value="Boka" class="btn btn-primary" />
+                            </form>
+                        }
+                    }
+                    else
+                    {
+                        <a>Ej bokningsbar</a>
+                    }
             </td>
             <td>
                 @*<a asp-action="Edit" asp-route-id="@item.CarId">Edit</a> |*@

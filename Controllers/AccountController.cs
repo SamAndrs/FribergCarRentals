@@ -14,12 +14,16 @@ namespace FribergRentalCars.Controllers
         public readonly ICustomerRepository _customRepo;
 
         private readonly IUserRepository _userRepo;
+        
+        private readonly IBookingRepository _bookRepo;
 
-        public AccountController(ICustomerRepository customerRepository, IUserRepository userRepository)
+        public AccountController(ICustomerRepository customerRepository, IUserRepository userRepository, IBookingRepository bookingRepository)
         {
             this._customRepo = customerRepository;
 
             this._userRepo = userRepository;
+
+            this._bookRepo = bookingRepository;
         }
 
         // GET: AccountController
@@ -34,11 +38,9 @@ namespace FribergRentalCars.Controllers
         }
 
         // GET: AccountController/Details/5
-        public async Task <IActionResult> Details(int id)
+        public async Task <IActionResult> Details()
         {
-            var user = await _userRepo.GetUserByUserNameAsync(HttpContext.Session.GetString("user"));
-
-            var customer = await _customRepo.GetWithAdressAsync(user.CustomerId);
+            var customer = await _customRepo.GetWithAdressAsync((int)HttpContext.Session.GetInt32("customerID")!);
             if (customer == null)
             {
                 NotFound();
@@ -160,10 +162,6 @@ namespace FribergRentalCars.Controllers
                     }
                     else
                     {
-                        /*
-                        string json = JsonSerializer.Serialize(user);
-                        HttpContext.Session.SetString("sessionUser", json);
-                        */
                         HttpContext.Session.SetString("user", user.UserName);
                         HttpContext.Session.SetInt32("customerID", user.CustomerId);
                         return RedirectToAction("Details");
@@ -230,6 +228,5 @@ namespace FribergRentalCars.Controllers
             }
             return View(registerVM);
         }
-
     }
 }

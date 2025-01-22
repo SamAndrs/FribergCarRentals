@@ -51,6 +51,6 @@
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.CustomerId">Ändra uppgifter</a>
-    <a asp-action="Rentals" asp-route-id="@Model?.CustomerId">Se mina bokningar</a>
+    <a asp-action="ListAccountBookings" asp-controller="Booking" asp-route-id="@Model?.CustomerId">Mina bokningar</a>
     <a asp-controller="Home" asp-action="Index">Tillbaka</a>
 </div>
