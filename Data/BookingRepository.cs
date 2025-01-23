@@ -19,9 +19,10 @@ namespace FribergRentalCars.Data
             await _appDbContext.SaveChangesAsync();
         }
 
-        public Task DeleteAsync(Booking booking)
+        public async Task DeleteAsync(Booking booking)
         {
-            throw new NotImplementedException();
+            _appDbContext.Bookings.Remove(booking);
+            await _appDbContext.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<Booking>> GetAllAsync()
@@ -39,12 +40,12 @@ namespace FribergRentalCars.Data
             return await _appDbContext.Bookings.Where(b => b.CustomerId == id).ToListAsync();
         }
 
-        public Task<Booking> GetIdByAsync(int id)
+        public async Task<Booking> GetIdByAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _appDbContext.Bookings.FindAsync(id);
         }
 
-        public Task UpdateAsync(Booking booking)
+        public async Task UpdateAsync(Booking booking) // TO DO: REMOVE
         {
             throw new NotImplementedException();
         }

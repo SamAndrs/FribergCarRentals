@@ -12,7 +12,7 @@ namespace FribergRentalCars.Data.Interfaces
 
         Task UpdateAsync(Booking booking);
 
-        Task DeleteAsync(Booking booking);
+        Task DeleteAsync(Booking booking); // TO DO: REMOVE
 
         Task<IEnumerable<Booking>> GetBookingsByCarIdAsync(int id);
 

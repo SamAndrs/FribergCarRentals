@@ -12,6 +12,9 @@
 <table class="table">
     <thead>
         <tr>
+            <th class="visually-hidden">
+                <p>BookingId</p>
+            </th>
             <th>
                 <p>Bil</p>
             </th>
@@ -36,15 +39,23 @@
             <th>
                 <p>Total kostnad</p>
             </th>
+            <th>
+                <p>Status</p>
+            </th>
             <th class="visually-hidden">
                 @Html.DisplayNameFor(model => model.Car)
             </th>
-            <th></th>
+            <th class="visually-hidden">
+                @Html.DisplayNameFor(model => model.Car.CarId)
+            </th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model) {
             <tr>
+                <td class="visually-hidden">
+                    @Html.DisplayFor(modelItem => item.BookingId)
+                </td>
                 <td>
                     @if(!string.IsNullOrEmpty(item.Car.Image))
                     {
@@ -56,31 +67,73 @@
                     {
                         <p>Bild saknas</p>
                     }
-            </td>
-                <td>
-                    <p>@item.Car.Model (@item.Car.ModelYear)</p>
+                </td>
+                @* // IF BOOKING IS FINISHED display text in grey color*@
+               @if(item.EndDate < DateOnly.FromDateTime(DateTime.Now))
+               {
+                    <td>
+                        <span style="color: dimgrey">@item.Car.Model (@item.Car.ModelYear)</span>
+                    </td>
+                    <td class="visually-hidden">
+                        @*<span style="color: dimgrey">@item.Car.RegNumber</span>*@
+                        @* <p>@item.Car.RegNumber</p>*@
+                    </td>
+                    <td>
+                        <span style="color: dimgrey">@item.Car.PricePerDay kr</span>
+                        @*<p>@item.Car.PricePerDay kr</p>*@
+
+                    </td>
+                    <td>
+                        <span style="color: dimgrey">@item.StartDate</span>
+                    </td>
+                    <td>
+                        <span style="color: dimgrey">@item.EndDate</span>
+                    </td>
+                    <td>
+                        <span style="color: dimgrey">@item.TotalCost kr </span>
+                    </td>
+                    <td>
+                        <span style="color: dimgrey">Avslutad</span>
+                    </td>
+               }
+               @*// IF BOOKING IS NOT FINISHED display text in black color*@
+               else
+                {
+                    <td>
+                        <span>@item.Car.Model (@item.Car.ModelYear)</span>
+                    </td>
+                    <td class="visually-hidden">
+                        @*<span>@item.Car.RegNumber</span>*@
+                    </td>
+                    <td>
+                        <span>@item.Car.PricePerDay kr</span>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.StartDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EndDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TotalCost)kr
+                    </td>
+
+                    <td>
+                        <form asp-action="Cancel" asp-route-id="@item.BookingId">
+                           <span>
+                                Pågående |
+                                <input type="submit" value="Avboka" class="btn btn-danger" />
+                           </span> 
+                        </form>
+                    </td>
+               }
+
+                <td class="visually-hidden">
+                    @Html.DisplayFor(modelItem => item.Car)
                 </td>
                 <td class="visually-hidden">
-                   @* <p>@item.Car.RegNumber</p>*@
+                    @Html.DisplayFor(modelItem => item.Car.CarId)
                 </td>
-                <td>
-                    <p>@item.Car.PricePerDay kr</p>
-                </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StartDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EndDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TotalCost)kr
-            </td>
-            <td class="visually-hidden">
-                @Html.DisplayFor(modelItem => item.Car.CarId)
-            </td>
-            <td>
-                <a asp-action="Cancel" asp-route-id="@item.BookingId">Avboka (att göra)</a>
-            </td>
         </tr>
 }
     </tbody>

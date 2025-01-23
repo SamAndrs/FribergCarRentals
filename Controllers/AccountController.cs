@@ -27,7 +27,7 @@ namespace FribergRentalCars.Controllers
         }
 
         // GET: AccountController
-        public ActionResult Index()
+        public ActionResult Index() // TO DO: CHANGE INTO ACCOUNT PAGE???
         {
             return View();
         }

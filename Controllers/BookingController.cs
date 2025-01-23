@@ -27,6 +27,36 @@ namespace FribergRentalCars.Controllers
             var bookings = await _bookRepo.GetAllAsync();
             return View(bookings);
         }
+             
+        // POST: BookingController/Cancel
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Cancel(int id)
+        {
+            try
+            {
+                var booking = await _bookRepo.GetIdByAsync(id);
+                await _bookRepo.DeleteAsync(booking);
+                return RedirectToAction(nameof(CancelConfirmation));
+            }
+            catch(Exception)
+            {
+                NotFound();
+                return RedirectToAction(nameof(CancelError));
+            }
+        }
+
+        // GET: BookingController/CancelConfirmation
+        public ActionResult CancelConfirmation()
+        {
+            return View();
+        }
+
+        public ActionResult CancelError()
+        {
+            return View();
+        }
+
 
         public async Task<ActionResult> Confirmation(Booking booking)
         {
@@ -34,6 +64,7 @@ namespace FribergRentalCars.Controllers
             var car = await _carRepo.GetIdByAsync(booking.CarId);
             return View(booking);
         }
+
 
 
         // GET: BookingController/Create
@@ -93,7 +124,6 @@ namespace FribergRentalCars.Controllers
 
                     newBooking.TotalCost = (newBooking.EndDate.DayNumber - newBooking.StartDate.DayNumber) * newBooking.Car.PricePerDay;
                     await _bookRepo.AddAsync(newBooking);
-                    //customer.Bookings.Add(newBooking);
                     return View("Confirmation", newBooking);
                 }
             }
@@ -129,6 +159,10 @@ namespace FribergRentalCars.Controllers
 
             bool isOverlapping = existingBookings.Any(b =>
             (b.StartDate < booking.EndDate && b.EndDate > booking.StartDate));
+
+            // Send to list bookings view to differentiate between ongoing and past bookings
+            var isFinished = DateOnly.FromDateTime(DateTime.Now) > booking.EndDate;
+            ViewBag.isFinished = isFinished;
 
             return isOverlapping;
 
