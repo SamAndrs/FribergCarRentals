@@ -22,6 +22,7 @@ namespace FribergRentalCars.Controllers
             return View(cars);
         }
 
+        // GET: CarController/GetAvailable
         public async Task<IActionResult> GetAvailable()
         {
             var availableCars = await _carRepository.GetAllAvailable();

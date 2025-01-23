@@ -6,10 +6,11 @@
 
 <h1>Våra Bilar</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-    <a asp-action="GetAvailable">Available Cars</a>
-</p>
+<form asp-controller="Car" asp-action="GetAvailable">
+    <input type="submit" value="Visa bara tillgängliga" class="btn btn-primary" />
+</form>
+
+
 <table class="table">
     <thead>
         <tr>
@@ -23,7 +24,10 @@
                 <a>Årtal</a>
             </th>
             <th>
-                <a></a>
+                <a>Reg.Nr</a>
+            </th>
+            <th>
+                <a>Bild</a>
             </th>
             <th>
                 <a>Pris/ dag</a>
@@ -56,7 +60,9 @@
                     @Html.DisplayFor(modelItem => item.ModelYear)
                 </td>
                 <td>
-                    @* @Html.DisplayFor(modelItem => item.Image) *@
+                    @Html.DisplayFor(modelItem => item.RegNumber)
+                </td>
+                <td>
                     @if (!string.IsNullOrEmpty(item.Image))
                     {
                         <div>
@@ -103,9 +109,7 @@
                     }
             </td>
             <td>
-                @*<a asp-action="Edit" asp-route-id="@item.CarId">Edit</a> |*@
                 <a asp-action="Details" asp-route-id="@item.CarId">Beskrivning</a>
-                @*<a asp-action="Delete" asp-route-id="@item.CarId">Delete</a>*@
             </td>
         </tr>
 }

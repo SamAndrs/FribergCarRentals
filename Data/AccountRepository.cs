@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FribergRentalCars.Data
 {
-    public class CustomerRepository : ICustomerRepository
+    public class AccountRepository : IAccountRepository
     {
         private readonly ApplicationDBContext _appDbContext;
 
-        public CustomerRepository(ApplicationDBContext applicationDbContext)
+        public AccountRepository(ApplicationDBContext applicationDbContext)
         {
             this._appDbContext = applicationDbContext;
         }

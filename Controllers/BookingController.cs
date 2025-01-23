@@ -11,13 +11,13 @@ namespace FribergRentalCars.Controllers
     public class BookingController : Controller
     {
         private readonly ICarRepository _carRepo;
-        private readonly ICustomerRepository _custRepo;
+        private readonly IAccountRepository _custRepo;
         private readonly IBookingRepository _bookRepo;
 
-        public BookingController(ICarRepository carRepository, ICustomerRepository customerRepository, IBookingRepository bookingRepository)
+        public BookingController(ICarRepository carRepository, IAccountRepository accountRepository, IBookingRepository bookingRepository)
         {
             this._carRepo = carRepository;
-            this._custRepo = customerRepository;
+            this._custRepo = accountRepository;
             this._bookRepo = bookingRepository;
         }
 
@@ -64,8 +64,6 @@ namespace FribergRentalCars.Controllers
             var car = await _carRepo.GetIdByAsync(booking.CarId);
             return View(booking);
         }
-
-
 
         // GET: BookingController/Create
         public async Task<ActionResult> Create()

@@ -5,21 +5,21 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
-using System.Text.Json;
+using Newtonsoft.Json;
 
 namespace FribergRentalCars.Controllers
 {
     public class AccountController : Controller
     {
-        public readonly ICustomerRepository _customRepo;
+        public readonly IAccountRepository _customRepo;
 
         private readonly IUserRepository _userRepo;
         
         private readonly IBookingRepository _bookRepo;
 
-        public AccountController(ICustomerRepository customerRepository, IUserRepository userRepository, IBookingRepository bookingRepository)
+        public AccountController(IAccountRepository AccountRepository, IUserRepository userRepository, IBookingRepository bookingRepository)
         {
-            this._customRepo = customerRepository;
+            this._customRepo = AccountRepository;
 
             this._userRepo = userRepository;
 
@@ -118,12 +118,13 @@ namespace FribergRentalCars.Controllers
             }
         }
 
-        
+        // GET: AccountController/Login
         public ActionResult Login()
         {
             return View();
         }
 
+        // POST: AccountController/Login
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task <ActionResult> Login(LoginViewModel loginVM)
@@ -146,24 +147,16 @@ namespace FribergRentalCars.Controllers
 
                 if (loginVM.Password == user.Password)
                 {
-                    
-
+                    HttpContext.Session.SetInt32("customerID", user.CustomerId);
+                    HttpContext.Session.SetString("user", user.UserName);
                     if (user.IsAdmin)
                     {
-                        //Session["UserId"] == userName.UserId;
-                        // Session setup
-                        /*
-                        string json = JsonSerializer.Serialize(user);
-                        HttpContext.Session.SetString("sessionUser", json);
-                        */
-                        HttpContext.Session.SetString("user", user.UserName);
-                        HttpContext.Session.SetInt32("customerID", user.CustomerId);
-                        return RedirectToAction("Index", "Home"); // TO-DO Admin page  and controller redirect
+                        // Using a numeric value for the 'isAdmin' value, since Session doesn't allow bools
+                        HttpContext.Session.SetInt32("isAdmin", 1);
+                        return RedirectToAction("Index", "Admin"); // TO-DO Admin page  and controller redirect
                     }
                     else
                     {
-                        HttpContext.Session.SetString("user", user.UserName);
-                        HttpContext.Session.SetInt32("customerID", user.CustomerId);
                         return RedirectToAction("Details");
                     }
                 }
@@ -175,13 +168,15 @@ namespace FribergRentalCars.Controllers
             return View(loginVM);
         }
         
-        // POST: AccountController/ Logout
+        // GET: AccountController/ Logout
         public ActionResult Logout()
         {
-            return View();
+            HttpContext.Session.Clear();
+
+            return RedirectToAction("Index", "Home");
         }   
 
-        // POST: AccountController/Register
+        // GET: AccountController/Register
         public ActionResult Register()
         {
             return View();

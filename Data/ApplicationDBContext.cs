@@ -19,5 +19,6 @@ namespace FribergRentalCars.Data
         {
 
         }
+        public DbSet<FribergRentalCars.Models.Admin> Admin { get; set; } = default!;
     }
 }

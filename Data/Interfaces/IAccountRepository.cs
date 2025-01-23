@@ -2,7 +2,7 @@
 
 namespace FribergRentalCars.Data.Interfaces
 {
-    public interface ICustomerRepository
+    public interface IAccountRepository
     {
         Task<IEnumerable<Customer>> GetAllAsync();
 

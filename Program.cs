@@ -31,7 +31,7 @@ namespace FribergRentalCars
                                                 .GetSection("ConnectionStrings")["FribergCarsDB"])
                 );
             builder.Services.AddTransient<ICarRepository, CarRepository>();
-            builder.Services.AddTransient<ICustomerRepository, CustomerRepository>();
+            builder.Services.AddTransient<IAccountRepository, AccountRepository>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 

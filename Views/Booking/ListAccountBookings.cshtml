@@ -23,7 +23,7 @@
                     Modell (år)
                 </p>
             </th>
-            <th class="visually-hidden">
+            <th>
                 <p>Reg.Nr</p>
             </th>
             <th>
@@ -74,14 +74,11 @@
                     <td>
                         <span style="color: dimgrey">@item.Car.Model (@item.Car.ModelYear)</span>
                     </td>
-                    <td class="visually-hidden">
-                        @*<span style="color: dimgrey">@item.Car.RegNumber</span>*@
-                        @* <p>@item.Car.RegNumber</p>*@
+                    <td>
+                        <span style="color: dimgrey">@item.Car.RegNumber</span>
                     </td>
                     <td>
                         <span style="color: dimgrey">@item.Car.PricePerDay kr</span>
-                        @*<p>@item.Car.PricePerDay kr</p>*@
-
                     </td>
                     <td>
                         <span style="color: dimgrey">@item.StartDate</span>
@@ -102,8 +99,8 @@
                     <td>
                         <span>@item.Car.Model (@item.Car.ModelYear)</span>
                     </td>
-                    <td class="visually-hidden">
-                        @*<span>@item.Car.RegNumber</span>*@
+                    <td>
+                        <span>@item.Car.RegNumber</span>
                     </td>
                     <td>
                         <span>@item.Car.PricePerDay kr</span>

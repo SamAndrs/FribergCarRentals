@@ -7,11 +7,12 @@ namespace FribergRentalCars.Models
         [Key]
         public int CarId { get; set; }
 
+        [Required]
         public string Model { get; set; }
 
         public int ModelYear { get; set; }
 
-        //public string RegNumber { get; set; }
+        public string? RegNumber { get; set; }
 
         //public virtual List<string> CarImages { get; set; }
 

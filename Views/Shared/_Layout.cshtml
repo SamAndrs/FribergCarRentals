@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using Newtonsoft.Json
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -10,9 +12,11 @@
 </head>
 <body>
     <header>
-        @{
+        @{     
+            var admin = Context.Session.GetInt32("isAdmin");
             var user = Context.Session.GetString("user");
         }
+        
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">FribergRentalCars</a>
@@ -26,8 +30,14 @@
                         <li class="nav-item">
                             @if(!string.IsNullOrEmpty(user))
                             {
-                                <a class="nav-link text-dark">Inloggad som: @user</a>
-                                
+                                if(admin != 1)
+                                {
+                                    <a class="nav-link text-dark">Inloggad som: @user</a>
+                                }
+                                else
+                                {
+                                    <a class="nav-link text-dark">Inloggad som: @user (Administratör)</a>
+                                }
                             }
                             else
                             {
@@ -47,24 +57,30 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Car" asp-action="Index">Hyra bil</a>
                         </li>
 
-                        @*//  Customers *@
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Customer" asp-action="Index">Customers</a>
-                        </li>
-
+                        @*// Logga In*@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Logga in</a>
                         </li>
 
+                        @*// Nytt Konto*@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Register">Nytt konto</a>
                         </li>
-
+                        @*// Alla Bokningar (TO DO: debug)*@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Booking" asp-action="ListAll">Alla bokningar (debug)</a>
                         </li>
+                        @*// Logga Ut*@
+                        @if(!string.IsNullOrEmpty(user))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Logout">Logga ut</a>
+                            </li>
+                        }
+                        
+                        @*// My Account*@
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Logout">Logga ut (debug/ att göra)</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="MyAccount">Mitt Konto (att göra)</a>
                         </li>
                 </div>
             </div>

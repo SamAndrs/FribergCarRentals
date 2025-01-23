@@ -10,6 +10,9 @@
     <h4>Car</h4>
     <hr />
     <dl class="row">
+        <dd class="visually-hidden">
+            @Html.DisplayFor(model => model.CarId)
+        </dd>
         <dt class = "col-sm-2">
             <a>Modell</a>
         </dt>
@@ -22,13 +25,16 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.ModelYear)
         </dd>
+        <dt class="col-sm-2">
+            <a>Reg.Nr</a>
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.RegNumber)
+        </dd>
         <dt class = "col-sm-2">
             <a></a>
         </dt>
         <dd class = "col-sm-10">
-            @*
-            @Html.DisplayFor(model => model.Image)
-            *@
             <td>
                 @if (!string.IsNullOrEmpty(Model.Image))
                 {
@@ -58,13 +64,22 @@
             <a>Boka</a>
         </dt>
         <dd class = "col-sm-10">
-            @*@Html.DisplayFor(model => model.IsAvailable)*@
             @if(Model.IsAvailable)
             {
-                <form asp-controller="Booking" asp-action="Create" asp-route-data=@Model.CarId>
-                    <input type="submit" value="Boka" class="btn btn-primary" />
-                </form>
-                
+                if (!string.IsNullOrEmpty(Context.Session.GetString("user")))
+                {
+                    Context.Session.SetInt32("carID", Model.CarId);
+                    <form asp-controller="Booking" asp-action="Create">
+                        <input type="submit" value="Boka" class="btn btn-primary" />
+                    </form>
+                }
+                else
+                {
+                    <span>
+                        Du måste vara inloggad för att kunna boka en bil.
+                        <a asp-action="Register" asp-controller="Account">Nytt konto</a>
+                    </span>
+                }
             }
             else
             {
