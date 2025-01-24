@@ -8,7 +8,7 @@ namespace FribergRentalCars.Models
     {
         public int BookingId { get; set; }
 
-        public int CustomerId { get; set; }
+        public int AccountId { get; set; }
 
         public int CarId { get; set; }
 

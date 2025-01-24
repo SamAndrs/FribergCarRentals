@@ -3,10 +3,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FribergRentalCars.Models
 {
-    public class Customer
+    public class Account
     {
         [Key]
-        public int CustomerId { get; set; }
+        public int AccountId { get; set; }
 
         [Required(ErrorMessage = "Ett förnamn måste anges.")]
         public string FirstName { get; set; }

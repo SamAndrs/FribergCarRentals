@@ -1,4 +1,4 @@
-﻿@model FribergRentalCars.Models.Customer
+﻿@model FribergRentalCars.Models.Account
 
 @{
     ViewData["Title"] = "Edit";
@@ -12,7 +12,7 @@
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="CustomerId" />
+            <input type="hidden" asp-for="AccountId" />
             <div class="form-group">
                 <label asp-for="FirstName" class="control-label">Förnamn</label>
                 <input asp-for="FirstName" class="form-control" />
@@ -63,8 +63,8 @@
 
 <div>
     <a asp-action="ChangePassword">Ändra Lösenord</a>
-    <a asp-action="ChangeEmail" asp-route-id="@Model?.CustomerId">Ändra Email</a>
-    <a asp-action="Rentals" asp-route-id="@Model?.CustomerId">Se mina bokningar</a>
+    <a asp-action="ChangeEmail" asp-route-id="@Model?.AccountId">Ändra Email</a>
+    <a asp-action="Rentals" asp-route-id="@Model?.AccountId">Se mina bokningar</a>
     <a asp-controller="Home" asp-action="Index">Tillbaka</a>
 </div>
 

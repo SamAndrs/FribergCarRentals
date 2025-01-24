@@ -9,8 +9,7 @@ namespace FribergRentalCars.Models
         [Key]
         public int UserId { get; set; }
 
-        //[ForeignKey("Customer")]
-        public int CustomerId { get; set; }
+        public int AccountId { get; set; }
 
         public bool IsAdmin { get; set; } = false;
 

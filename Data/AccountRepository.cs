@@ -14,49 +14,49 @@ namespace FribergRentalCars.Data
         }
 
         
-        public async Task AddAsync(Customer customer)
+        public async Task AddAsync(Account account)
         {
-            await _appDbContext.Adresses.AddAsync(customer.Adress);
+            await _appDbContext.Adresses.AddAsync(account.Adress);
             await _appDbContext.SaveChangesAsync();
 
-            customer.AdressId = customer.Adress.AdressId;
+            account.AdressId = account.Adress.AdressId;
 
-            await _appDbContext.Customers.AddAsync(customer);
+            await _appDbContext.Accounts.AddAsync(account);
             await _appDbContext.SaveChangesAsync();
         }
        
-        public async Task DeleteAsync(Customer customer)
+        public async Task DeleteAsync(Account account)
         {
-            _appDbContext.Customers.Remove(customer);
+            _appDbContext.Accounts.Remove(account);
             await _appDbContext.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<Customer>> GetAllAsync()
+        public async Task<IEnumerable<Account>> GetAllAsync()
         {
-            return await _appDbContext.Customers.Include(c => c.Adress).ToListAsync();
+            return await _appDbContext.Accounts.Include(a => a.Adress).ToListAsync();
         }
 
-        public async Task<Customer> GetIdByAsync(int id)
+        public async Task<Account> GetIdByAsync(int id)
         {
-            return await _appDbContext.Customers.FindAsync(id);
+            return await _appDbContext.Accounts.FindAsync(id);
         }
 
-        public async Task<Customer> GetWithAdressAsync(int id)
+        public async Task<Account> GetWithAdressAsync(int id)
         {
-            return await _appDbContext.Customers
-                .Include(c => c.Adress)
-                .FirstOrDefaultAsync(c=>c.CustomerId == id);
+            return await _appDbContext.Accounts
+                .Include(a => a.Adress)
+                .FirstOrDefaultAsync(a=>a.AccountId == id);
         }
 
-        public async Task UpdateAsync(Customer customer)
+        public async Task UpdateAsync(Account account)
         {
-            _appDbContext.Update(customer);
+            _appDbContext.Update(account);
             await _appDbContext.SaveChangesAsync();
         }
 
         public async Task<bool> EmailAvailability(string email)
         {
-            var isTaken = await _appDbContext.Customers.AnyAsync(c => c.Email == email);
+            var isTaken = await _appDbContext.Accounts.AnyAsync(a => a.Email == email);
             return isTaken;
         }
             

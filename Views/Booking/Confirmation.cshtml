@@ -2,9 +2,10 @@
 
 @{
     ViewData["Title"] = "Confirmation";
+    var user = @Context.Session.GetString("user");
 }
 
-<h1>Boknings bekräftelse för @Context.Session.GetString("user")</h1>
+<h1>Boknings bekräftelse för @user</h1>
 
 <table class="table">
     <thead>

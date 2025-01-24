@@ -11,13 +11,13 @@ namespace FribergRentalCars.Controllers
     public class BookingController : Controller
     {
         private readonly ICarRepository _carRepo;
-        private readonly IAccountRepository _custRepo;
+        private readonly IAccountRepository _accRepo;
         private readonly IBookingRepository _bookRepo;
 
         public BookingController(ICarRepository carRepository, IAccountRepository accountRepository, IBookingRepository bookingRepository)
         {
             this._carRepo = carRepository;
-            this._custRepo = accountRepository;
+            this._accRepo = accountRepository;
             this._bookRepo = bookingRepository;
         }
 
@@ -66,10 +66,9 @@ namespace FribergRentalCars.Controllers
         }
 
         // GET: BookingController/Create
-        public async Task<ActionResult> Create()
+        public async Task<ActionResult> Create(int carId)
         {
-            var carID = HttpContext.Session.GetInt32("carID");
-            var car = await _carRepo.GetIdByAsync((int)carID!);
+            var car = await _carRepo.GetIdByAsync(carId);
             BookingViewModel bookVM = new BookingViewModel
             {
                 CarId = car.CarId,
@@ -84,10 +83,10 @@ namespace FribergRentalCars.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> ConfirmBooking(BookingViewModel bookVM)
-        {            
+        {
             Booking newBooking = new Booking
             {
-                CustomerId = (int)HttpContext.Session.GetInt32("customerID")!,
+                AccountId = (int)HttpContext.Session.GetInt32("accountID")!,
                 CarId = bookVM.CarId,
                 TotalCost = bookVM.TotalCost,
                 StartDate = bookVM.StartDate,
@@ -101,8 +100,7 @@ namespace FribergRentalCars.Controllers
                 {
                     ModelState.AddModelError("", "Bilen finns inte!");
                 }
-                //else if(CustomerId == null)
-                else if(newBooking.CustomerId == null)
+                else if(newBooking.AccountId == null)
                 {
                     ModelState.AddModelError("", "Användaren finns inte!");
                 }
@@ -130,7 +128,7 @@ namespace FribergRentalCars.Controllers
 
         public async Task<ActionResult> ListAccountBookings(int id)
         {
-            var bookings = await _bookRepo.GetBookingsByCustomerIdAsync(id);
+            var bookings = await _bookRepo.GetBookingsByAccountIdAsync(id);
             if(id == null)
             {
                 return NotFound();

@@ -6,7 +6,7 @@ namespace FribergRentalCars.ViewModels
 {
     public class RegisterViewModel
     {
-        public Customer Customer { get; set; }
+        public Account Account { get; set; }
 
         public User User { get; set; }
 

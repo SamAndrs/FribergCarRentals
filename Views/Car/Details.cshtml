@@ -68,8 +68,7 @@
             {
                 if (!string.IsNullOrEmpty(Context.Session.GetString("user")))
                 {
-                    Context.Session.SetInt32("carID", Model.CarId);
-                    <form asp-controller="Booking" asp-action="Create">
+                    <form asp-controller="Booking" asp-action="Create" asp-route-id="@Model.CarId">
                         <input type="submit" value="Boka" class="btn btn-primary" />
                     </form>
                 }
@@ -77,6 +76,7 @@
                 {
                     <span>
                         Du måste vara inloggad för att kunna boka en bil.
+                        <a asp-action="Login" asp-controller="Account">Nytt konto</a> |
                         <a asp-action="Register" asp-controller="Account">Nytt konto</a>
                     </span>
                 }

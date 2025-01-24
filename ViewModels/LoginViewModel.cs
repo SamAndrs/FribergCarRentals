@@ -6,10 +6,6 @@ namespace FribergRentalCars.ViewModels
 {
     public class LoginViewModel
     {
-        //public Customer Customer { get; set; }
-
-        //public User User { get; set; }
-        
         [Required]
         public string EmailOrUserName { get; set; } = "";
 

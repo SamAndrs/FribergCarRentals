@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace FribergRentalCars.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class updatedb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -34,6 +34,7 @@ namespace FribergRentalCars.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Model = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ModelYear = table.Column<int>(type: "int", nullable: false),
+                    RegNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PricePerDay = table.Column<int>(type: "int", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -50,7 +51,7 @@ namespace FribergRentalCars.Migrations
                 {
                     UserId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CustomerId = table.Column<int>(type: "int", nullable: false),
+                    AccountId = table.Column<int>(type: "int", nullable: false),
                     IsAdmin = table.Column<bool>(type: "bit", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Password = table.Column<string>(type: "nvarchar(16)", maxLength: 16, nullable: false),
@@ -62,10 +63,10 @@ namespace FribergRentalCars.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Customers",
+                name: "Accounts",
                 columns: table => new
                 {
-                    CustomerId = table.Column<int>(type: "int", nullable: false)
+                    AccountId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -75,12 +76,31 @@ namespace FribergRentalCars.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Customers", x => x.CustomerId);
+                    table.PrimaryKey("PK_Accounts", x => x.AccountId);
                     table.ForeignKey(
-                        name: "FK_Customers_Adresses_AdressId",
+                        name: "FK_Accounts_Adresses_AdressId",
                         column: x => x.AdressId,
                         principalTable: "Adresses",
                         principalColumn: "AdressId");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Admin",
+                columns: table => new
+                {
+                    AdminId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Admin", x => x.AdminId);
+                    table.ForeignKey(
+                        name: "FK_Admin_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -89,7 +109,7 @@ namespace FribergRentalCars.Migrations
                 {
                     BookingId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CustomerId = table.Column<int>(type: "int", nullable: false),
+                    AccountId = table.Column<int>(type: "int", nullable: false),
                     CarId = table.Column<int>(type: "int", nullable: false),
                     StartDate = table.Column<DateOnly>(type: "date", nullable: false),
                     EndDate = table.Column<DateOnly>(type: "date", nullable: false),
@@ -99,38 +119,46 @@ namespace FribergRentalCars.Migrations
                 {
                     table.PrimaryKey("PK_Bookings", x => x.BookingId);
                     table.ForeignKey(
+                        name: "FK_Bookings_Accounts_AccountId",
+                        column: x => x.AccountId,
+                        principalTable: "Accounts",
+                        principalColumn: "AccountId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_Bookings_Cars_CarId",
                         column: x => x.CarId,
                         principalTable: "Cars",
                         principalColumn: "CarId",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Bookings_Customers_CustomerId",
-                        column: x => x.CustomerId,
-                        principalTable: "Customers",
-                        principalColumn: "CustomerId",
-                        onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Accounts_AdressId",
+                table: "Accounts",
+                column: "AdressId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Admin_UserId",
+                table: "Admin",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Bookings_AccountId",
+                table: "Bookings",
+                column: "AccountId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Bookings_CarId",
                 table: "Bookings",
                 column: "CarId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Bookings_CustomerId",
-                table: "Bookings",
-                column: "CustomerId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Customers_AdressId",
-                table: "Customers",
-                column: "AdressId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Admin");
+
             migrationBuilder.DropTable(
                 name: "Bookings");
 
@@ -138,10 +166,10 @@ namespace FribergRentalCars.Migrations
                 name: "Users");
 
             migrationBuilder.DropTable(
-                name: "Cars");
+                name: "Accounts");
 
             migrationBuilder.DropTable(
-                name: "Customers");
+                name: "Cars");
 
             migrationBuilder.DropTable(
                 name: "Adresses");

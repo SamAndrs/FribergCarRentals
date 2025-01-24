@@ -54,7 +54,7 @@
 
                          @*//  Car *@
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Car" asp-action="Index">Hyra bil</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Car" asp-action="ListAll">Hyra bil</a>
                         </li>
 
                         @*// Logga In*@
@@ -76,12 +76,12 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Logout">Logga ut</a>
                             </li>
-                        }
-                        
-                        @*// My Account*@
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="MyAccount">Mitt Konto (att göra)</a>
-                        </li>
+
+                            @*// My Account*@
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Details">Mitt Konto</a>
+                            </li>
+                        }  
                 </div>
             </div>
         </nav>

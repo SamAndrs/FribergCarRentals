@@ -4,17 +4,17 @@ namespace FribergRentalCars.Data.Interfaces
 {
     public interface IAccountRepository
     {
-        Task<IEnumerable<Customer>> GetAllAsync();
+        Task<IEnumerable<Account>> GetAllAsync();
 
-        Task<Customer> GetIdByAsync(int id);
+        Task<Account> GetIdByAsync(int id);
 
-        Task<Customer> GetWithAdressAsync(int id);
+        Task<Account> GetWithAdressAsync(int id);
 
-        Task AddAsync(Customer customer);
+        Task AddAsync(Account account);
 
-        Task UpdateAsync(Customer customer);
+        Task UpdateAsync(Account account);
 
-        Task DeleteAsync(Customer customer);
+        Task DeleteAsync(Account account);
 
         Task<bool> EmailAvailability(string email);
     }

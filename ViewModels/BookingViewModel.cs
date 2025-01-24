@@ -6,8 +6,6 @@ namespace FribergRentalCars.ViewModels
 {
     public class BookingViewModel
     {
-        //public int CustomerId { get; set; }
-
         public int CarId { get; set; }
 
         public int TotalCost { get; set; }

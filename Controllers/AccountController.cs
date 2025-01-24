@@ -11,15 +11,15 @@ namespace FribergRentalCars.Controllers
 {
     public class AccountController : Controller
     {
-        public readonly IAccountRepository _customRepo;
+        public readonly IAccountRepository _accountRepo;
 
         private readonly IUserRepository _userRepo;
         
         private readonly IBookingRepository _bookRepo;
 
-        public AccountController(IAccountRepository AccountRepository, IUserRepository userRepository, IBookingRepository bookingRepository)
+        public AccountController(IAccountRepository accountRepository, IUserRepository userRepository, IBookingRepository bookingRepository)
         {
-            this._customRepo = AccountRepository;
+            this._accountRepo = accountRepository;
 
             this._userRepo = userRepository;
 
@@ -40,12 +40,12 @@ namespace FribergRentalCars.Controllers
         // GET: AccountController/Details/5
         public async Task <IActionResult> Details()
         {
-            var customer = await _customRepo.GetWithAdressAsync((int)HttpContext.Session.GetInt32("customerID")!);
-            if (customer == null)
+            var account = await _accountRepo.GetWithAdressAsync((int)HttpContext.Session.GetInt32("accountID")!);
+            if (account == null)
             {
                 NotFound();
             }
-            return View(customer);
+            return View(account);
         }
 
 
@@ -56,21 +56,21 @@ namespace FribergRentalCars.Controllers
             {
                 return NotFound();
             }
-            var customer = await _customRepo.GetWithAdressAsync(id);
+            var account = await _accountRepo.GetWithAdressAsync(id);
 
-            if (customer == null)
+            if (account == null)
             {
                 return NotFound();
             }
-            return View(customer);
+            return View(account);
         }
 
-        // POST: CustomerController/Edit/5
+        // POST: AccountController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Customer customer)
+        public async Task<IActionResult> Edit(int id, Account account)
         {
-            if (id != customer.CustomerId)
+            if (id != account.AccountId)
             {
                 NotFound();
             }
@@ -79,11 +79,11 @@ namespace FribergRentalCars.Controllers
             {
                 try
                 {
-                    await _customRepo.UpdateAsync(customer);
+                    await _accountRepo.UpdateAsync(account);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (customer.CustomerId == null)
+                    if (account.AccountId == null)
                     {
                         return NotFound();
                     }
@@ -94,28 +94,7 @@ namespace FribergRentalCars.Controllers
                 }
                 return RedirectToAction(nameof(Details));
             }
-            return View(customer);
-        }
-
-        // GET: AccountController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: AccountController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            return View(account);
         }
 
         // GET: AccountController/Login
@@ -147,8 +126,10 @@ namespace FribergRentalCars.Controllers
 
                 if (loginVM.Password == user.Password)
                 {
-                    HttpContext.Session.SetInt32("customerID", user.CustomerId);
+                    HttpContext.Session.SetInt32("accountID", user.AccountId);
                     HttpContext.Session.SetString("user", user.UserName);
+                    return RedirectToAction("Details");
+                    /*
                     if (user.IsAdmin)
                     {
                         // Using a numeric value for the 'isAdmin' value, since Session doesn't allow bools
@@ -158,7 +139,7 @@ namespace FribergRentalCars.Controllers
                     else
                     {
                         return RedirectToAction("Details");
-                    }
+                    }*/
                 }
                 else
                 {
@@ -191,7 +172,7 @@ namespace FribergRentalCars.Controllers
             {
                 try
                 {
-                    if(await _customRepo.EmailAvailability(registerVM.Customer.Email))
+                    if(await _accountRepo.EmailAvailability(registerVM.Account.Email))
                     {
                         ModelState.AddModelError("", "Den här emailadressen är redan registrerad.");
                         return View(registerVM);
@@ -205,20 +186,20 @@ namespace FribergRentalCars.Controllers
                         }
                         else
                         {
-                            await _customRepo.AddAsync(registerVM.Customer);
+                            await _accountRepo.AddAsync(registerVM.Account);
 
-                            registerVM.User.CustomerId = registerVM.Customer.CustomerId;
+                            registerVM.User.AccountId = registerVM.Account.AccountId;
                             await _userRepo.AddAsync(registerVM.User);
 
                             HttpContext.Session.SetString("user", registerVM.User.UserName);
-                            HttpContext.Session.SetInt32("customerID", registerVM.Customer.CustomerId);
+                            HttpContext.Session.SetInt32("accountID", registerVM.Account.AccountId);
                             return RedirectToAction(nameof(Details));
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    ModelState.AddModelError("", $"Error creating customer: {ex.Message}");
+                    ModelState.AddModelError("", $"Error creating account: {ex.Message}");
                 }
             }
             return View(registerVM);

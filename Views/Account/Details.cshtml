@@ -1,4 +1,4 @@
-﻿@model FribergRentalCars.Models.Customer
+﻿@model FribergRentalCars.Models.Account
 
 @{
     ViewData["Title"] = "Details";
@@ -50,7 +50,7 @@
         
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.CustomerId">Ändra uppgifter</a>
-    <a asp-action="ListAccountBookings" asp-controller="Booking" asp-route-id="@Model?.CustomerId">Mina bokningar</a>
+    <a asp-action="Edit" asp-route-id="@Model?.AccountId">Ändra uppgifter</a>
+    <a asp-action="ListAccountBookings" asp-controller="Booking" asp-route-id="@Model?.AccountId">Mina bokningar</a>
     <a asp-controller="Home" asp-action="Index">Tillbaka</a>
 </div>

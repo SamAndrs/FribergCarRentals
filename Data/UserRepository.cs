@@ -40,8 +40,8 @@ namespace FribergRentalCars.Data
 
         public async Task<User> GetUserByEmailAsync(string email)
         {
-            var customer = await _appDbContext.Customers.FirstOrDefaultAsync(c => c.Email == email);
-            var user = await _appDbContext.Users.FirstOrDefaultAsync(u => u.CustomerId == customer.CustomerId);
+            var account = await _appDbContext.Accounts.FirstOrDefaultAsync(c => c.Email == email);
+            var user = await _appDbContext.Users.FirstOrDefaultAsync(u => u.AccountId == account.AccountId);
             return user;
         }
 
