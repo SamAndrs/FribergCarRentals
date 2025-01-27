@@ -1,8 +1,8 @@
-﻿namespace FribergRentalCars.Data
+﻿namespace FribergRentalCars.Data.Interfaces
 {
     public interface IRepository<T> where T : class
     {
-        Task<List<T>> GetAllAsync();
+        Task<IEnumerable<T>> GetAllAsync();
 
         Task<T> GetIdByAsync(int id);
 

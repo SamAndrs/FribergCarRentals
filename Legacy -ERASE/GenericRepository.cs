@@ -1,4 +1,5 @@
 ﻿
+using FribergRentalCars.Data.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace FribergRentalCars.Data
@@ -43,6 +44,11 @@ namespace FribergRentalCars.Data
         {
             _appDbContext.Update(entity);
             await _appDbContext.SaveChangesAsync();
+        }
+
+        Task<IEnumerable<T>> IRepository<T>.GetAllAsync()
+        {
+            throw new NotImplementedException();
         }
     }
 }

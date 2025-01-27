@@ -4,31 +4,53 @@ using FribergRentalCars.ViewModels;
 using FribergRentalCars.ViewModels.AdminViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 
 namespace FribergRentalCars.Controllers
 {
     public class AdminController : Controller
     {
         private readonly IAccountRepository _accRepo;
-        private readonly IUserRepository _userRepo;
-        private readonly ICarRepository _carRepo;
+        private readonly IAdressRepository _adrRepo;
         private readonly IBookingRepository _bookRepo;
-
-        public AdminController(IAccountRepository accRepo, IUserRepository userRepo, ICarRepository carRepo, IBookingRepository bookRepo)
+        private readonly ICarRepository _carRepo;
+        private readonly IUserRepository _userRepo;
+        
+        public AdminController(IAccountRepository accRepo, IUserRepository userRepo,
+            ICarRepository carRepo, IBookingRepository bookRepo, IAdressRepository adressRepo)
         {
             this._accRepo = accRepo;
-            this._userRepo = userRepo;
-            this._carRepo = carRepo;
+            this._adrRepo = adressRepo;
             this._bookRepo = bookRepo;
+            this._carRepo = carRepo;
+            this._userRepo = userRepo; 
         }
 
         #region // ADMIN
 
-
         // GET: AdminController/Details/5
         [AdminAuthorizationFilter]
-        public ActionResult Details(int id) // TO DO: VIew
+        public async Task<ActionResult> Details()
         {
+            try
+            {
+                var getAccount = HttpContext.Session.GetInt32("accountID");
+                if(getAccount != null)
+                {
+                    var account = await _accRepo.GetWithAdressAsync((int)getAccount!);
+                    return View(account);
+                }
+                else
+                {
+                    NotFound($"No Account with ID: {getAccount}");
+                }
+                
+            }
+            catch
+            {
+                NotFound($"Session ID not found");
+            }
             return View();
         }
 
@@ -131,22 +153,76 @@ namespace FribergRentalCars.Controllers
             }
         }
 
+
+        // GET: AdminController/ Editccount/ 5
+        [AdminAuthorizationFilter]
+        public async Task<ActionResult> EditUser(int userId)
+        {
+            if (userId == null)
+            {
+                return NotFound();
+            }
+            var user = await _userRepo.GetByIdAsync(userId);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+            
+            return View(user);
+        }
+
+        // POST: AdminController/
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> EditUser(int id, User user)
+        {
+            if(id != user.UserId)
+            {
+                NotFound();
+            }
+            
+            if (ModelState.IsValid)
+            {
+                ViewBag.UserName = user.UserName;
+                try
+                {
+                    await _userRepo.UpdateAsync(user);
+                    
+                }
+                catch(DbUpdateConcurrencyException)
+                {
+                    if(user.UserId == null)
+                    {
+                        return NotFound(user.UserId);
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction("ListAllAccounts");
+            }
+
+            return View(user);
+        }
+
+
         // GET: AdminController/ListAllAccounts
         [AdminAuthorizationFilter]
         public async Task<ActionResult> ListAllAccounts()
         {
             var allUsers = await _userRepo.GetAllAsync();
-            List<AllAccountsViewModel> accVMList = new List<AllAccountsViewModel>();
+            List<ListAllAccountsViewModel> accVMList = new List<ListAllAccountsViewModel>();
 
             foreach(var user in allUsers)
             {
                 var account = await _accRepo.GetIdByAsync(user.AccountId);
-                var newAccVM = new AllAccountsViewModel
+                var newAccVM = new ListAllAccountsViewModel
                 {
-                    UserId= user.UserId,
-                    AccountId= account.AccountId,
                     User = user,
                     Account = account,
+                    Adress = account.Adress
                 };
                 accVMList.Add(newAccVM);
             }

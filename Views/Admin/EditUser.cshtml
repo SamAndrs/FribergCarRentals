@@ -1,0 +1,59 @@
+﻿@model FribergRentalCars.Models.User
+
+@{
+    ViewData["Title"] = "EditUser";
+}
+
+<h3>Ändra användar-uppgiter</h3>
+
+<h4>För användare: @ViewBag.UserName</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="EditUser">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="UserId" class="control-label"><strong>Användar-Id:</strong></label>
+                <p>@Model.UserId</p>
+            </div>
+            <div class="form-group">
+                <label asp-for="AccountId" class="control-label"><strong>Konto-Id:</strong></label>
+                <p>@Model.AccountId</p>
+            </div>
+                <div class="form-group">
+                <label asp-for="IsAdmin" class="control-label"><strong>Administratör?</strong></label>
+                    @if(Model.IsAdmin)
+                    {
+                        <p>Ja</p>
+                    }
+                    else
+                    {
+                        <p>Nej</p>
+                    }
+            </div>
+            <div class="form-group">
+                <label asp-for="UserName" class="control-label"><strong>Användarnamn:</strong></label>
+                <input asp-for="UserName" class="form-control" />
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Password" class="control-label"><strong>Lösenord</strong></label>
+                <input asp-for="Password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ConfirmPassword" class="control-label"><strong>Bekräfta lösenord:</strong></label>
+                <input asp-for="ConfirmPassword" class="form-control" />
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="ListAllAccounts">Tillbaka</a>
+</div>
+

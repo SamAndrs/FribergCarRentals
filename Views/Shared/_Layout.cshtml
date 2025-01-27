@@ -66,10 +66,7 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Register">Nytt konto</a>
                         </li>
-                        @*// Alla Bokningar (TO DO: debug)*@
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Booking" asp-action="ListAll">Alla bokningar (debug)</a>
-                        </li>
+
                         @*// Logga Ut*@
                         @if(!string.IsNullOrEmpty(user))
                         {
@@ -78,10 +75,25 @@
                             </li>
 
                             @*// My Account*@
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Details">Mitt Konto</a>
-                            </li>
-                        }  
+                            if(admin != 1)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Details">Mitt Konto</a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Details">Mitt Konto</a>
+                                </li>
+                            }
+                           
+                            
+                        }
+                        @*// Admin TO DO DEBUG*@
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Index">Admin (debug)</a>
+                        </li>
                 </div>
             </div>
         </nav>

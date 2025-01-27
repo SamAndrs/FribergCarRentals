@@ -68,6 +68,7 @@
             {
                 if (!string.IsNullOrEmpty(Context.Session.GetString("user")))
                 {
+                    Context.Session.SetInt32("carID", Model.CarId);
                     <form asp-controller="Booking" asp-action="Create" asp-route-id="@Model.CarId">
                         <input type="submit" value="Boka" class="btn btn-primary" />
                     </form>

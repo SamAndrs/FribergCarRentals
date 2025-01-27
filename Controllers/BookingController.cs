@@ -68,7 +68,8 @@ namespace FribergRentalCars.Controllers
         // GET: BookingController/Create
         public async Task<ActionResult> Create(int carId)
         {
-            var car = await _carRepo.GetIdByAsync(carId);
+            var cId = HttpContext.Session.GetInt32("carID");
+            var car = await _carRepo.GetIdByAsync((int)cId!);
             BookingViewModel bookVM = new BookingViewModel
             {
                 CarId = car.CarId,

@@ -2,12 +2,15 @@
 
 @{
     ViewData["Title"] = "Details";
+    var user = Context.Session.GetString("user");
 }
 
-<h1>Details</h1>
-
 <div>
-    <h4>Account</h4>
+    <span>
+        <h4>Konto: @user</h4>
+        <h5>Inloggad som Administratör</h5>
+    </span>
+    
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -25,8 +28,13 @@
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Adress)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="visually-hidden">
             @Html.DisplayFor(model => model.Adress.AdressId)
+        </dd >
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Adress.Street),
+            @Html.DisplayFor(model => model.Adress.PostalCode),
+            @Html.DisplayFor(model => model.Adress.City)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.PhoneNumber)
@@ -43,6 +51,7 @@
     </dl>
 </div>
 <div>
+    <a asp-action="ListAllAccounts">Se alla konton</a> |
     <a asp-action="Edit" asp-route-id="@Model?.AccountId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" asp-controller="Home">Till Hemsidan</a>
 </div>

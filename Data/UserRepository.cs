@@ -31,7 +31,7 @@ namespace FribergRentalCars.Data
             return await _appDbContext.Users.ToListAsync();
         }
 
-        public async Task<User> GetIdByAsync(int id)
+        public async Task<User> GetByIdAsync(int id)
         {
             return await _appDbContext.Users.FindAsync(id);
         }
@@ -56,6 +56,20 @@ namespace FribergRentalCars.Data
             return isTaken;
         }
 
+        public async Task<string> FindUserNameByIdAsync(int id)
+        {
+            var user = await _appDbContext.Users.Where(u => u.UserId == id).
+                FirstOrDefaultAsync();
+
+            if(user != null)
+            {
+                return user.UserName;
+            }
+            else
+            {
+                return null;
+            }
+        }
 
         public async Task UpdateAsync(User user)
         {

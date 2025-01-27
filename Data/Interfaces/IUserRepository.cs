@@ -2,11 +2,11 @@
 
 namespace FribergRentalCars.Data.Interfaces
 {
-    public interface IUserRepository
+    public interface IUserRepository 
     {
         Task<IEnumerable<User>> GetAllAsync();
 
-        Task<User> GetIdByAsync(int id);
+        Task<User> GetByIdAsync(int id);
 
         Task AddAsync(User user);
 

@@ -1,6 +1,6 @@
 ﻿@*model IEnumerable<FribergRentalCars.Models.Account>*@
 
-@model List<FribergRentalCars.ViewModels.AdminViewModels.AllAccountsViewModel>
+@model List<FribergRentalCars.ViewModels.AdminViewModels.ListAllAccountsViewModel>
 
 @{
     ViewData["Title"] = "ListAllAccounts";
@@ -30,6 +30,11 @@
             <th>
                 <span>Efternamn</span>
             </th>
+
+            <th class="visually-hidden">Adress Id </th>
+
+            <th class="visually-hidden">Adress</th>
+
             <th>
                 <span>Tel.nr</span>
             </th>
@@ -40,36 +45,38 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
+        @foreach (var item in Model) {
+            <tr>
                 <td>
                     @Html.DisplayFor(modelItem => item.User.UserId)
                 </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Account.AccountId)
-            </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Account.AccountId)
+                </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.User.UserName)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Account.FirstName)
                 </td>
-            <td>
+                <td>
                     @Html.DisplayFor(modelItem => item.Account.LastName)
-            </td>
-            <td class="visually-hidden">
+                </td>
+                <td class="visually-hidden">
                     @Html.DisplayFor(modelItem => item.Account.Adress.AdressId)
-            </td>
-            <td>
+                </td>
+                <td class="visually-hidden">
+                    @Html.DisplayFor(modelItem => item.Account.Adress)
+                </td>
+                <td>
                     @Html.DisplayFor(modelItem => item.Account.PhoneNumber)
-            </td>
-            <td>
+                </td>
+                <td>
                     @Html.DisplayFor(modelItem => item.Account.Email)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.AccountId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.AccountId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.AccountId">Delete</a>
+                </td>
+                <td>
+                    <a href="@Url.Action("EditUser", new { userId = item.User.UserId })">Redigera</a>
+                <a asp-action="Delete" asp-route-id="@item.Account.AccountId">Ta Bort</a>
             </td>
         </tr>
 }
