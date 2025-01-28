@@ -9,7 +9,7 @@
 <h1>Alla Konton</h1>
 
 <p>
-    <a asp-action="CreateAccount">Registrera Nytt Konto</a> |  @* TO DO!*@
+    <a asp-action="CreateAccount">Registrera Nytt Konto</a> |
     <a asp-action="Details">Tillbaka</a>
 </p>
 <table class="table">
@@ -76,7 +76,7 @@
                 </td>
                 <td>
                     <a href="@Url.Action("EditAccount", new { userId = item.User.UserId })">Redigera</a>
-                <a asp-action="Delete" asp-route-id="@item.Account.AccountId">Ta Bort</a>
+                <a asp-action="Delete" asp-route-id="@item.Account.AccountId">Ta Bort</a> @*TO DO *@
             </td>
         </tr>
 }

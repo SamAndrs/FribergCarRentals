@@ -1,16 +1,16 @@
 ﻿@model FribergRentalCars.ViewModels.RegisterViewModel
 
 @{
-    ViewData["Title"] = "Register";
+    ViewData["Title"] = "CreateAccount";
 }
 
 <h1>Skapa nytt konto</h1>
 <div>
-    <a asp-action="Index" asp-controller="Home">Tillbaka</a>
+    <a asp-action="ListAllAccounts">Tillbaka till kontolista</a>
 </div>
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Register">
+        <form asp-action="CreateAccount">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <table>
                 <tr>

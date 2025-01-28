@@ -9,8 +9,8 @@
 <h4>Konto: @Model.UserName</h4>
 <hr />
 <div>
-    <a asp-action="ListAllAccounts">Tillbaka till kontolista</a>
-    <a asp-action="EditBookings">Konto bokningar</a>
+    <a asp-action="ListAllAccounts">Tillbaka till kontolista | </a>
+    <a href="@Url.Action("EditAccountBookings", new { accountId = Model.AccountId })">Konto bokningar</a>
 </div>
 <div class="row">
     <div class="col-md-4">
@@ -116,7 +116,7 @@
             </table>
            
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Spara ändringar" class="btn btn-primary" />
             </div>
         </form>
     </div>

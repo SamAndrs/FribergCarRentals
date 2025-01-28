@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 
 namespace FribergRentalCars.Controllers
 {
@@ -118,17 +119,42 @@ namespace FribergRentalCars.Controllers
 
         // GET: AdminController/CreateAccount
         [AdminAuthorizationFilter]
-        public ActionResult CreateAccount()  // TO DO
+        public ActionResult CreateAccount()
         {
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult CreateAccount(RegisterViewModel regVM)  // TO DO
+        [AdminAuthorizationFilter]
+        public async Task<ActionResult> CreateAccount(RegisterViewModel regVM)
         {
-            return View();
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    if (await _userRepo.UserNameAvailaibility(regVM.User.UserName))
+                    {
+                        ModelState.AddModelError("", "Det här användarnamnet är redan registrerat.");
+                        return View(regVM);
+                    }
+                    else
+                    {
+                        await _accRepo.AddAsync(regVM.Account);
+
+                        regVM.User.AccountId = regVM.Account.AccountId;
+                        await _userRepo.AddAsync(regVM.User);
+                        return RedirectToAction(nameof(ListAllAccounts));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", $"Det gick inte att skapa användare eller konto: {ex.Message}");
+                }
+            }
+            return View(regVM);
         }
+        
 
 
         // GET: AdminController/DeleteAccount/5  // TO DO
@@ -206,6 +232,7 @@ namespace FribergRentalCars.Controllers
         // POST: AdminController/EditAccount/Model
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [AdminAuthorizationFilter]
         public async Task<ActionResult> EditAccount(int userId, EditAccountViewModel model)
         {
             if(model == null)
@@ -225,10 +252,12 @@ namespace FribergRentalCars.Controllers
                     if(await _userRepo.UserNameAvailaibility(model.UserName))
                     {
                         ModelState.AddModelError("", "Användarnamnet är redan taget!");
+                        return View(model);
                     }
                     else
                     {
                         user.UserName = model.UserName;
+                        oldUserName = model.UserName;
                     }
                 }
                 else
@@ -261,121 +290,8 @@ namespace FribergRentalCars.Controllers
                     ModelState.AddModelError("", "Det blev något fel");
                 } 
             }
-
-            //return RedirectToAction(nameof(ListAllAccounts));
-
             return View(model);
         }
-
-        #region OLD_EDIT 
-        // GET: AdminController/ EditUser/5
-        /*
-        [AdminAuthorizationFilter]
-        public async Task<ActionResult> EditUser(int userId)
-        {
-            if (userId == null)
-            {
-                return NotFound();
-            }
-            var user = await _userRepo.GetByIdAsync(userId);
-
-            if (user == null)
-            {
-                return NotFound();
-            }
-            
-            return View(user);
-        }
-
-        
-        // POST: AdminController/EditUser/5, user
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> EditUser(int id, User user)
-        {
-            if(id != user.UserId)
-            {
-                NotFound();
-            }
-            
-            if (ModelState.IsValid)
-            {
-                ViewBag.UserName = user.UserName;
-                try
-                {
-                    await _userRepo.UpdateAsync(user);
-                    
-                }
-                catch(DbUpdateConcurrencyException)
-                {
-                    if(user.UserId == null)
-                    {
-                        return NotFound(user.UserId);
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction("ListAllAccounts");
-            }
-
-            return View(user);
-        }
-
-
-        // GET: AdminController/ EditAccount/5
-        [AdminAuthorizationFilter]
-        public async Task<ActionResult> EditAccount(int accountId)
-        {
-            if (accountId == null)
-            {
-                return NotFound();
-            }
-            //var account = await _accRepo.GetIdByAsync(accountId);
-            var account = await _accRepo.GetWithAdressAsync(accountId);
-
-            if (account == null)
-            {
-                return NotFound();
-            }
-
-            return View(account);
-        }
-
-        // POST: AdminController/EditAccount/5, account
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditAccount(int id, Account account)
-        {
-            if (id != account.AccountId)
-            {
-                NotFound();
-            }
-            //var adress = await _adrRepo.GetIdByAsync(account.AdressId);
-            //account.Adress.Street = adress.Street;
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    await _accRepo.UpdateAsync(account);
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (account.AccountId == null)
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Details));
-            }
-            return View(account);
-        }*/
-        #endregion
 
         // GET: AdminController/ListAllAccounts
         [AdminAuthorizationFilter]
