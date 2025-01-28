@@ -49,6 +49,21 @@
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
+
+            <div class="form-group">
+             @*<a asp-action="EditAccount" asp-route-id="@Model?.AccountId">
+                 
+                <input type="button" value="Ändra kontouppgifter" class="btn btn-primary" />
+                </a>*@
+                <a asp-action="EditAccount" asp-route-id="@Model?.AccountId">Ändra Konto</a>
+                @*a href="@Url.Action("EditAccount", new { accountId = Model?.AccountId })">Ändra Konto</a>*@
+            </div>
+            <div class="form-group">
+                <a asp-action="DeleteUser" asp-route-id="@Model?.UserId">
+                    <input type="button" value="Ta bort" class="btn btn-primary" />
+                </a>
+                
+            </div>
         </form>
     </div>
 </div>

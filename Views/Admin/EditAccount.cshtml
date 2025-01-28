@@ -1,0 +1,126 @@
+﻿@model FribergRentalCars.ViewModels.AdminViewModels.EditAccountViewModel
+
+@{
+    ViewData["Title"] = "OldEditAccount";
+}
+
+<h1>Ändra Kontouppgifter</h1>
+
+<h4>Konto: @Model.UserName</h4>
+<hr />
+<div>
+    <a asp-action="ListAllAccounts">Tillbaka till kontolista</a>
+    <a asp-action="EditBookings">Konto bokningar</a>
+</div>
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="EditAccount">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="UserId" />
+            <input type="hidden" asp-for="AccountId" />
+            <input type="hidden" asp-for="AdressId" />
+            <table>
+                <tr>
+                    <td class="col-md-6">
+                        <h4>Användar Uppgifter</h4>
+                        <div class="form-group">
+                            <label asp-for="UserId" class="control-label"><strong>Användar-Id:</strong> @Model.UserId</label>
+
+                            <div class="form-group">
+                                <label asp-for="UserName" class="control-label"></label>
+                                <input asp-for="UserName" class="form-control" />
+                                <span asp-validation-for="UserName" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="Password" class="control-label"></label>
+                                <input asp-for="Password" class="form-control" />
+                                <span asp-validation-for="Password" class="text-danger"></span>
+                            </div>
+                            @*
+                            <div class="form-group">
+                                <label asp-for="User.ConfirmPassword" class="control-label"></label>
+                                <input asp-for="User.ConfirmPassword" class="form-control" />
+                                <span asp-validation-for="User.ConfirmPassword" class="text-danger"></span>
+                            </div>*@
+
+                            <div class="form-group">
+                                <label asp-for="IsAdmin" class="control-label"><strong>Administratör?</strong></label>
+
+                                @if (Model.IsAdmin)
+                                {
+                                    <p>Ja</p>
+                                }
+                                else
+                                {
+                                    <p>Nej</p>
+                                }
+                            </div>
+                    </td>
+                    <td class="col-md-2">
+
+                    </td>
+                    <td class="col-md-6">
+                        <h4>Konto Upggifter</h4>
+                        <div>
+                            <label asp-for="AccountId" class="control-label"><strong>Konto-Id: </strong>@Model.AccountId</label>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="FirstName" class="control-label"><strong>Förnamn:</strong></label>
+                            <input asp-for="FirstName" class="form-control" />
+                            <span asp-validation-for="FirstName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="LastName" class="control-label"><strong>Efternamn:</strong></label>
+                            <input asp-for="LastName" class="form-control" />
+                            <span asp-validation-for="LastName" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="PhoneNumber" class="control-label"><strong>Telefon:</strong></label>
+                            <input asp-for="PhoneNumber" class="form-control" />
+                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Email" class="control-label"><strong>Email:</strong></label>
+                            <input asp-for="Email" class="form-control" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                    </td>
+                    <td class="col-md-2">
+                    </td>
+                    <td class="col-md-6">
+                        <h4>Adress Uppgifter:</h4>
+                        <div>
+                            <label asp-for="AdressId" class="control-label"><strong>Adress Id: </strong>@Model.AdressId</label>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Street" class="control-label"><strong>Gatunamn:</strong></label>
+                            <input asp-for="Street" class="form-control" />
+                            <span asp-validation-for="Street" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="PostalCode" class="control-label"><strong>Postnummer:</strong></label>
+                            <input asp-for="PostalCode" class="form-control" />
+                            <span asp-validation-for="PostalCode" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="City" class="control-label"><strong>Stad/ Ort</strong></label>
+                            <input asp-for="City" class="form-control" />
+                            <span asp-validation-for="City" class="text-danger"></span>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+           
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
