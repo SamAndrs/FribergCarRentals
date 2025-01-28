@@ -20,13 +20,6 @@ namespace FribergRentalCars.Controllers
             this._accRepo = accountRepository;
             this._bookRepo = bookingRepository;
         }
-
-        // GET: BookingController  TO DO: REMOVE (admin functionality)
-        public async Task<ActionResult> ListAll()
-        {
-            var bookings = await _bookRepo.GetAllAsync();
-            return View(bookings);
-        }
              
         // POST: BookingController/Cancel
         [HttpPost]

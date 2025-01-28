@@ -1,7 +1,7 @@
 ﻿@model FribergRentalCars.ViewModels.AdminViewModels.EditAccountViewModel
 
 @{
-    ViewData["Title"] = "OldEditAccount";
+    ViewData["Title"] = "EditAccount";
 }
 
 <h1>Ändra Kontouppgifter</h1>
@@ -10,7 +10,7 @@
 <hr />
 <div>
     <a asp-action="ListAllAccounts">Tillbaka till kontolista | </a>
-    <a href="@Url.Action("EditAccountBookings", new { accountId = Model.AccountId })">Konto bokningar</a>
+    <a href="@Url.Action("EditAccountBookings", new { accountId = Model.AccountId })">Konto bokningar</a> @*// TO DO*@
 </div>
 <div class="row">
     <div class="col-md-4">

@@ -106,6 +106,46 @@ namespace FribergRentalCars.Controllers
         #endregion
 
         #region // BOOKINGS
+        
+        // GET: AdminController/GetAllBookings/
+        public async Task<ActionResult> AllBookings()
+        {
+            var allBookings = await _bookRepo.GetAllAsync();
+
+            List<AllBookingsViewModel> BookingsList = new List<AllBookingsViewModel>();
+
+            foreach(var item in allBookings)
+            {
+                try
+                {
+                    item.Car = await _carRepo.GetIdByAsync(item.CarId);
+                }
+                catch (Exception)
+                {
+                    ModelState.AddModelError("item.Car", "Bilobjektet finns inte.");
+                }
+
+                var account = await _accRepo.GetIdByAsync(item.AccountId);
+                if(account == null)
+                {
+                    ModelState.AddModelError("", "Kontot hittades inte!");
+                }
+
+                var listObjekt = new AllBookingsViewModel
+                {
+                    BookingId = item.BookingId,
+                    AccountId = item.AccountId,
+                    Email = account.Email,
+                    CarId = item.CarId,
+                    Car = item.Car,
+                    StartDate = item.StartDate,
+                    EndDate = item.EndDate,
+                    TotalCost = item.TotalCost
+                };
+                BookingsList.Add(listObjekt);
+            }
+            return View(BookingsList);
+        }
 
         #endregion
 
@@ -159,23 +199,98 @@ namespace FribergRentalCars.Controllers
 
         // GET: AdminController/DeleteAccount/5  // TO DO
         [AdminAuthorizationFilter]
-        public ActionResult DeleteAccount(int id)
+        public async Task<ActionResult> DeleteUser(int userId)
         {
-            return View();
+            if (userId == null)
+            {
+                NotFound();
+            }
+
+            var user = await _userRepo.GetByIdAsync(userId);
+            if(user == null)
+            {
+                NotFound(user);
+            }
+
+            var account = await _accRepo.GetIdByAsync(user.AccountId);
+            if(account == null)
+            {
+                NotFound(account);
+            }
+
+            var adress = await _adrRepo.GetIdByAsync(account.AdressId);
+            if(adress == null)
+            {
+                NotFound(adress);
+            }
+
+            var model = new EditAccountViewModel
+            {
+                UserId = user.UserId,
+                UserName = user.UserName,
+                IsAdmin = user.IsAdmin,
+                
+                AccountId = user.AccountId,
+                FirstName = account.FirstName,
+                LastName = account.LastName,
+                PhoneNumber = account.PhoneNumber,
+                Email = account.Email,
+
+                AdressId = account.AdressId,
+                Street = adress.Street,
+                PostalCode = adress.PostalCode,
+                City = adress.City
+            };
+            return View(model);
         }
 
         // POST: AdminController/DeleteAccount/5  // TO DO
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteAccount(int id, IFormCollection collection)
+        [AdminAuthorizationFilter]
+        public async Task<ActionResult> DeleteUser(int userId, EditAccountViewModel model)
         {
+            var user = await _userRepo.GetByIdAsync(userId);
+            if(user == null)
+            {
+                ModelState.AddModelError("", "Användaren finns inte!");
+                return View(model);
+            }
+
+            var account = await _accRepo.GetIdByAsync(model.AccountId);
+            if(account == null)
+            {
+                ModelState.AddModelError("", "Kontot finns inte!");
+                return View(model);
+            }
+            var adress = await _adrRepo.GetIdByAsync(model.AdressId);
+            if (adress == null)
+            {
+                ModelState.AddModelError("", "Adressen finns inte!");
+                return View(model);
+            }         
+
             try
             {
-                return RedirectToAction(nameof(Index));
+                foreach(var booking in account.Bookings)
+                {
+                    await _bookRepo.GetIdByAsync(booking.BookingId);
+                    booking.EndDate = DateOnly.FromDateTime(DateTime.Today);
+                    await _bookRepo.UpdateAsync(booking);
+                }
+
+                await _userRepo.DeleteAsync(user);
+
+                await _adrRepo.DeleteAsync(adress);
+
+                await _accRepo.DeleteAsync(account);
+
+                return RedirectToAction(nameof(ListAllAccounts));
             }
             catch
             {
-                return View();
+                ModelState.AddModelError("", "Det gick inte att radera användaren/ kontot");
+                return View(model);
             }
         }
 
