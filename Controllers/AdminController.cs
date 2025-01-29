@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 
 namespace FribergRentalCars.Controllers
 {
@@ -125,7 +126,7 @@ namespace FribergRentalCars.Controllers
                     ModelState.AddModelError("item.Car", "Bilobjektet finns inte.");
                 }
 
-                var account = await _accRepo.GetIdByAsync(item.AccountId);
+                var account = await _accRepo.GetIdByAsync((int)item.AccountId!);
                 if(account == null)
                 {
                     ModelState.AddModelError("", "Kontot hittades inte!");
@@ -135,13 +136,29 @@ namespace FribergRentalCars.Controllers
                 {
                     BookingId = item.BookingId,
                     AccountId = item.AccountId,
-                    Email = account.Email,
+                    //Email = account.Email,
                     CarId = item.CarId,
                     Car = item.Car,
                     StartDate = item.StartDate,
                     EndDate = item.EndDate,
-                    TotalCost = item.TotalCost
+                    TotalCost = item.TotalCost,
                 };
+                               
+                if(account.Email != null)
+                {
+                    listObjekt.Email = account.Email;
+                }
+                else
+                {
+                    listObjekt.Email = "--GDPR--";
+                }
+               
+                // Check if a booking is due. If so set to finished
+                if(CheckFinished(item))
+                {
+                    await _bookRepo.UpdateAsync(item);
+                }
+                
                 BookingsList.Add(listObjekt);
             }
             return View(BookingsList);
@@ -151,6 +168,57 @@ namespace FribergRentalCars.Controllers
 
 
         #region // CARS
+
+        // GET: AdminController/ListAllCars
+        [AdminAuthorizationFilter]
+        public async Task<ActionResult> ListAllCars()
+        {
+            var allCars = await _carRepo.GetAllAsync();
+            return View(allCars);
+        }
+
+        // GET: AdminController/EditCar/5
+        [AdminAuthorizationFilter]
+        public async Task<ActionResult> EditCar(int carId)
+        {
+            if(carId == null)
+            {
+                ModelState.AddModelError("", $"Ingen bil med ID: {carId} funnen.");
+            }
+            var car = await _carRepo.GetIdByAsync(carId);
+            if(car == null)
+            {
+                ModelState.AddModelError("", $"Bil ID korrekt, men bil objekt saknas.");
+            }
+            return View(car);
+        }
+
+        // POST: AdminController/EditCar/5,Car
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [AdminAuthorizationFilter]
+        public async Task<ActionResult> EditCar(int carId, Car car)
+        {
+            if(carId != car.CarId)
+            {
+                ModelState.AddModelError("", $"modell ID: {carId} och bil ID: {car.CarId} ej samma.");
+            }
+
+            if(ModelState.IsValid)
+            {
+                try
+                {
+                    await _carRepo.UpdateAsync(car);
+                    return RedirectToAction(nameof(ListAllCars));
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    ModelState.AddModelError("", "Bilobjektet kunde inte uppdateras i databasen.");
+                    NotFound(car);
+                }
+            }
+            return View(car);
+        }
 
         #endregion
 
@@ -432,5 +500,18 @@ namespace FribergRentalCars.Controllers
 
         #endregion
 
+        #region // HELPER METHODS ------------------------------------------------------
+
+        public bool CheckFinished(Booking booking)
+        {
+            if (booking.EndDate < DateOnly.FromDateTime(DateTime.Now) && booking.IsFinished == false)
+            {
+                booking.IsFinished = true;
+                return true;
+            }
+            return false;
+        }
+
+        #endregion
     }
 }

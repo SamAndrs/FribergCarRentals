@@ -15,5 +15,7 @@ namespace FribergRentalCars.ViewModels
         
         [Required]
         public DateOnly EndDate { get; set; }
+
+        public bool IsFinished { get; set; }
     }
 }

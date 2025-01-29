@@ -8,7 +8,7 @@ namespace FribergRentalCars.Models
     {
         public int BookingId { get; set; }
 
-        public int AccountId { get; set; }
+        public int? AccountId { get; set; }
 
         public int CarId { get; set; }
 
@@ -19,5 +19,7 @@ namespace FribergRentalCars.Models
         public int TotalCost { get; set; }
 
         public Car Car { get; set; }
+
+        public bool IsFinished { get; set; } = false;
     }
 }

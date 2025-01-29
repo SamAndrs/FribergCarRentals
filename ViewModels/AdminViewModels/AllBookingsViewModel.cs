@@ -6,7 +6,7 @@ namespace FribergRentalCars.ViewModels.AdminViewModels
     {
         public int BookingId { get; set; }
 
-        public int AccountId { get; set; }
+        public int? AccountId { get; set; }
 
         public string Email { get; set; }
 

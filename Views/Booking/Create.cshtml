@@ -27,16 +27,20 @@
             <div class="form-group">
                 <input type="hidden" asp-for="CarId" value=@Model.CarId />
             </div>
+            <div class="form-group">
+                <input type="hidden" asp-for="IsFinished" value=@Model.IsFinished />
+            </div>
             
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
+
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-controller="Car" asp-action="Index">Tillbaka</a>
+    <a asp-controller="Car" asp-action="ListAll">Tillbaka</a>
 </div>
 
 

@@ -45,9 +45,10 @@ namespace FribergRentalCars.Data
             return await _appDbContext.Bookings.FindAsync(id);
         }
 
-        public async Task UpdateAsync(Booking booking) // TO DO: REMOVE
+        public async Task UpdateAsync(Booking booking)
         {
-            throw new NotImplementedException();
+            _appDbContext.Bookings.Update(booking);
+            await _appDbContext.SaveChangesAsync();
         }
     }
 }

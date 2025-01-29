@@ -61,7 +61,7 @@ namespace FribergRentalCars.Controllers
         // GET: BookingController/Create
         public async Task<ActionResult> Create(int carId)
         {
-            var cId = HttpContext.Session.GetInt32("carID");
+            var cId = HttpContext.Session.GetInt32("carID"); // TO DO - KOLLA UPP PÅ CSHTML OM ANVÄNDA URL ID SKICKANDE
             var car = await _carRepo.GetIdByAsync((int)cId!);
             BookingViewModel bookVM = new BookingViewModel
             {
@@ -105,12 +105,13 @@ namespace FribergRentalCars.Controllers
                 }
                 else
                 {
+                    // Check if car is already booked on dates
                     var booked = await IsOverlapping(newBooking.CarId, newBooking);
                     if (booked)
                     {
                         ModelState.AddModelError("", "Bilen är redan bokad under dessa datum.");
                         return View("Create", bookVM);
-                    }
+                    }                 
 
                     newBooking.TotalCost = (newBooking.EndDate.DayNumber - newBooking.StartDate.DayNumber) * newBooking.Car.PricePerDay;
                     await _bookRepo.AddAsync(newBooking);
@@ -131,13 +132,19 @@ namespace FribergRentalCars.Controllers
             foreach (var item in bookings)
             {
                 try
-                {
+                { 
                     item.Car = await _carRepo.GetIdByAsync(item.CarId);
                 }
                 catch(Exception)
                 {
                     ModelState.AddModelError("", "Bilen är inte tillgänglig att hyra.");
                 }
+                
+                if(CheckFinished(item))
+                {
+                    await _bookRepo.UpdateAsync(item);
+                }
+                
             }
             return View(bookings);
         }
@@ -149,14 +156,19 @@ namespace FribergRentalCars.Controllers
 
             bool isOverlapping = existingBookings.Any(b =>
             (b.StartDate < booking.EndDate && b.EndDate > booking.StartDate));
-
-            // Send to list bookings view to differentiate between ongoing and past bookings
-            var isFinished = DateOnly.FromDateTime(DateTime.Now) > booking.EndDate;
-            ViewBag.isFinished = isFinished;
-
             return isOverlapping;
-
         }
+
+        public bool CheckFinished(Booking booking)
+        {
+            if (booking.EndDate < DateOnly.FromDateTime(DateTime.Now) && booking.IsFinished == false)
+            {
+                booking.IsFinished = true;
+                return true;
+            }
+            return false;
+        }
+
         #endregion
 
 
