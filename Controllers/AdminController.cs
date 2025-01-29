@@ -169,12 +169,32 @@ namespace FribergRentalCars.Controllers
 
         #region // CARS
 
-        // GET: AdminController/ListAllCars
+        // GET: AdminController/CreateCar/
         [AdminAuthorizationFilter]
-        public async Task<ActionResult> ListAllCars()
+        public ActionResult CreateCar()
         {
-            var allCars = await _carRepo.GetAllAsync();
-            return View(allCars);
+            return View();
+        }
+
+        // POST: AdminController/CreateCar
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [AdminAuthorizationFilter]
+        public async Task<ActionResult> CreateCar(Car car)
+        {
+            if(ModelState.IsValid)
+            {
+                try
+                {
+                    await _carRepo.AddAsync(car);
+                    return RedirectToAction(nameof(ListAllCars));
+                }
+                catch
+                {
+                    ModelState.AddModelError("", "Databas fel: Objektet kunde inte adderas");
+                }
+            }
+            return View(car);
         }
 
         // GET: AdminController/EditCar/5
@@ -218,6 +238,14 @@ namespace FribergRentalCars.Controllers
                 }
             }
             return View(car);
+        }
+
+        // GET: AdminController/ListAllCars
+        [AdminAuthorizationFilter]
+        public async Task<ActionResult> ListAllCars()
+        {
+            var allCars = await _carRepo.GetAllAsync();
+            return View(allCars);
         }
 
         #endregion
