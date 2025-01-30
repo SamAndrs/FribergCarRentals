@@ -109,11 +109,12 @@ namespace FribergRentalCars.Controllers
         #endregion
 
         #region // BOOKINGS
-        
-        // GET: AdminController/GetAllBookings/
-        public async Task<ActionResult> AllBookings()
+
+        // GET: AdminController/AllBookings/
+        [AdminAuthorizationFilter]
+        public async Task<ActionResult> AllActiveBookings()
         {
-            var allBookings = await _bookRepo.GetAllAsync();
+            var allBookings = await _bookRepo.GetAllActiveAsync();
 
             List<AllBookingsViewModel> BookingsList = new List<AllBookingsViewModel>();
 
@@ -167,8 +168,109 @@ namespace FribergRentalCars.Controllers
             return View(BookingsList);
         }
 
-        #endregion
+        // GET: AdminController/AllFinishedBookings/
+        [AdminAuthorizationFilter]
+        public async Task<ActionResult> AllFinishedBookings()
+        {
+            var allBookings = await _bookRepo.GetAllFinishedAsync();
 
+            List<AllBookingsViewModel> BookingsList = new List<AllBookingsViewModel>();
+
+            foreach (var item in allBookings)
+            {
+                try
+                {
+                    item.Car = await _carRepo.GetIdByAsync(item.CarId);
+                }
+                catch (Exception)
+                {
+                    ModelState.AddModelError("item.Car", "Bilobjektet finns inte.");
+                }
+
+                var account = await _accRepo.GetIdByAsync((int)item.AccountId!);
+                if (account == null)
+                {
+                    ModelState.AddModelError("", "Kontot hittades inte!");
+                }
+
+                var listObjekt = new AllBookingsViewModel
+                {
+                    BookingId = item.BookingId,
+                    AccountId = item.AccountId,
+                    //Email = account.Email,
+                    CarId = item.CarId,
+                    Car = item.Car,
+                    StartDate = item.StartDate,
+                    EndDate = item.EndDate,
+                    TotalCost = item.TotalCost,
+                    IsFinished = item.IsFinished
+                };
+
+                if (account == null || string.IsNullOrEmpty(account.Email))
+                {
+                    listObjekt.Email = "--GDPR--";
+                }
+                else
+                {
+                    listObjekt.Email = account.Email;
+                }
+
+                // Check if a booking is due. If so set to finished
+                if (CheckFinished(item))
+                {
+                    await _bookRepo.UpdateAsync(item);
+                }
+
+                BookingsList.Add(listObjekt);
+            }
+            return View(BookingsList);
+        }
+
+        // GET: AdminController/EditAccountBookings/5
+        [AdminAuthorizationFilter]
+        public async Task<ActionResult> AllAccountBookings(int accountId)
+        {
+            var accBookings = await _bookRepo.GetBookingsByAccountIdAsync(accountId);
+
+            // Retrieve User id for getting back to Edit Account, properly (takes userId as parameter)
+            ViewBag.UserID = HttpContext.Session.GetInt32("UserId");
+
+            foreach (var item in accBookings)
+            {
+                try
+                {
+                    item.Car = await _carRepo.GetIdByAsync(item.CarId);
+                }
+                catch (Exception)
+                {
+                    ModelState.AddModelError("item.Car", "Bilobjektet finns inte.");
+                }
+            }
+            return View(accBookings);
+        }
+
+        [AdminAuthorizationFilter]
+        public async Task<ActionResult> CancelBooking(int id)
+        {
+            try
+            {
+                var booking = await _bookRepo.GetIdByAsync(id);
+                await _bookRepo.DeleteAsync(booking);
+                //return RedirectToAction(nameof(CancelConfirmation));
+          
+                return RedirectToAction("AllAccountBookings");
+            }
+            catch
+            {
+                ModelState.AddModelError("", "Kunde inte radera bokningen.");
+                return NotFound(id);
+                //return RedirectToAction(nameof(CancelError));
+                
+            }
+           // return View();
+        }
+
+        #endregion
 
         #region // CARS
 
@@ -407,26 +509,26 @@ namespace FribergRentalCars.Controllers
             if (userId <= 0)
             {
                 ModelState.AddModelError("", $"User ID: {userId} kunde inte hittas");
-                return NotFound(userId);
+                //return NotFound(userId);
             }
             var user = await _userRepo.GetByIdAsync(userId);
             if (user == null)
             {
                 ModelState.AddModelError("", $"User {user} kunde inte hittas");
-                return NotFound(userId);
+                //return NotFound(userId);
             }
 
             var account = await _accRepo.GetIdByAsync(user.AccountId);
             if (account == null)
             {
                 ModelState.AddModelError("", $"Konto med ID: {user.AccountId} kunde inte hittas");
-                return NotFound(account);
+                //return NotFound(account);
             }
             var adress = await _adrRepo.GetIdByAsync(account.AdressId);
             if (adress == null)
             {
                 ModelState.AddModelError("", $"Adress med ID: {account.AdressId} kunde inte hittas");
-                return NotFound(adress);
+                //return NotFound(adress);
             }
 
             DeleteUserViewModel delUser = new DeleteUserViewModel
@@ -438,7 +540,6 @@ namespace FribergRentalCars.Controllers
 
             try
             {
-
                 List<Booking> accountBookings = new List<Booking>
                            (await _bookRepo.GetFinishedAccountBookings(delUser.Account.AccountId));
 
@@ -510,6 +611,9 @@ namespace FribergRentalCars.Controllers
                 IsAdmin = user.IsAdmin
 
             };
+
+            // Set Session variable for getting back from Account Bookings view
+            HttpContext.Session.SetInt32("UserId", user.UserId);
             return View(model);
         }
 

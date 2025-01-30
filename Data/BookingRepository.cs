@@ -25,9 +25,14 @@ namespace FribergRentalCars.Data
             await _appDbContext.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<Booking>> GetAllAsync()
+        public async Task<IEnumerable<Booking>> GetAllActiveAsync()
         {
-            return await _appDbContext.Bookings.ToListAsync();
+            return await _appDbContext.Bookings.Where(b => b.IsFinished == false).ToListAsync();
+        }
+
+        public async Task<IEnumerable<Booking>> GetAllFinishedAsync()
+        {
+            return await _appDbContext.Bookings.Where(b => b.IsFinished == true).ToListAsync();
         }
 
         public async Task<IEnumerable<Booking>> GetBookingsByCarIdAsync(int id)

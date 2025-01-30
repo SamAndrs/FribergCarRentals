@@ -1,13 +1,14 @@
 ﻿@model List<FribergRentalCars.ViewModels.AdminViewModels.AllBookingsViewModel>
 
 @{
-    ViewData["Title"] = "AllBookings";
+    ViewData["Title"] = "AllActiveBookings";
 }
 
 <h4>Alla bokningar</h4>
 
 <p>
     <a asp-action="Details">Mitt Konto</a>
+    <a asp-action="AllFinishedBookings">Historiska Bokningar</a>
 </p>
 <table class="table">
     <thead>

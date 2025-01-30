@@ -4,7 +4,9 @@ namespace FribergRentalCars.Data.Interfaces
 {
     public interface IBookingRepository
     {
-        Task<IEnumerable<Booking>> GetAllAsync();
+        Task<IEnumerable<Booking>> GetAllActiveAsync();
+
+        Task<IEnumerable<Booking>> GetAllFinishedAsync();
 
         Task<Booking> GetIdByAsync(int id);
 
