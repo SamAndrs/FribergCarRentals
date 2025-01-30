@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
+using System.Security.Principal;
 
 namespace FribergRentalCars.Controllers
 {
@@ -292,136 +293,201 @@ namespace FribergRentalCars.Controllers
             }
             return View(regVM);
         }
-        
 
 
-        // GET: AdminController/DeleteAccount/5  // TO DO
+        #region REMOVE? TO DO
+        // GET: AdminController/DeleteAccount/5
         [AdminAuthorizationFilter]
-        public async Task<ActionResult> DeleteUser(int userId)
-        {
-            if (userId == null)
-            {
-                NotFound();
-            }
+                public async Task<ActionResult> DeleteUser(int userId)
+                {
+                    if (userId == null)
+                    {
+                        NotFound(userId);
+                    }
 
-            var user = await _userRepo.GetByIdAsync(userId);
-            if(user == null)
+                    var user = await _userRepo.GetByIdAsync(userId);
+                    if(user == null)
+                    {
+                        NotFound(user);
+                    }
+
+                    var account = await _accRepo.GetIdByAsync(user.AccountId);
+                    if(account == null)
+                    {
+                        NotFound(account);
+                    }
+
+                    var adress = await _adrRepo.GetIdByAsync(account.AdressId);
+                    if(adress == null)
+                    {
+                        NotFound(adress);
+                    }
+
+                    var model = new EditAccountViewModel
+                    {
+                        UserId = user.UserId,
+                        UserName = user.UserName,
+                        IsAdmin = user.IsAdmin,
+
+                        AccountId = user.AccountId,
+                        FirstName = account.FirstName,
+                        LastName = account.LastName,
+                        PhoneNumber = account.PhoneNumber,
+                        Email = account.Email,
+
+                        AdressId = account.AdressId,
+                        Street = adress.Street,
+                        PostalCode = adress.PostalCode,
+                        City = adress.City
+                    };
+                    return View(model);
+                }
+
+                // POST: AdminController/DeleteAccount/5
+                [HttpPost]
+                [ValidateAntiForgeryToken]
+                [AdminAuthorizationFilter]
+                public async Task<ActionResult> DeleteUser(int userId, EditAccountViewModel model)
+                {
+                    var user = await _userRepo.GetByIdAsync(userId);
+                    if(user == null)
+                    {
+                        ModelState.AddModelError("", "Användaren finns inte!");
+                        return View(model);
+                    }
+
+                    var account = await _accRepo.GetIdByAsync(user.AccountId);
+                    if(account == null)
+                    {
+                        ModelState.AddModelError("", "Kontot finns inte!");
+                        return View(model);
+                    }
+                    var adress = await _adrRepo.GetIdByAsync(model.AdressId);
+                    if (adress == null)
+                    {
+                        ModelState.AddModelError("", "Adressen finns inte!");
+                        return View(model);
+                    }
+                    try
+                    {
+                        List<Booking> accountBookings = new List<Booking>
+                            ( await _bookRepo.GetFinishedAccountBookings(account.AccountId) );
+
+                        //List<Booking> accountBookings = new List<Booking>(await _bookRepo.GetBookingsByAccountIdAsync(account.AccountId));
+                        foreach (var booking in accountBookings)
+                        {
+                            //await _bookRepo.GetIdByAsync(booking.BookingId);
+                            //booking.AccountId = null;
+                            booking.EndDate = DateOnly.FromDateTime(DateTime.Today);
+                            booking.IsFinished = true;
+                            await _bookRepo.UpdateAsync(booking);
+                        }
+
+                        await _userRepo.DeleteAsync(user);
+
+                        await _adrRepo.DeleteAsync(adress);
+
+                        await _accRepo.DeleteAsync(account);
+
+                        return RedirectToAction(nameof(ListAllAccounts));
+                    }
+                    catch
+                    {
+                        ModelState.AddModelError("", "Det gick inte att radera användaren/ kontot"); 
+                        
+                    }
+                return View();
+            }
+        #endregion  
+
+        // GET: AdminController/DeleteAccount/5
+        [AdminAuthorizationFilter]
+        public async Task<ActionResult> DeleteAccount(int userId)
+        {
+            if (userId <= 0)
             {
-                NotFound(user);
+                ModelState.AddModelError("", $"User ID: {userId} kunde inte hittas");
+                return NotFound(userId);
+            }
+            var user = await _userRepo.GetByIdAsync(userId);
+            if (user == null)
+            {
+                ModelState.AddModelError("", $"User {user} kunde inte hittas");
+                return NotFound(userId);
             }
 
             var account = await _accRepo.GetIdByAsync(user.AccountId);
-            if(account == null)
+            if (account == null)
             {
-                NotFound(account);
+                ModelState.AddModelError("", $"Konto med ID: {user.AccountId} kunde inte hittas");
+                return NotFound(account);
             }
-
             var adress = await _adrRepo.GetIdByAsync(account.AdressId);
-            if(adress == null)
-            {
-                NotFound(adress);
-            }
-
-            var model = new EditAccountViewModel
-            {
-                UserId = user.UserId,
-                UserName = user.UserName,
-                IsAdmin = user.IsAdmin,
-                
-                AccountId = user.AccountId,
-                FirstName = account.FirstName,
-                LastName = account.LastName,
-                PhoneNumber = account.PhoneNumber,
-                Email = account.Email,
-
-                AdressId = account.AdressId,
-                Street = adress.Street,
-                PostalCode = adress.PostalCode,
-                City = adress.City
-            };
-            return View("ConfirmDelete", model);
-        }
-
-        // POST: AdminController/DeleteAccount/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [AdminAuthorizationFilter]
-        public async Task<ActionResult> ConfirmDelete(int userId, EditAccountViewModel model)
-        {
-            var user = await _userRepo.GetByIdAsync(userId);
-            if(user == null)
-            {
-                ModelState.AddModelError("", "Användaren finns inte!");
-                return View(model);
-            }
-
-            var account = await _accRepo.GetIdByAsync(user.AccountId);
-            if(account == null)
-            {
-                ModelState.AddModelError("", "Kontot finns inte!");
-                return View(model);
-            }
-            var adress = await _adrRepo.GetIdByAsync(model.AdressId);
             if (adress == null)
             {
-                ModelState.AddModelError("", "Adressen finns inte!");
-                return View(model);
+                ModelState.AddModelError("", $"Adress med ID: {account.AdressId} kunde inte hittas");
+                return NotFound(adress);
             }
+
+            DeleteUserViewModel delUser = new DeleteUserViewModel
+            {
+                User = user,
+                Account = account,
+                Adress = adress
+            };
+
             try
             {
+
                 List<Booking> accountBookings = new List<Booking>
-                    ( await _bookRepo.GetFinishedAccountBookings(account.AccountId) );
-                
-                //List<Booking> accountBookings = new List<Booking>(await _bookRepo.GetBookingsByAccountIdAsync(account.AccountId));
+                           (await _bookRepo.GetFinishedAccountBookings(delUser.Account.AccountId));
+
                 foreach (var booking in accountBookings)
                 {
-                    //await _bookRepo.GetIdByAsync(booking.BookingId);
-                    //booking.AccountId = null;
                     booking.EndDate = DateOnly.FromDateTime(DateTime.Today);
                     booking.IsFinished = true;
                     await _bookRepo.UpdateAsync(booking);
                 }
 
-                await _userRepo.DeleteAsync(user);
-
-                await _adrRepo.DeleteAsync(adress);
-
-                await _accRepo.DeleteAsync(account);
+                await _userRepo.DeleteAsync(delUser.User);
+                await _adrRepo.DeleteAsync(delUser.Adress);
+                await _accRepo.DeleteAsync(delUser.Account);
 
                 return RedirectToAction(nameof(ListAllAccounts));
             }
             catch
             {
-                ModelState.AddModelError("", "Det gick inte att radera användaren/ kontot");
-                return View("DeleteUser", model);
+                ModelState.AddModelError("", "Användaren kunde inte raderas");
+                return View(delUser);
             }
         }
+        
 
         // GET: AdminController/EditAccount/5
         [AdminAuthorizationFilter]
         public async Task<ActionResult> EditAccount(int userId)
         {
-            if(userId == null)
+            if(userId <= 0)
             {
-                return NotFound();
+                return NotFound(userId);
             }
 
             var user = await _userRepo.GetByIdAsync(userId);
             if(user == null)
             {
-                return NotFound();
+                return NotFound(user);
             }
 
             var account = await _accRepo.GetIdByAsync(user.UserId);
             if(account == null)
             {
-                return NotFound();
+                return NotFound(account);
             }
 
             var adress = await _adrRepo.GetIdByAsync(account.AccountId);
             if(adress == null)
             {
-                return NotFound();
+                return NotFound(adress);
             }
 
             var model = new EditAccountViewModel

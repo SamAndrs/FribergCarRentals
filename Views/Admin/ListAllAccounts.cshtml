@@ -76,8 +76,9 @@
                 </td>
                 <td>
                     <a href="@Url.Action("EditAccount", new { userId = item.User.UserId })">Redigera</a>
-                    <a href="@Url.Action("DeleteUser", new { userId = item.User.UserId })">Ta bort</a>
-                @*<a asp-action="Delete" asp-route-id="@item.Account.AccountId">Ta Bort</a> @*TO DO *@
+                    @*<a href="@Url.Action("DeleteUser", new { userId = item.User.UserId })">Ta bort</a>*@
+                    <a href="@Url.Action("DeleteAccount", new { userId = item.User.UserId })">Ta bort konto</a>
+               @* <a asp-action="DeleteAccount" asp-route-id="@item.User.UserId">Ta Bort</a>*@
             </td>
         </tr>
 }
