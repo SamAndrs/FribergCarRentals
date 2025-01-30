@@ -232,7 +232,7 @@ namespace FribergRentalCars.Controllers
         {
             var accBookings = await _bookRepo.GetBookingsByAccountIdAsync(accountId);
 
-            // Retrieve User id for getting back to Edit Account, properly (takes userId as parameter)
+            // Retrieve User id for getting back to Edit Account properly (takes userId as parameter)
             ViewBag.UserID = HttpContext.Session.GetInt32("UserId");
 
             foreach (var item in accBookings)
@@ -256,7 +256,6 @@ namespace FribergRentalCars.Controllers
             {
                 var booking = await _bookRepo.GetIdByAsync(id);
                 await _bookRepo.DeleteAsync(booking);
-                //return RedirectToAction(nameof(CancelConfirmation));
           
                 return RedirectToAction("AllAccountBookings");
             }
@@ -264,10 +263,8 @@ namespace FribergRentalCars.Controllers
             {
                 ModelState.AddModelError("", "Kunde inte radera bokningen.");
                 return NotFound(id);
-                //return RedirectToAction(nameof(CancelError));
                 
             }
-           // return View();
         }
 
         #endregion
@@ -504,14 +501,14 @@ namespace FribergRentalCars.Controllers
 
         // GET: AdminController/DeleteAccount/5
         [AdminAuthorizationFilter]
-        public async Task<ActionResult> DeleteAccount(int userId)
+        public async Task<ActionResult> DeleteAccount(int id)
         {
-            if (userId <= 0)
+            if (id <= 0)
             {
-                ModelState.AddModelError("", $"User ID: {userId} kunde inte hittas");
+                ModelState.AddModelError("", $"User ID: {id} kunde inte hittas");
                 //return NotFound(userId);
             }
-            var user = await _userRepo.GetByIdAsync(userId);
+            var user = await _userRepo.GetByIdAsync(id);
             if (user == null)
             {
                 ModelState.AddModelError("", $"User {user} kunde inte hittas");
@@ -566,14 +563,14 @@ namespace FribergRentalCars.Controllers
 
         // GET: AdminController/EditAccount/5
         [AdminAuthorizationFilter]
-        public async Task<ActionResult> EditAccount(int userId)
+        public async Task<ActionResult> EditAccount(int id)
         {
-            if(userId <= 0)
+            if(id <= 0)
             {
-                return NotFound(userId);
+                return NotFound(id);
             }
 
-            var user = await _userRepo.GetByIdAsync(userId);
+            var user = await _userRepo.GetByIdAsync(id);
             if(user == null)
             {
                 return NotFound(user);
@@ -621,14 +618,14 @@ namespace FribergRentalCars.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [AdminAuthorizationFilter]
-        public async Task<ActionResult> EditAccount(int userId, EditAccountViewModel model)
+        public async Task<ActionResult> EditAccount(int id, EditAccountViewModel model)
         {
             if(model == null)
             {
                 ModelState.AddModelError("", "Konto-objektet finns inte.");
             }
 
-            var user = await _userRepo.GetByIdAsync(userId);
+            var user = await _userRepo.GetByIdAsync(id);
             var account = await _accRepo.GetIdByAsync(user.UserId);
             var adress = await _adrRepo.GetIdByAsync(account.AccountId);
 

@@ -7,7 +7,12 @@
 <h4>Alla bokningar för kontot</h4>
 
 <p>
-    <a href="@Url.Action("EditAccount", new { userId = @ViewBag.UserID })">Redigera Konto</a>
+    <a href="@Url.Action("EditAccount", new { id = ViewBag.UserID })">
+        <span>
+            <input type="submit" value="Redigera Konto" class="btn btn-primary" />
+        </span>
+    </a>
+
 </p>
 <table class="table">
     <thead>
@@ -64,7 +69,6 @@
                     @Html.DisplayFor(modelItem => item.Car.CarId)
                 </th>
                 @* // IF BOOKING IS FINISHED display text in grey color*@
-                @*if (item.EndDate < DateOnly.FromDateTime(DateTime.Now))*@
                 @if(item.IsFinished)
                 {
                     <td>

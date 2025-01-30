@@ -4,7 +4,7 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<h4>Detailjer för: @Model.Model</h4>
 
 <div>
     <h4>Car</h4>
@@ -68,16 +68,13 @@
             {
                 if (!string.IsNullOrEmpty(Context.Session.GetString("user")))
                 {
-                    Context.Session.SetInt32("carID", Model.CarId);
-                    <form asp-controller="Booking" asp-action="Create" asp-route-id="@Model.CarId">
-                        <input type="submit" value="Boka" class="btn btn-primary" />
-                    </form>
+                    <button onclick="window.location='@Url.Action("Create", "Booking", new { id = Model.CarId })'" class="btn btn-primary">Boka</button>
                 }
                 else
                 {
                     <span>
                         Du måste vara inloggad för att kunna boka en bil.
-                        <a asp-action="Login" asp-controller="Account">Nytt konto</a> |
+                        <a asp-action="Login" asp-controller="Account">Logga in</a> |
                         <a asp-action="Register" asp-controller="Account">Nytt konto</a>
                     </span>
                 }
@@ -90,6 +87,5 @@
     </dl>
 </div>
 <div>
-    @*<a asp-action="Edit" asp-route-id="@Model?.CarId">Edit</a> |*@
-    <a asp-action="Index">Tillbaka</a>
+    <a asp-action="ListAll">Tillbaka</a>
 </div>

@@ -10,6 +10,16 @@
         </span>
 </div>
 
-<div>
-    <a asp-action="Details" asp-controller="Account">Till Mina uppgifter</a>
-</div>
+@*// If logged in as administrator, link back to admin account page instead of regular.*@
+@if(Context.Session.GetInt32("IsAdmin") == 1)
+{
+    <div>
+        <a asp-action="Details" asp-controller="Admin">Till Mina uppgifter</a>
+    </div>
+}
+else
+{
+    <div>
+        <a asp-action="Details" asp-controller="Account">Till Mina uppgifter</a>
+    </div>
+}

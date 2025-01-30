@@ -4,10 +4,10 @@
     ViewData["Title"] = "GetAvailable";
 }
 
-<h1>Våra Bilar</h1>
-<h3>(urval) Endast Tillgängliga</h3>
+<h3>Våra Bilar</h3>
+<h6>(urval) Endast Tillgängliga</h6>
 <div>
-    <a asp-action="Index" asp-controller="Car">Tillbaka</a>
+    <a asp-action="ListAll" asp-controller="Car">Tillbaka</a>
 </div>
 <table class="table">
     <thead>
@@ -81,14 +81,8 @@
                     @Html.DisplayFor(modelItem => item.IsAvailable)
                 </td>
                 <td>
-                    <form asp-controller="Booking" asp-action="Create">
-                        @{
-                            Context.Session.SetInt32("carID", item.CarId);
-                        }
-
-                        <input type="submit" value="Boka" class="btn btn-primary" />
-                    </form>
-            </td>
+                    <button onclick="window.location='@Url.Action("Create", "Booking", new { id = item.CarId })'" class="btn btn-primary">Boka</button>
+                </td>
             <td>
                 <a asp-action="Details" asp-route-id="@item.CarId">Beskrivning</a>
             </td>

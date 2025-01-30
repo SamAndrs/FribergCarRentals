@@ -88,10 +88,7 @@
                     {
                         @if (!string.IsNullOrEmpty(Context.Session.GetString("user")))
                         {
-                            Context.Session.SetInt32("carID", item.CarId);
-                            <form asp-controller="Booking" asp-action="Create" asp-route-id="@item.CarId">
-                                <input type="submit" value="Boka" class="btn btn-primary" />
-                            </form>
+                            <button onclick="window.location='@Url.Action("Create", "Booking", new { id = item.CarId })'" class="btn btn-primary">Boka</button>
                         }
                         else
                         {
@@ -106,7 +103,8 @@
                     }
             </td>
             <td>
-                <a asp-action="Details" asp-route-id="@item.CarId">Beskrivning</a> @*// TO DO -button*@
+                @*<a asp-action="Details" asp-route-id="@item.CarId">Beskrivning</a>  // TO DO REMOVE?*@ 
+                <button onclick="window.location='@Url.Action("Details", "Car", new { id = item.CarId })'" class="btn btn-primary">Detaljer</button>
             </td>
         </tr>
 }
