@@ -1,5 +1,6 @@
 ﻿using FribergRentalCars.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
 
 namespace FribergRentalCars.Data
 {
@@ -17,8 +18,27 @@ namespace FribergRentalCars.Data
 
         public ApplicationDBContext(DbContextOptions<ApplicationDBContext> options) : base(options)
         {
-
+            
         }
-        public DbSet<FribergRentalCars.Models.Admin> Admin { get; set; } = default!;
+
+        //public DbSet<FribergRentalCars.Models.Admin> Admin { get; set; } = default!;
+
+        /*protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            
+            modelBuilder.Entity<Booking>()
+                .HasOne(b => b.Account)
+                .WithMany()
+                .HasForeignKey(b => b.AccountId)
+                .OnDelete(DeleteBehavior.Restrict); // Prevent cascading delete
+            
+        }*/
+        /*
+         modelBuilder.Entity<Booking>()
+    .HasOne(b => b.Account)
+    .WithMany(a => a.Bookings)
+    .HasForeignKey(b => b.AccountId)
+    .OnDelete(DeleteBehavior.Restrict);
+         */
     }
 }

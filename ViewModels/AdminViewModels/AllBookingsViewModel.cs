@@ -20,7 +20,7 @@ namespace FribergRentalCars.ViewModels.AdminViewModels
 
         public int TotalCost { get; set; }
 
-        
+        public bool IsFinished { get; set; }
 
     }
 }

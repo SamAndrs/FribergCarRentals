@@ -24,7 +24,5 @@ namespace FribergRentalCars.Models
         [Required(ErrorMessage = "En emailadress måste anges.")]
         public string? Email { get; set; }
 
-        public List<Booking>? Bookings { get; set; }
-
     }
 }

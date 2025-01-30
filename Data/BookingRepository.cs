@@ -40,6 +40,13 @@ namespace FribergRentalCars.Data
             return await _appDbContext.Bookings.Where(b => b.AccountId == id).ToListAsync();
         }
 
+        public async Task<IEnumerable<Booking>> GetFinishedAccountBookings(int id)
+        {
+            return await _appDbContext.Bookings.
+                Where(b => b.AccountId == id).
+                Where(b => b.IsFinished == true).ToListAsync();
+        }
+
         public async Task<Booking> GetIdByAsync(int id)
         {
             return await _appDbContext.Bookings.FindAsync(id);

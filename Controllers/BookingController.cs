@@ -105,7 +105,7 @@ namespace FribergRentalCars.Controllers
                 }
                 else
                 {
-                    // Check if car is already booked on dates
+                    // Check if car is already booked on dates 
                     var booked = await IsOverlapping(newBooking.CarId, newBooking);
                     if (booked)
                     {
@@ -154,8 +154,9 @@ namespace FribergRentalCars.Controllers
         {
             var existingBookings = await _bookRepo.GetBookingsByCarIdAsync(carID);
 
+            // Check if dates overlap with an existing booking that is not yet listed as 'finished'
             bool isOverlapping = existingBookings.Any(b =>
-            (b.StartDate < booking.EndDate && b.EndDate > booking.StartDate));
+            (b.StartDate < booking.EndDate && b.EndDate > booking.StartDate && !b.IsFinished));
             return isOverlapping;
         }
 

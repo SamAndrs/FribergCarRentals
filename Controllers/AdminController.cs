@@ -1,4 +1,5 @@
-﻿using FribergRentalCars.Data.Interfaces;
+﻿using AspNetCoreGeneratedDocument;
+using FribergRentalCars.Data.Interfaces;
 using FribergRentalCars.Models;
 using FribergRentalCars.ViewModels;
 using FribergRentalCars.ViewModels.AdminViewModels;
@@ -142,15 +143,16 @@ namespace FribergRentalCars.Controllers
                     StartDate = item.StartDate,
                     EndDate = item.EndDate,
                     TotalCost = item.TotalCost,
+                    IsFinished = item.IsFinished
                 };
                                
-                if(account.Email != null)
+                if(account == null || string.IsNullOrEmpty(account.Email))
                 {
-                    listObjekt.Email = account.Email;
+                    listObjekt.Email = "--GDPR--";
                 }
                 else
                 {
-                    listObjekt.Email = "--GDPR--";
+                    listObjekt.Email = account.Email;
                 }
                
                 // Check if a booking is due. If so set to finished
@@ -337,14 +339,14 @@ namespace FribergRentalCars.Controllers
                 PostalCode = adress.PostalCode,
                 City = adress.City
             };
-            return View(model);
+            return View("ConfirmDelete", model);
         }
 
-        // POST: AdminController/DeleteAccount/5  // TO DO
+        // POST: AdminController/DeleteAccount/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         [AdminAuthorizationFilter]
-        public async Task<ActionResult> DeleteUser(int userId, EditAccountViewModel model)
+        public async Task<ActionResult> ConfirmDelete(int userId, EditAccountViewModel model)
         {
             var user = await _userRepo.GetByIdAsync(userId);
             if(user == null)
@@ -353,7 +355,7 @@ namespace FribergRentalCars.Controllers
                 return View(model);
             }
 
-            var account = await _accRepo.GetIdByAsync(model.AccountId);
+            var account = await _accRepo.GetIdByAsync(user.AccountId);
             if(account == null)
             {
                 ModelState.AddModelError("", "Kontot finns inte!");
@@ -364,14 +366,19 @@ namespace FribergRentalCars.Controllers
             {
                 ModelState.AddModelError("", "Adressen finns inte!");
                 return View(model);
-            }         
-
+            }
             try
             {
-                foreach(var booking in account.Bookings)
+                List<Booking> accountBookings = new List<Booking>
+                    ( await _bookRepo.GetFinishedAccountBookings(account.AccountId) );
+                
+                //List<Booking> accountBookings = new List<Booking>(await _bookRepo.GetBookingsByAccountIdAsync(account.AccountId));
+                foreach (var booking in accountBookings)
                 {
-                    await _bookRepo.GetIdByAsync(booking.BookingId);
+                    //await _bookRepo.GetIdByAsync(booking.BookingId);
+                    //booking.AccountId = null;
                     booking.EndDate = DateOnly.FromDateTime(DateTime.Today);
+                    booking.IsFinished = true;
                     await _bookRepo.UpdateAsync(booking);
                 }
 
@@ -386,7 +393,7 @@ namespace FribergRentalCars.Controllers
             catch
             {
                 ModelState.AddModelError("", "Det gick inte att radera användaren/ kontot");
-                return View(model);
+                return View("DeleteUser", model);
             }
         }
 

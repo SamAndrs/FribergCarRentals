@@ -17,5 +17,7 @@ namespace FribergRentalCars.Data.Interfaces
         Task<IEnumerable<Booking>> GetBookingsByCarIdAsync(int id);
 
         Task<IEnumerable<Booking>> GetBookingsByAccountIdAsync(int id);
+
+        Task<IEnumerable<Booking>> GetFinishedAccountBookings(int id);
     }
 }

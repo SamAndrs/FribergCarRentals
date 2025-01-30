@@ -10,6 +10,8 @@ namespace FribergRentalCars.Models
 
         public int? AccountId { get; set; }
 
+       // public Account Account { get; set; }
+
         public int CarId { get; set; }
 
         public DateOnly StartDate { get; set; }

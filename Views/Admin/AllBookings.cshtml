@@ -67,7 +67,8 @@
                     @Html.DisplayFor(modelItem => item.Car.CarId)
                 </th>
                 @* // IF BOOKING IS FINISHED display text in grey color*@
-                @if (item.EndDate < DateOnly.FromDateTime(DateTime.Now))
+                @*if (item.EndDate < DateOnly.FromDateTime(DateTime.Now))*@
+                @if(item.IsFinished)
                 {
                     <td>
                         <span style="color: dimgrey">@item.Car.Model (@item.Car.ModelYear)</span>
