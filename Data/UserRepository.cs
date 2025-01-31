@@ -36,8 +36,6 @@ namespace FribergRentalCars.Data
             return await _appDbContext.Users.FindAsync(id);
         }
 
-
-
         public async Task<User> GetUserByEmailAsync(string email)
         {
             var account = await _appDbContext.Accounts.FirstOrDefaultAsync(c => c.Email == email);

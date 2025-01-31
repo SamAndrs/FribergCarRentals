@@ -26,15 +26,102 @@ namespace FribergRentalCars.Controllers
             this._bookRepo = bookingRepository;
         }
 
-        // GET: AccountController
-        public ActionResult Index() // TO DO: CHANGE INTO ACCOUNT PAGE???
+        // GET: AccountController/ChangeEmail
+        public async Task<ActionResult> ChangeEmail(int id)
         {
-            return View();
+            if(id <= 0)
+            {
+                return NotFound(id);
+            }
+            var account = await _accountRepo.GetIdByAsync(id);
+            if(account == null)
+            {
+                return NotFound(account);
+            }
+
+            EmailViewModel emailVM = new EmailViewModel
+            {
+                Account = account,
+                OldEmail = account.Email
+            };
+            return View(emailVM);
         }
 
-        public ActionResult ChangePassword(PasswordVM passwordVM)
+        // POST: AccountController/ChangePassword/model
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> ChangeEmail(EmailViewModel emailVM)
         {
-            return View();
+            ViewBag.UserName = HttpContext.Session.GetString("user");
+            if (await _accountRepo.EmailAvailability(emailVM.NewEmail))
+            {
+                ModelState.AddModelError("", "Den här emailadressen är redan registrerad.");
+                return View(emailVM);
+            }
+            else if (emailVM.NewEmail != emailVM.ConfirmNewEmail)
+            {
+                ModelState.AddModelError("", "Email adresserna matchar inte!");
+                return View(emailVM);
+            }
+            else
+            {
+                var account = await _accountRepo.GetIdByAsync(emailVM.Account.AccountId);
+                account.Email = emailVM.NewEmail;
+                await _accountRepo.UpdateAsync(account);
+                return RedirectToAction(nameof(Details));
+            }
+        }
+
+
+        // GET: AccountController/ChangePassword
+        public async Task<ActionResult> ChangePassword()
+        {
+            var userName = HttpContext.Session.GetString("user");
+            if(string.IsNullOrEmpty(userName))
+            {
+                return NotFound(userName);
+            }
+            ViewBag.UserName = userName;
+
+            var user = await _userRepo.GetUserByUserNameAsync(userName);
+            if(user == null)
+            {
+                return NotFound(user);
+            }
+           
+            PasswordViewModel model = new PasswordViewModel
+            {
+                User = user
+            };
+            return View(model);
+        }
+
+        // POST: AccountController/ChangePassword/model
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> ChangePassword(PasswordViewModel model)
+        {
+            var user = await _userRepo.GetByIdAsync(model.User.UserId);
+            if (model.OldPassword != user.Password)
+            {
+                ModelState.AddModelError("", "Fel lösenord!");
+                return View(model);
+            }
+            else
+            {
+                try
+                {
+                    user.Password = model.NewPassword;
+                    user.ConfirmPassword = model.NewPassword;
+                    await _userRepo.UpdateAsync(user);
+                    return RedirectToAction(nameof(Details));
+                }
+                catch
+                {
+                    ModelState.AddModelError("", "Det gick inte att ändra lösenordet!");
+                }
+            }
+            return View(model);
         }
 
         // GET: AccountController/Details/5
@@ -140,7 +227,7 @@ namespace FribergRentalCars.Controllers
                     {
                         return RedirectToAction("Details");
                     }*/
-                }
+        }
                 else
                 {
                     ModelState.AddModelError("", "Lösenordet eller användarnamn/ email är inkorrekt.");

@@ -4,20 +4,30 @@ namespace FribergRentalCars.Data.Interfaces
 {
     public interface IUserRepository 
     {
+        Task AddAsync(User user);
+
+        Task DeleteAsync(User user);
+
         Task<IEnumerable<User>> GetAllAsync();
 
         Task<User> GetByIdAsync(int id);
 
-        Task AddAsync(User user);
-
-        Task UpdateAsync(User user);
-
-        Task DeleteAsync(User user);
+        Task<User> GetUserByEmailAsync(string email);
 
         Task<User> GetUserByUserNameAsync(string userName);
 
-        Task<User> GetUserByEmailAsync(string email);
+        Task<string> FindUserNameByIdAsync(int id);
 
         Task<bool> UserNameAvailaibility(string userName);
+
+        Task UpdateAsync(User user);
+
+        
+
+        
+
+       
+
+        
     }
 }

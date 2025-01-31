@@ -64,7 +64,7 @@
 <div>
     <a asp-action="ChangePassword">Ändra Lösenord</a>
     <a asp-action="ChangeEmail" asp-route-id="@Model?.AccountId">Ändra Email</a>
-    <a asp-action="Rentals" asp-route-id="@Model?.AccountId">Se mina bokningar</a>
+    <a asp-action="ListAccountBookings" asp-controller="Booking" asp-route-id="@Model?.AccountId">Se mina bokningar</a>
     <a asp-controller="Home" asp-action="Index">Tillbaka</a>
 </div>
 
