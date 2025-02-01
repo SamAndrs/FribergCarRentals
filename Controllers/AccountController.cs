@@ -291,5 +291,13 @@ namespace FribergRentalCars.Controllers
             }
             return View(registerVM);
         }
+    
+        
+        // GET: AccountController/LoginRegister
+       public ActionResult LoginRegister()
+        {
+            return View();
+        }
+
     }
 }

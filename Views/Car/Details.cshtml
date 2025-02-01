@@ -74,8 +74,9 @@
                 {
                     <span>
                         Du måste vara inloggad för att kunna boka en bil.
-                        <a asp-action="Login" asp-controller="Account">Logga in</a> |
-                        <a asp-action="Register" asp-controller="Account">Nytt konto</a>
+                        <form asp-controller="Account" asp-action="LoginRegister">
+                            <input type="submit" value="Registrera/ Logga in" class="btn btn-primary" />
+                        </form>
                     </span>
                 }
             }

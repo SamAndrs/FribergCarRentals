@@ -9,7 +9,5 @@ namespace FribergRentalCars.ViewModels
         public Account Account { get; set; }
 
         public User User { get; set; }
-
-
     }
 }
