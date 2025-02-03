@@ -7,6 +7,10 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/FribergRentalCars.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+          rel="stylesheet" />
 </head>
 <body>
     <header>
@@ -17,85 +21,93 @@
         
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">FribergRentalCars</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    <img src="@Url.Content("~/images/logo.gif")" alt="Company logo" width="50" height="60"/>
+                    <strong>FribergRentalCars</strong>
+                    - Boka din bil billigt hos oss!
+                </a>
+
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                        aria-expanded="false" aria-label="Toggle navigation">                
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         
                         <li class="nav-item">
+                           
                             @if(!string.IsNullOrEmpty(user))
                             {
                                 if(admin != 1)
                                 {
-                                    <a class="nav-link text-dark">Inloggad som: @user</a>
+                                    <a class="nav-link text-dark"><i class="bi bi-person-fill" style="font-size: 25px"></i> @user</a>
                                 }
                                 else
                                 {
-                                    <a class="nav-link text-dark">Inloggad som: @user (Administratör)</a>
+                                    <a class="nav-link text-dark"><i class="bi bi-person-fill" style="font-size: 25px"></i> @user (Administratör)</a>
                                 }
                             }
                             else
                             {
-                                <a class="nav-link text-dark">Inloggad som: Gäst</a>
+                                <a class="nav-link text-dark"><i class="bi bi-person-fill" style="font-size: 25px"></i> Gäst</a>
                             }
                         </li>
+                        @*//  Car *@
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Car" asp-action="ListAll">
+                                <i class="bi bi-car-front-fill" style="font-size: 25px"></i>
+                                Hyra bil
+                            </a>
+                        </li>
+                    
                         
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        @*
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>*@
+                    </ul>
 
-                         @*//  Car *@
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Car" asp-action="ListAll">Hyra bil</a>
-                        </li>
+                    <ul class="navbar-nav nav-justify-content-right">
+                       
 
-                        @*// Logga In*@
+                        @*// Logga In/ Register*@
                         @if (string.IsNullOrEmpty(user))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Logga in</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="LoginRegister">
+                                    <i class="bi bi-person-fill-add" style="font-size: 25px"></i>
+                                    Logga in/Nytt konto
+                                </a>
                             </li>
                         }
 
-                        @*// Nytt Konto*@
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Register">Nytt konto</a>
-                        </li>
-
                         @*// Logga Ut*@
-                        @if(!string.IsNullOrEmpty(user))
+                        @if (!string.IsNullOrEmpty(user))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Logout">Logga ut</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Logout">
+                                    <i class="bi bi-person-fill-slash" style="font-size: 25px"></i>
+                                    Logga ut
+                                </a>
                             </li>
 
                             @*// My Account*@
-                            if(admin != 1)
+                            if (admin != 1)
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Details">Mitt Konto</a>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Details">
+                                        <i class="bi bi-person-fill-gear" style="font-size: 25px"></i>
+                                        Mina sidor
+                                    </a>
                                 </li>
                             }
                             else
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Details">Mitt Konto</a>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Details">
+                                        <i class="bi bi-person-fill-gear" style="font-size: 25px"></i>
+                                        Mina sidor
+                                    </a>
                                 </li>
                             }
-                           
-                            
                         }
-                        @*// Admin TO DO DEBUG*@
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Index">Admin (debug)</a>
-                        </li>
+                    </ul>
                 </div>
             </div>
         </nav>
@@ -106,11 +118,83 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - FribergRentalCars - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <footer class="bg-dark text-white pt-5 pb-4">
+        <div class="container text-center text-md-left" style="font-size: 12px">
+            <div class="row text-center text-md-left">
+                
+                
+                <div class="col-md-3 col-lg-3 col-xl-3 mx-auto mt-3">
+                    <h6 class="text-uppercase mb-4">Om oss</h6>
+                    <p class="text-start">
+                        Marcus Friberg, IT-gurun och superentreprenören som revolutionerade techvärlden, har nyligen tagit en oväntad sväng i sitt liv. Efter att ha rönt stora ekonomiska framgångar med sin senaste webbapplikation, bestämde han sig för att göra slag i saken och fokusera på sin stora hobby – begagnade bilar.
+
+                        Han har alltid varit en praktisk man med ett öga för affärer, och när han började lägga märke till hur marknaden för uthyrning av begagnade bilar växte, såg han en möjlighet att kombinera privat intresse med affärsinstinkt. Vintern 2024 startade han sin egen biluthyrningsfirma -Friberg Car Rentals med visionen att skapa en plattform där kunder enkelt kunde hyra bilar på ett smidigt och digitalt sätt.
+
+                        Marcus har köpt upp bilar från olika håll, via auktioner och ibland direkt från privata säljare, och har byggt upp en imponerande flotta.
+                    </p>
+
+                </div>
+
+                <div class="col-md-3 col-lg-3 col-xl-3 mx-auto mt-3">
+                    <h6 class="text-uppercase mb-4">Följ oss på</h6>
+                
+                    <div>
+                    <ul class="list-unstyled list-inline">
+                        <li class="list-inline-item">
+                            <a href="https://www.facebook.com/MarcusFriberg" class="btn-floating btn-sm text-white" style="font-size:25px">
+                                <i class="fab fa-facebook"></i></a>
+                        </li>
+                        
+                        <li class="list-inline-item">
+                            <a href="https://www.facebook.com/MarcusFriberg" class="btn-floating btn-sm text-white" style="font-size:25px">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a href="https://www.facebook.com/MarcusFriberg" class="btn-floating btn-sm text-white" style="font-size:25px">
+                                <i class="fab fa-linkedin-in"></i>
+                            </a>
+                        </li>
+                    </ul>
+
+                        <div>
+                            <br />
+                            <p>
+                                <a href="#" class="text-white" style="text-decoration: none; font-size: 18px">Hyrvillkor</a>
+                            </p>
+                            <p>
+                                <a href="#" class="text-white" style="text-decoration: none; font-size: 18px">Hitta till oss</a>
+                            </p> 
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="col-md-3 col-lg-3 col-xl-3 mx-auto mt-3">
+                    <h6 class="text-uppercase text-start mb-4">Kontakta oss</h6>                    
+                    <p class="text-start">
+                        <i class="fas fa-home mr-3"> Adress</i>
+                    </p>
+                    <p class="text-start">
+                        <a href="FriberCarRentals@gmail.com" class="text-white">
+                            <i class="fas fa-envelope mr-3"> FriberCarRentals@gmail.com</i>
+                        </a>
+                    </p>
+                    <p class="text-start">
+                        <i class="fas fa-phone mr-3"> 0xx-xx xx xx</i>
+                    </p>
+                </div>
+
+                <div>
+                    <p id="copyright" class="text-start">&copy; 2025 - FribergRentalCars</p>
+                </div>
+            </div>
+
         </div>
+
     </footer>
+
+  
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

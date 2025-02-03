@@ -1,0 +1,17 @@
+﻿
+
+.center-screen{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#yard {
+    z-index: -1;
+}
