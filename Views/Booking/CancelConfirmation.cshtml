@@ -1,0 +1,25 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "CancelConfirmation";
+}
+<div>
+    <span>
+        <h1>Avbokningen lyckades!</h1>
+        </span>
+</div>
+
+@*// If logged in as administrator, link back to admin account page instead of regular.*@
+@if(Context.Session.GetInt32("IsAdmin") == 1)
+{
+    <div>
+        <a asp-action="Details" asp-controller="Admin">Till Mina uppgifter</a>
+    </div>
+}
+else
+{
+    <div>
+        <a asp-action="Details" asp-controller="Account">Till Mina uppgifter</a>
+    </div>
+}

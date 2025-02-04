@@ -1,0 +1,96 @@
+﻿@model IEnumerable<FribergRentalCars.Models.Car>
+
+@{
+    ViewData["Title"] = "ListAllCars";
+}
+
+<h3>Alla Bilar</h3>
+
+<p>
+    <a asp-action="CreateCar">Lägg till ny bil | </a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <a>ID</a>
+            </th>
+            <th>
+                <a>Bild</a>
+            </th>
+            <th>
+                <a>Modell</a>
+            </th>
+            <th>
+                <a>Årtal</a>
+            </th>
+            <th>
+                <a>Reg.Nr</a>
+            </th>
+            <th>
+                <a>Pris/ dag</a>
+            </th>
+            <th class="visually-hidden">
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                <a>Status</a>
+            </th>
+            
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.CarId)
+            </td>
+                <td>
+                    @if (!string.IsNullOrEmpty(item.Image))
+                    {
+                        <div>
+                            <img src="@item.Image" alt="bild på bil" class="img-fluid" width="50" height="50" />
+                        </div>
+                    }
+                    else
+                    {
+                        <p>Bild saknas</p>
+                    }
+                </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Model)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ModelYear)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RegNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PricePerDay)
+            </td>
+            <td class="visually-hidden">
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+           @if(item.IsAvailable)
+           {
+                    <td>
+                       <p>Tillgänglig</p>
+                    </td>
+           }
+           else
+           {
+                    <td>
+                        <p>Borttagen</p>
+                    </td>
+           }
+            <td>
+                <div> @* // TO DO: Fix button*@
+                        <a href="@Url.Action("EditCar", new { carId = item.CarId })">Redigera</a>
+                </div>   
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

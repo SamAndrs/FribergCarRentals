@@ -1,0 +1,62 @@
+﻿@model FribergRentalCars.Models.Account
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+
+<div>
+    <ul class="list-group list-group-horizontal">
+        <li class="list-group-item  bg-transparent">
+            <h4 class="primary-text-color">Mina Sidor: </h4>
+        </li>
+        <li class="list-group-item  bg-transparent">
+            <h4 class="third-text-color"> @ViewBag.UserName</h4>
+        </li>
+    </ul>
+</div>
+<hr />
+<div>
+    <hr />
+    <dl class="row primary-text-color">
+        <dt class="col-sm-2">
+            <a>Förnamn</a>
+        </dt>
+        <dd class="col-sm-9 third-text-color">
+            @Html.DisplayFor(model => model.FirstName)
+        </dd>
+        <dt class="col-sm-2">
+            <a>Efternamn</a>
+        </dt>
+        <dd class="col-sm-9 third-text-color">
+            @Html.DisplayFor(model => model.LastName)
+        </dd>
+        
+        <dt class="col-sm-2">
+            <a>Adress</a>
+        </dt>
+        <dd class="col-sm-9 third-text-color">
+            @Html.DisplayFor(model => model.Adress.Street),
+            @Html.DisplayFor(model => model.Adress.PostalCode),
+            @Html.DisplayFor(model => model.Adress.City)
+        </dd>
+
+
+        <dt class="col-sm-2">
+            <a>Telefon-nummer</a>
+        </dt>
+        <dd class="col-sm-9 third-text-color">
+            @Html.DisplayFor(model => model.PhoneNumber)
+        </dd>
+        <dt class="col-sm-2">
+            <a>Email</a>
+        </dt>
+        <dd class="col-sm-9 third-text-color">
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+    </dl>
+</div>
+<div class="p-2">
+    <a href=@Url.Action("Edit", "Account", new {id = Model?.AccountId}) class="btn btn-primary border-0">Ändra uppgifter</a>
+    <a href=@Url.Action("ListAccountBookings", "Booking", new {id = Model?.AccountId}) class="btn btn-primary border-0">Mina bokningar</a>
+</div>

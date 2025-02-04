@@ -1,0 +1,46 @@
+﻿@model FribergRentalCars.ViewModels.EmailViewModel
+
+@{
+    ViewData["Title"] = "ChangeEmail";
+}
+
+<div>
+    <ul class="list-group list-group-horizontal">
+        <li class="list-group-item  bg-transparent">
+            <h4 class="primary-text-color">Ändra email för: </h4>
+        </li>
+        <li class="list-group-item  bg-transparent">
+            <h4 class="third-text-color"> @ViewBag.UserName</h4>
+        </li>
+    </ul>
+</div>
+
+<hr />
+<div class="row primary-text-color">
+    <div class="col-md-4  d-grid gap-3">
+        <form asp-action="ChangeEmail">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Account.AccountId" />
+           
+            <div class="form-group p-2">
+                <label asp-for="OldEmail" class="control-label"><strong>Nuvarande Email adress:</strong> </label>
+                <label class="third-text-color" asp-for="OldEmail">@Model.Account.Email</label>
+            </div>
+            <div class="form-group p-2">
+                <label asp-for="NewEmail" class="control-label"><strong>Ny Email adress</strong></label>
+                <input asp-for="NewEmail" class="form-control" />
+                <span asp-validation-for="NewEmail" class="text-danger"></span>
+            </div>
+            <div class="form-group p-2">
+                <label asp-for="ConfirmNewEmail" class="control-label"><strong>Bekräfta ny Email</strong></label>
+                <input asp-for="ConfirmNewEmail" class="form-control" />
+                <span asp-validation-for="ConfirmNewEmail" class="text-danger"></span>
+            </div>
+            <div class="form-group p-2">
+                <input type="submit" value="Spara" class="btn btn-primary border-0" />
+                <a href=@Url.Action("Edit", "Account", new {id = Model?.Account.AccountId}) class="btn btn-primary border-0">Tillbaka</a>
+            </div>
+        </form>
+    </div>
+</div>
+

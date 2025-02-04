@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Text.Json;
 using FribergRentalCars.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,7 +16,7 @@ namespace FribergRentalCars.Controllers
 
         public IActionResult Index()
         {
-            return View();
+                return View();
         }
 
         public IActionResult Privacy()

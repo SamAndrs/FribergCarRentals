@@ -1,0 +1,92 @@
+﻿@model FribergRentalCars.Models.Car
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h4>Detailjer för: @Model.Model</h4>
+
+<div>
+    <h4>Car</h4>
+    <hr />
+    <dl class="row">
+        <dd class="visually-hidden">
+            @Html.DisplayFor(model => model.CarId)
+        </dd>
+        <dt class = "col-sm-2">
+            <a>Modell</a>
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Model)
+        </dd>
+        <dt class = "col-sm-2">
+            <a>Årtal</a>
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ModelYear)
+        </dd>
+        <dt class="col-sm-2">
+            <a>Reg.Nr</a>
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.RegNumber)
+        </dd>
+        <dt class = "col-sm-2">
+            <a></a>
+        </dt>
+        <dd class = "col-sm-10">
+            <td>
+                @if (!string.IsNullOrEmpty(Model.Image))
+                {
+                    <div>
+                        <img src="@Model.Image" alt="bild på bil" class="img-fluid"/>
+                    </div>
+                }
+                else
+                {
+                    <p>Bild saknas</p>
+                }
+            </td>
+        </dd>
+        <dt class = "col-sm-2">
+            <a>Pris/ dag</a>
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.PricePerDay)
+        </dd>
+        <dt class = "col-sm-2">
+            <a>Beskrivning</a>
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dt class = "col-sm-2">
+            <a>Boka</a>
+        </dt>
+        <dd class = "col-sm-10">
+            @if(Model.IsAvailable)
+            {
+                if (!string.IsNullOrEmpty(Context.Session.GetString("user")))
+                {
+                    <button onclick="window.location='@Url.Action("Create", "Booking", new { id = Model.CarId })'" class="btn btn-primary">Boka</button>
+                }
+                else
+                {
+                    <span>
+                        Du måste vara inloggad för att kunna boka en bil.
+                        <form asp-controller="Account" asp-action="LoginRegister">
+                            <input type="submit" value="Registrera/ Logga in" class="btn btn-primary" />
+                        </form>
+                    </span>
+                }
+            }
+            else
+            {
+                <a>För närvarande uthyrd</a>
+            }
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="ListAll">Tillbaka</a>
+</div>

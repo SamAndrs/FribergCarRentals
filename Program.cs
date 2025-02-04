@@ -1,4 +1,5 @@
 ﻿using FribergRentalCars.Data;
+using FribergRentalCars.Data.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace FribergRentalCars
@@ -9,7 +10,17 @@ namespace FribergRentalCars
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            var _connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=FribergCarsDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False";
+            //ar _connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=FribergCarsDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False";
+
+            // Session state setup
+            builder.Services.AddMemoryCache();
+            builder.Services.AddSession();
+            builder.Services.AddSession(options =>
+            {
+                // Auto-end session after 10m of User idling.
+                options.IdleTimeout = TimeSpan.FromSeconds(60 *10);
+                options.Cookie.IsEssential = true;
+            });
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
@@ -19,9 +30,11 @@ namespace FribergRentalCars
                                                 .Build()
                                                 .GetSection("ConnectionStrings")["FribergCarsDB"])
                 );
-
-            
-
+            builder.Services.AddTransient<ICarRepository, CarRepository>();
+            builder.Services.AddTransient<IAccountRepository, AccountRepository>();
+            builder.Services.AddScoped<IAdressRepository, AdressRepository>();
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 
             var app = builder.Build();
 
@@ -39,6 +52,9 @@ namespace FribergRentalCars
             app.UseRouting();
 
             app.UseAuthorization();
+
+            // Enable Session state
+            app.UseSession();
 
             app.MapControllerRoute(
                 name: "default",

@@ -4,8 +4,12 @@
     {
         public int AdminId { get; set; }
 
-        public string LastName { get; set; }
+        public int UserId { get; set; }
 
-        public string FirstName { get; set; }
+        public int AccountId { get; set; }
+
+        public User User { get; set; }
+
+        public Account Account { get; set; }
     }
 }

@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.CompilerServices;
 
 namespace FribergRentalCars.Models
 {
@@ -6,14 +8,20 @@ namespace FribergRentalCars.Models
     {
         public int BookingId { get; set; }
 
-        public DateTime StartDate { get; set; }
+        public int? AccountId { get; set; }
 
-        public DateTime EndDate { get; set; }
+       // public Account Account { get; set; }
 
-        [ForeignKey("User")]
-        public int UserId { get; set; }
-
-        [ForeignKey("Car")]
         public int CarId { get; set; }
+
+        public DateOnly StartDate { get; set; }
+               
+        public DateOnly EndDate { get; set; }
+
+        public int TotalCost { get; set; }
+
+        public Car Car { get; set; }
+
+        public bool IsFinished { get; set; } = false;
     }
 }

@@ -1,0 +1,113 @@
+﻿@model FribergRentalCars.ViewModels.AdminViewModels.DeleteUserViewModel
+@{
+    ViewData["Title"] = "DeleteAccount";
+}
+
+<h4>Ta bort Användare och Konto</h4>
+
+<h5>Är du säker på att du vill radera användare: @Model.User.UserName?</h5>
+<h6>Konto för @Model.Account.FirstName @Model.Account.LastName kommer också raderas.</h6>
+<div>
+    
+    <hr />
+    <table>
+        <tr>
+            <td>
+    <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.User.UserId)
+    </dt>
+    <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.User.UserId)
+    </dd>
+    <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.User.UserName)
+    </dt>
+    <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.User.UserName)
+    </dd>
+    <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.User.IsAdmin)
+    </dt>
+                @if (Model.User.IsAdmin)
+                {
+        <p>Ja</p>
+                }
+                else
+                {
+        <p>Nej</p>
+                }
+
+    <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.User.AccountId)
+    </dt>
+    <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.User.AccountId)
+    </dd>
+    <dl class="row">
+        <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.Account.FirstName)
+        </dt>
+        <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.Account.FirstName)
+        </dd>
+        <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.Account.LastName)
+        </dt>
+        <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.Account.LastName)
+        </dd>
+
+        <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.Account.PhoneNumber)
+        </dt>
+        <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.Account.PhoneNumber)
+        </dd>
+        <dt class="col-sm-2">
+                        @Html.DisplayNameFor(model => model.Account.Email)
+        </dt>
+        <dd class="col-sm-10">
+                        @Html.DisplayFor(model => model.Account.Email)
+        </dd>
+    </dl>
+    
+            </td>
+
+            <td>
+    <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Account.AdressId)
+    </dt>
+    <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Account.AdressId)
+    </dd>
+
+    <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Account.Adress.Street)
+    </dt>
+    <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Account.Adress.Street)
+    </dd>
+    <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Account.Adress.PostalCode)
+    </dt>
+    <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Account.Adress.PostalCode)
+    </dd>
+    <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Account.Adress.City)
+    </dt>
+    <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Account.Adress.City)
+    </dd>
+            </td>
+
+        </tr>
+
+    </table>
+    
+    <form asp-action="DeleteAccount">
+       <input type="hidden" asp-for="User.UserId" />
+        <input type="submit" value="Radera" class="btn btn-danger" />
+    </form>
+    <a asp-action="ListAllAccounts">Tillbaka till kontolista</a>
+</div>
