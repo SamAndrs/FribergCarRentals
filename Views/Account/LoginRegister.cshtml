@@ -7,93 +7,140 @@
 <div>
     <a asp-action="Index" asp-controller="Home">Tillbaka</a>
 </div>
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Register">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <h4>Registrera konto</h4>
+<div class="row primary-text-color">
+    <div>
+    <hr />
             <table>
+                <thead>
+                    <tr>
+                        <th scope="col"><h5>Registrera konto</h5></th>
+                        <th scope="col"><h6>Skapa lösenord</h6></th>
+                        <th scope="col"> <h5>Logga in</h5></th>
+                    </tr>
+                </thead>
                 <tr>
-                    <td>
-                        <div class="form-group">
-                            <label asp-for="RegVM.Account.FirstName" class="control-label"><strong>Förnamn</strong></label>
-                            <input asp-for="RegVM.Account.FirstName" class="form-control" />
-                            <span asp-validation-for="RegVM.Account.FirstName" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="RegVM.Account.LastName" class="control-label"><strong>Efternamn</strong></label>
-                            <input asp-for="RegVM.Account.LastName" class="form-control" />
-                            <span asp-validation-for="RegVM.Account.LastName" class="text-danger"></span>
-                        </div>
+                    <body>
+                    <form asp-action="Register">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <td>
+                    <div class="form-group">
+                        <label asp-for="RegVM.Account.FirstName" class="control-label"><strong>Förnamn</strong></label>
+                        <input asp-for="RegVM.Account.FirstName" class="form-control" />
+                        <span asp-validation-for="RegVM.Account.FirstName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="RegVM.Account.LastName" class="control-label"><strong>Efternamn</strong></label>
+                        <input asp-for="RegVM.Account.LastName" class="form-control" />
+                        <span asp-validation-for="RegVM.Account.LastName" class="text-danger"></span>
+                    </div>
 
-                        <h6>Address</h6>
-                        <div class="form-group">
-                            <label asp-for="RegVM.Account.Adress.Street" class="control-label"><strong>Gatunamn</strong></label>
-                            <input asp-for="RegVM.Account.Adress.Street" class="form-control" />
-                            <span asp-validation-for="RegVM.Account.Adress.Street" class="text-danger"></span>
-                        </div>
+                    <h6>Address</h6>
+                    <div class="form-group">
+                        <label asp-for="RegVM.Account.Adress.Street" class="control-label"><strong>Gatunamn</strong></label>
+                        <input asp-for="RegVM.Account.Adress.Street" class="form-control" />
+                        <span asp-validation-for="RegVM.Account.Adress.Street" class="text-danger"></span>
+                    </div>
 
-                        <div class="form-group">
-                            <label asp-for="RegVM.Account.Adress.City" class="control-label"><strong>Stad/ Ort</strong></label>
-                            <input asp-for="RegVM.Account.Adress.City" class="form-control" />
-                            <span asp-validation-for="RegVM.Account.Adress.City" class="text-danger"></span>
-                        </div>
+                    <div class="form-group">
+                        <label asp-for="RegVM.Account.Adress.City" class="control-label"><strong>Stad/ Ort</strong></label>
+                        <input asp-for="RegVM.Account.Adress.City" class="form-control" />
+                        <span asp-validation-for="RegVM.Account.Adress.City" class="text-danger"></span>
+                    </div>
 
-                        <div class="form-group">
-                            <label asp-for="RegVM.Account.Adress.PostalCode" class="control-label"><strong>Postnummer</strong></label>
-                            <input asp-for="RegVM.Account.Adress.PostalCode" class="form-control" />
-                            <span asp-validation-for="RegVM.Account.Adress.PostalCode" class="text-danger"></span>
-                        </div>
+                    <div class="form-group">
+                        <label asp-for="RegVM.Account.Adress.PostalCode" class="control-label"><strong>Postnummer</strong></label>
+                        <input asp-for="RegVM.Account.Adress.PostalCode" class="form-control" />
+                        <span asp-validation-for="RegVM.Account.Adress.PostalCode" class="text-danger"></span>
+                    </div>
 
+                    <div class="form-group">
+                        <label asp-for="RegVM.Account.PhoneNumber" class="control-label"><strong>Telefon</strong></label>
+                        <input asp-for="RegVM.Account.PhoneNumber" class="form-control" />
+                        <span asp-validation-for="RegVM.Account.PhoneNumber" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="RegVM.Account.Email" class="control-label"><strong>Email</strong></label>
+                        <input asp-for="RegVM.Account.Email" class="form-control" />
+                        <span asp-validation-for="RegVM.Account.Email" class="text-danger"></span>
+                    </div>
+                    <div>
                         <div class="form-group">
-                            <label asp-for="RegVM.Account.PhoneNumber" class="control-label"><strong>Telefon</strong></label>
-                            <input asp-for="RegVM.Account.PhoneNumber" class="form-control" />
-                            <span asp-validation-for="RegVM.Account.PhoneNumber" class="text-danger"></span>
+                            <input type="submit" value="Registrera" class="btn btn-primary" />
                         </div>
-                        <div class="form-group">
-                            <label asp-for="RegVM.Account.Email" class="control-label"><strong>Email</strong></label>
-                            <input asp-for="RegVM.Account.Email" class="form-control" />
-                            <span asp-validation-for="RegVM.Account.Email" class="text-danger"></span>
-                        </div>
-                    </td>
+                </td>
+                <td>
+                    <div class="form-group">
+                        <label asp-for="RegVM.User.UserName" class="control-label"><strong>Ange ett användarnamn</strong></label>
+                        <input asp-for="RegVM.User.UserName" class="form-control" />
+                        <span asp-validation-for="RegVM.User.UserName" class="text-danger"></span>
+                    </div>
 
-                    <td>
-                        <h6>Skapa Lösenord</h6>
-                        <div class="form-group">
-                            <label asp-for="RegVM.User.UserName" class="control-label"><strong>Ange ett användarnamn</strong></label>
-                            <input asp-for="RegVM.User.UserName" class="form-control" />
-                            <span asp-validation-for="RegVM.User.UserName" class="text-danger"></span>
-                        </div>
+                    <div class="form-group">
+                        <label asp-for="RegVM.User.Password" class="control-label"><strong>Ange ett lösenord</strong></label>
+                        <input asp-for="RegVM.User.Password" class="form-control" />
+                        <span asp-validation-for="RegVM.User.Password" class="text-danger"></span>
+                    </div>
 
-                        <div class="form-group">
-                            <label asp-for="RegVM.User.Password" class="control-label"><strong>Ange ett lösenord</strong></label>
-                            <input asp-for="RegVM.User.Password" class="form-control" />
-                            <span asp-validation-for="RegVM.User.Password" class="text-danger"></span>
-                        </div>
+                    <div class="form-group">
+                        <label asp-for="RegVM.User.ConfirmPassword" class="control-label"><strong>Bekräfta lösenord</strong></label>
+                        <input asp-for="RegVM.User.ConfirmPassword" class="form-control" />
+                        <span asp-validation-for="RegVM.User.ConfirmPassword" class="text-danger"></span>
+                    </div>
+                    </form>
+                </td>
+                <td>
+                    <form asp-action="Login">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
+                        <hr />
                         <div class="form-group">
-                            <label asp-for="RegVM.User.ConfirmPassword" class="control-label"><strong>Bekräfta lösenord</strong></label>
-                            <input asp-for="RegVM.User.ConfirmPassword" class="form-control" />
-                            <span asp-validation-for="RegVM.User.ConfirmPassword" class="text-danger"></span>
+                            <label asp-for="LoginVM.EmailOrUserName" class="control-label"><strong>Email/Användarnamn</strong></label>
+                            <input asp-for="LoginVM.EmailOrUserName" class="form-control" />
+                            <span asp-validation-for="LoginVM.EmailOrUserName" class="text-danger"></span>
                         </div>
-                    </td>
+                        <div class="form-group">
+                            <label asp-for="LoginVM.Password" class="control-label"><strong>Ange lösenord</strong></label>
+                            <input asp-for="LoginVM.Password" class="form-control" />
+                            <span asp-validation-for="LoginVM.Password" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="LoginVM.ConfirmPassword" class="control-label"><strong>Bekräfta lösenord</strong></label>
+                            <input asp-for="LoginVM.ConfirmPassword" class="form-control" />
+                            <span asp-validation-for="LoginVM.ConfirmPassword" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" value="Logga in" class="btn btn-primary" />
+                        </div>
+                    </form>
+                </td>
+                    </body>
                 </tr>
 
-            </table>
 
+             </table>
+    </div>
+
+                    
+                                   
+                   
+                
+
+            
+            @*
             <div class="form-group">
                 <input type="submit" value="Registrera" class="btn btn-primary" />
             </div>
-        </form>
+        </form>*@
     </div>
 </div>
 
-
+@*
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Login">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <h4>Logga in</h4>
+            <h5>Logga in</h5>
+            <hr />
             <table>
                 <tr>
                     <td>
@@ -121,7 +168,7 @@
         </form>
     </div>
 
-</div>
+</div>*@
 
 @section Scripts {
     @{

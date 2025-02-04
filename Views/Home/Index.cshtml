@@ -9,6 +9,20 @@
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>*@
 
+@{
+    // debug
+    Context.Session.SetString("user", "SamAndrs");
+    Context.Session.SetInt32("accountID", 1);
+
+    var user = Context.Session.GetString("user");
+    var accID = Context.Session.GetInt32("accountID");
+}
+
+<div>
+    <a href=@Url.Action("LoginRegister", "Account", new { id = accID}) class="btn btn-primary border-0">(debug) Logga in/ Registrera</a>
+    <p>@user - @accID</p>
+</div>
+
 <section class="center-screen">
     <div class="container">
         <div id="box-1">

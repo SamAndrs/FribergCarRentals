@@ -29,7 +29,8 @@ namespace FribergRentalCars.Controllers
         // GET: AccountController/ChangeEmail
         public async Task<ActionResult> ChangeEmail(int id)
         {
-            if(id <= 0)
+            ViewBag.UserName = HttpContext.Session.GetString("user");
+            if (id <= 0)
             {
                 return NotFound(id);
             }
@@ -52,7 +53,6 @@ namespace FribergRentalCars.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> ChangeEmail(EmailViewModel emailVM)
         {
-            ViewBag.UserName = HttpContext.Session.GetString("user");
             if (await _accountRepo.EmailAvailability(emailVM.NewEmail))
             {
                 ModelState.AddModelError("", "Den här emailadressen är redan registrerad.");
@@ -127,6 +127,8 @@ namespace FribergRentalCars.Controllers
         // GET: AccountController/Details/5
         public async Task <IActionResult> Details()
         {
+            var userName = HttpContext.Session.GetString("user");
+            ViewBag.UserName = userName;
             var account = await _accountRepo.GetWithAdressAsync((int)HttpContext.Session.GetInt32("accountID")!);
             if (account == null)
             {
@@ -139,6 +141,8 @@ namespace FribergRentalCars.Controllers
         // GET: AccountController/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
+            var userName = HttpContext.Session.GetString("user");
+            ViewBag.UserName = userName;
             if (id == null)
             {
                 return NotFound();
@@ -216,17 +220,6 @@ namespace FribergRentalCars.Controllers
                     HttpContext.Session.SetInt32("accountID", user.AccountId);
                     HttpContext.Session.SetString("user", user.UserName);
                     return RedirectToAction("Details");
-                    /*
-                    if (user.IsAdmin)
-                    {
-                        // Using a numeric value for the 'isAdmin' value, since Session doesn't allow bools
-                        HttpContext.Session.SetInt32("isAdmin", 1);
-                        return RedirectToAction("Index", "Admin"); // TO-DO Admin page  and controller redirect
-                    }
-                    else
-                    {
-                        return RedirectToAction("Details");
-                    }*/
         }
                 else
                 {
