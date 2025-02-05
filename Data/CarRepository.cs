@@ -33,9 +33,14 @@ namespace FribergRentalCars.Data
             return await _appDbContext.Cars.ToListAsync();
         }
 
-        public async Task<IEnumerable<Car>> GetAllAvailable()
+        public async Task<IEnumerable<Car>> GetAllAvailableAsync()
         {
             return await _appDbContext.Cars.Where(c => c.IsAvailable).ToListAsync();
+        }
+
+        public async Task<IEnumerable<Car>> GetAllUnAvailableAsync()
+        {
+            return await _appDbContext.Cars.Where(c => !c.IsAvailable).ToListAsync();
         }
 
         public async Task<Car> GetIdByAsync(int id)

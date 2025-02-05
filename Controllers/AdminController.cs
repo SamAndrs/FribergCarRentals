@@ -37,6 +37,7 @@ namespace FribergRentalCars.Controllers
         [AdminAuthorizationFilter]
         public async Task<ActionResult> Details()
         {
+            ViewBag.UserName = HttpContext.Session.GetString("user");
             try
             {
                 var getAccount = HttpContext.Session.GetInt32("accountID");
@@ -92,6 +93,7 @@ namespace FribergRentalCars.Controllers
                 {
                     HttpContext.Session.SetInt32("accountID", user.AccountId);
                     HttpContext.Session.SetString("user", user.UserName);
+                    HttpContext.Session.SetInt32("UserID", user.UserId);
                     // Control check if Admin
                     if (user.IsAdmin)
                     {
@@ -228,12 +230,16 @@ namespace FribergRentalCars.Controllers
 
         // GET: AdminController/EditAccountBookings/5
         [AdminAuthorizationFilter]
-        public async Task<ActionResult> AllAccountBookings(int accountId)
+        public async Task<ActionResult> AllAccountBookings(int id)
         {
-            var accBookings = await _bookRepo.GetBookingsByAccountIdAsync(accountId);
+            var accBookings = await _bookRepo.GetBookingsByAccountIdAsync(id);
 
             // Retrieve User id for getting back to Edit Account properly (takes userId as parameter)
-            ViewBag.UserID = HttpContext.Session.GetInt32("UserId");
+            var userId = HttpContext.Session.GetInt32("UserId");
+            ViewBag.UserID = userId;
+            // Retrieve UserName for listing bookings for account, properly
+            ViewBag.UserName = await _userRepo.FindUserNameByIdAsync((int)userId!);
+
 
             foreach (var item in accBookings)
             {
@@ -250,13 +256,12 @@ namespace FribergRentalCars.Controllers
         }
 
         [AdminAuthorizationFilter]
-        public async Task<ActionResult> CancelBooking(int id)
+        public async Task<ActionResult> CancelAccountBooking(int id)
         {
             try
             {
                 var booking = await _bookRepo.GetIdByAsync(id);
                 await _bookRepo.DeleteAsync(booking);
-          
                 return RedirectToAction("AllAccountBookings");
             }
             catch
@@ -264,6 +269,23 @@ namespace FribergRentalCars.Controllers
                 ModelState.AddModelError("", "Kunde inte radera bokningen.");
                 return NotFound(id);
                 
+            }
+        }
+
+        [AdminAuthorizationFilter]
+        public async Task<ActionResult> CancelListBooking(int id)
+        {
+            try
+            {
+                var booking = await _bookRepo.GetIdByAsync(id);
+                await _bookRepo.DeleteAsync(booking);
+                return RedirectToAction("AllActiveBookings");
+            }
+            catch
+            {
+                ModelState.AddModelError("", "Kunde inte radera bokningen.");
+                return NotFound(id);
+
             }
         }
 
@@ -350,6 +372,21 @@ namespace FribergRentalCars.Controllers
             return View(allCars);
         }
 
+        // GET: AdminController/ListAllCars
+        [AdminAuthorizationFilter]
+        public async Task<ActionResult> ListAllAvailableCars()
+        {
+            var allCars = await _carRepo.GetAllAvailableAsync();
+            return View(allCars);
+        }
+
+        // GET: AdminController/ListAllCars
+        [AdminAuthorizationFilter]
+        public async Task<ActionResult> ListAllUnAvailableCars()
+        {
+            var allCars = await _carRepo.GetAllUnAvailableAsync();
+            return View(allCars);
+        }
         #endregion
 
 
@@ -528,6 +565,37 @@ namespace FribergRentalCars.Controllers
                 //return NotFound(adress);
             }
 
+            try
+            {
+
+                List<Booking> accountBookings = new List<Booking>
+                           (await _bookRepo.GetFinishedAccountBookings(account.AccountId));
+
+                foreach (var booking in accountBookings)
+                {
+                    if(!booking.IsFinished)
+                    {
+                        await _bookRepo.DeleteAsync(booking);
+                    }
+                    /*
+                    booking.EndDate = DateOnly.FromDateTime(DateTime.Today);
+                    booking.IsFinished = true;
+                    await _bookRepo.UpdateAsync(booking);*/
+
+                    await _userRepo.DeleteAsync(user);
+                    await _adrRepo.DeleteAsync(adress);
+                    await _accRepo.DeleteAsync(account);
+
+                    //return RedirectToAction(nameof(ListAllAccounts));
+                }
+            }
+            catch
+            {
+                ModelState.AddModelError("", "Användaren kunde inte raderas");
+                //return RedirectToAction(nameof(ListAllAccounts));
+            }
+            return RedirectToAction(nameof(ListAllAccounts));
+            /*
             DeleteUserViewModel delUser = new DeleteUserViewModel
             {
                 User = user,
@@ -556,8 +624,8 @@ namespace FribergRentalCars.Controllers
             catch
             {
                 ModelState.AddModelError("", "Användaren kunde inte raderas");
-                return View(delUser);
-            }
+                return RedirectToAction(nameof(ListAllAccounts));
+            }*/
         }
         
 

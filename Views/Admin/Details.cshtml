@@ -2,58 +2,66 @@
 
 @{
     ViewData["Title"] = "Details";
-    var user = Context.Session.GetString("user");
+    var userID = Context.Session.GetInt32("UserID");
 }
 
 <div>
-    <span>
-        <h4>Konto: @user</h4>
-        <h5>Inloggad som Administratör</h5>
-    </span>
-    
-    <hr />
+    <ul class="list-group list-group-horizontal">
+        <li class="list-group-item  bg-transparent">
+            <h4 class="primary-text-color">Mina Sidor: </h4>
+        </li>
+        <li class="list-group-item  bg-transparent">
+            <h4 class="third-text-color"> @ViewBag.UserName</h4>
+        </li>
+        <li class="list-group-item bg-transparent">
+            <h5 class="primary-text-color">Inloggad som Administratör</h5>
+        </li>
+    </ul>
+</div>
+<hr />
+<div>    
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FirstName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FirstName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.LastName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.LastName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Adress)
-        </dt>
-        <dd class="visually-hidden">
-            @Html.DisplayFor(model => model.Adress.AdressId)
-        </dd >
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Adress.Street),
-            @Html.DisplayFor(model => model.Adress.PostalCode),
-            @Html.DisplayFor(model => model.Adress.City)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PhoneNumber)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PhoneNumber)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Email)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Email)
-        </dd>
+        <dl class="row primary-text-color">
+            <dt class="col-sm-2">
+                <a>Förnamn</a>
+            </dt>
+            <dd class="col-sm-9 third-text-color">
+                @Html.DisplayFor(model => model.FirstName)
+            </dd>
+            <dt class="col-sm-2">
+                <a>Efternamn</a>
+            </dt>
+            <dd class="col-sm-9 third-text-color">
+                @Html.DisplayFor(model => model.LastName)
+            </dd>
+
+            <dd class="visually-hidden">
+                @Html.DisplayFor(model => model.Adress.AdressId)
+            </dd>
+
+            <dt class="col-sm-2">
+                <a>Adress</a>
+            </dt>
+            <dd class="col-sm-9 third-text-color">
+                @Html.DisplayFor(model => model.Adress.Street),
+                @Html.DisplayFor(model => model.Adress.PostalCode),
+                @Html.DisplayFor(model => model.Adress.City)
+            </dd>
+
+            <dt class="col-sm-2">
+                <a>Telefon-nummer</a>
+            </dt>
+            <dd class="col-sm-9 third-text-color">
+                @Html.DisplayFor(model => model.PhoneNumber)
+            </dd>
+            <dt class="col-sm-2">
+                <a>Email</a>
+            </dt>
+            <dd class="col-sm-9 third-text-color">
+                @Html.DisplayFor(model => model.Email)
+            </dd>
     </dl>
 </div>
 <div>
-    <a asp-action="ListAllAccounts">Se alla konton</a> |
-    <a asp-action="AllActiveBookings">Se alla bokningar</a> |
-    <a asp-action="ListAllCars">Se alla bilar</a> |
-    <a asp-action="EditAccount" asp-route-id="@Model?.AccountId">Ändra konto</a> |
-    <a asp-action="Index" asp-controller="Home">Till Hemsidan</a>
+    <a href=@Url.Action("EditAccount", "Admin", new {id = userID}) class="btn btn-primary border-0">Ändra uppgifter</a>
 </div>

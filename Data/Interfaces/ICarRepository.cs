@@ -10,7 +10,9 @@ namespace FribergRentalCars.Data.Interfaces
 
         Task<IEnumerable<Car>> GetAllAsync();
 
-        Task<IEnumerable<Car>> GetAllAvailable();
+        Task<IEnumerable<Car>> GetAllAvailableAsync();
+
+        Task<IEnumerable<Car>> GetAllUnAvailableAsync();
 
         Task<Car> GetIdByAsync(int id);
 

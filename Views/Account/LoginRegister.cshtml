@@ -62,11 +62,7 @@
                         <label asp-for="RegVM.Account.Email" class="control-label"><strong>Email</strong></label>
                         <input asp-for="RegVM.Account.Email" class="form-control" />
                         <span asp-validation-for="RegVM.Account.Email" class="text-danger"></span>
-                    </div>
-                    <div>
-                        <div class="form-group">
-                            <input type="submit" value="Registrera" class="btn btn-primary" />
-                        </div>
+                    </div>                       
                 </td>
                 <td>
                     <div class="form-group">
@@ -80,14 +76,24 @@
                         <input asp-for="RegVM.User.Password" class="form-control" />
                         <span asp-validation-for="RegVM.User.Password" class="text-danger"></span>
                     </div>
-
                     <div class="form-group">
                         <label asp-for="RegVM.User.ConfirmPassword" class="control-label"><strong>Bekräfta lösenord</strong></label>
                         <input asp-for="RegVM.User.ConfirmPassword" class="form-control" />
                         <span asp-validation-for="RegVM.User.ConfirmPassword" class="text-danger"></span>
                     </div>
+
+                    <div class="form-group">
+                        <input type="submit" value="Registrera" class="btn btn-primary" />
+                    </div>
                     </form>
                 </td>
+               
+                    </body>
+                </tr>
+             </table>
+
+             <table>
+                 <tr>
                 <td>
                     <form asp-action="Login">
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -108,15 +114,14 @@
                             <input asp-for="LoginVM.ConfirmPassword" class="form-control" />
                             <span asp-validation-for="LoginVM.ConfirmPassword" class="text-danger"></span>
                         </div>
+
                         <div class="form-group">
                             <input type="submit" value="Logga in" class="btn btn-primary" />
                         </div>
+
                     </form>
                 </td>
-                    </body>
-                </tr>
-
-
+                 </tr>
              </table>
     </div>
 

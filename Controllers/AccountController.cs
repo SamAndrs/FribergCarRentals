@@ -219,6 +219,7 @@ namespace FribergRentalCars.Controllers
                 {
                     HttpContext.Session.SetInt32("accountID", user.AccountId);
                     HttpContext.Session.SetString("user", user.UserName);
+                    HttpContext.Session.SetInt32("UserID", user.UserId);
                     return RedirectToAction("Details");
         }
                 else
@@ -273,6 +274,7 @@ namespace FribergRentalCars.Controllers
 
                             HttpContext.Session.SetString("user", registerVM.User.UserName);
                             HttpContext.Session.SetInt32("accountID", registerVM.Account.AccountId);
+                            HttpContext.Session.SetInt32("UserID", registerVM.User.UserId);
                             return RedirectToAction(nameof(Details));
                         }
                     }

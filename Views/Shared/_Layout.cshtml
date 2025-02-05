@@ -59,7 +59,13 @@
                                 Hyra bil
                             </a>
                         </li>
-                    
+
+
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Index">
+                                Admin (debug)
+                            </a>
+                        </li>
                         
                     </ul>
 
@@ -111,6 +117,35 @@
                 </div>
             </div>
         </nav>
+
+        @if(admin == 1)
+        {
+            <div>
+                <ul class="list-group list-group-horizontal">
+                    <li class="list-group-item bg-transparent">
+                        <a href=@Url.Action("ListAllAvailableCars", "Admin") class="btn btn-primary btn-sm border-0">Alla bilar</a>
+                    </li>
+                    <li class="list-group-item bg-transparent">
+                        <a href=@Url.Action("ListAllAccounts", "Admin") class="btn btn-primary btn-sm border-0">Alla konton</a>
+                    </li>
+                    <li class="list-group-item bg-transparent">
+                        <a href=@Url.Action("AllActiveBookings", "Admin") class="btn btn-primary btn-sm border-0">Alla bokningar</a>
+                    </li>
+                    <li class="list-group-item bg-transparent">
+                        <a href=@Url.Action("Details", "Admin") class="btn btn-primary btn-sm border-0">Mina sidor</a>
+                    </li>
+                    <li class="list-group-item bg-transparent">
+                        <a href=@Url.Action("CreateAccount", "Admin") class="btn btn-primary btn-sm border-0">Registrera konto</a>
+                    </li>
+                    <li class="list-group-item bg-transparent">
+                        <a href=@Url.Action("CreateCar", "Admin") class="btn btn-primary btn-sm border-0">Lägg till bil</a>
+                    </li>
+
+                </ul>
+            </div>
+            
+   
+        }
     </header>
     <div class="container">
         <main role="main" class="pb-3">

@@ -4,14 +4,13 @@
     ViewData["Title"] = "AllActiveBookings";
 }
 
-<h4>Alla bokningar</h4>
+<h4 class="primary-text-color">Alla pågående bokningar</h4>
 
 <p>
-    <a asp-action="Details">Mitt Konto</a>
-    <a asp-action="AllFinishedBookings">Historiska Bokningar</a>
+    <a href=@Url.Action("AllFinishedBookings", "Admin") class="btn btn-primary border-0">Historiska bokningar</a>
 </p>
 <table class="table">
-    <thead>
+    <thead class="primary-text-color">
         <tr>
             <th>
                 <p>Boknings-Id</p>
@@ -45,7 +44,7 @@
             </th>
         </tr>
     </thead>
-    <tbody>
+    <tbody class="third-text-color">
         @foreach (var item in Model)
         {
             <tr>
@@ -67,32 +66,7 @@
                 <th>
                     @Html.DisplayFor(modelItem => item.Car.CarId)
                 </th>
-                @* // IF BOOKING IS FINISHED display text in grey color*@
-                @*if (item.EndDate < DateOnly.FromDateTime(DateTime.Now))*@
-                @if(item.IsFinished)
-                {
-                    <td>
-                        <span style="color: dimgrey">@item.Car.Model (@item.Car.ModelYear)</span>
-                    </td>
-                    <td>
-                        <span>@item.Email /@item.AccountId</span>
-                    </td>
-                    <td>
-                        <span style="color: dimgrey">@item.StartDate</span>
-                    </td>
-                    <td>
-                        <span style="color: dimgrey">@item.EndDate</span>
-                    </td>
-                    <td>
-                        <span style="color: dimgrey">@item.TotalCost kr </span>
-                    </td>
-                    <td>
-                        <span style="color: dimgrey">Avslutad</span>
-                    </td>
-                }
-                @*// IF BOOKING IS NOT FINISHED display text in black color*@
-                else
-                {
+               
                     <td>
                         <span>@item.Car.Model (@item.Car.ModelYear)</span>
                     </td>
@@ -111,14 +85,9 @@
                     </td>
 
                     <td>
-                        <form asp-action="Cancel" asp-controller="Booking" asp-route-id="@item.BookingId">
-                            <span>
-                                Pågående |
-                                <input type="submit" value="Avboka" class="btn btn-danger" />
-                            </span>
-                        </form>
+                        Pågående | <a href=@Url.Action("CancelListBooking", "Admin", new { id = item.BookingId}) class="btn btn-danger">Avboka</a>
                     </td>
-                }
+                
 
                 <td class="visually-hidden">
                     @Html.DisplayFor(modelItem => item.Car)

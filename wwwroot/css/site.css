@@ -62,3 +62,9 @@ html {
 .btn-primary{
     background-color: var(--primary-color) !important;
 }
+
+.btn-danger{
+    background-color: var(--fourth-color) !important;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+}

@@ -4,19 +4,23 @@
     ViewData["Title"] = "AllAccountBookings";
 }
 
-<h4>Alla bokningar för kontot</h4>
+<div>
+    <ul class="list-group list-group-horizontal">
+        <li class="list-group-item  bg-transparent">
+            <h4 class="primary-text-color">Alla bokningar för:</h4>
+        </li>
+        <li class="list-group-item  bg-transparent">
+            <h4 class="third-text-color">@ViewBag.UserName</h4>
+        </li>
+    </ul>
+</div>
+<div>
+    <a href=@Url.Action("EditAccount", "Admin", new { id = ViewBag.UserID}) class="btn btn-primary border-0">Tillbaka</a>
+</div>
 
-<p>
-    <a href="@Url.Action("EditAccount", new { id = ViewBag.UserID })">
-        <span>
-            <input type="submit" value="Redigera Konto" class="btn btn-primary" />
-        </span>
-    </a>
-
-</p>
 <table class="table">
     <thead>
-        <tr>
+        <tr class="primary-text-color">
             <th>
                 <p>Boknings-Id</p>
             </th>
@@ -46,7 +50,7 @@
             </th>
         </tr>
     </thead>
-    <tbody>
+    <tbody class="third-text-color">
         @foreach (var item in Model)
         {
             <tr>
@@ -57,7 +61,7 @@
                     @if (!string.IsNullOrEmpty(item.Car.Image))
                     {
                         <div>
-                            <img src="@item.Car.Image" alt="bild på bil" class="img-fluid" width="80" height="80" />
+                            <img src="@item.Car.Image" alt="bild på bil" class="img-fluid" width="100" height="100" />
                         </div>
                     }
                     else
@@ -106,12 +110,8 @@
                     </td>
 
                     <td>
-                       <form asp-action="CancelBooking" asp-controller="Admin" asp-route-id="@item.BookingId">
-                            <span>
-                                Pågående |
-                                <input type="submit" value="Avboka" class="btn btn-danger" />
-                            </span>
-                        </form>
+                       Pågående | <a href=@Url.Action("CancelAccountBooking", "Admin", new { id = item.BookingId}) class="btn btn-danger">Avboka</a>
+                       
                     </td>
                 }
 
@@ -122,3 +122,4 @@
         }
     </tbody>
 </table>
+

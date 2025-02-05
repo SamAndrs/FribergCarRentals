@@ -1,0 +1,86 @@
+﻿@model IEnumerable<FribergRentalCars.Models.Car>
+
+@{
+    ViewData["Title"] = "ListAllAvailableCars";
+}
+<hr />
+<div>
+    <h4 class="primary-text-color">Registrerade bilar</h4>
+    <h6 class="third-text-color">Tillgängliga</h6>
+    <a href=@Url.Action("ListAllUnAvailableCars") class="btn btn-primary btn-sm border-0">Borttagna bilar</a>
+</div>
+
+<table class="table table-borderless">
+    <thead class="primary-text-color">
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Bild</th>
+            <th scope="col">Modell</th>
+            <th scope="col">År</th>
+            <th scope="col">Reg.Nr</th>
+            <th scope="col">Pris/ dygn</th>
+           
+            <th class="visually-hidden">
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th scope="col">Status</th>
+            <th scope="col">Åtgärd</th>
+        </tr>
+    </thead>
+    <tbody class="third-text-color">
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CarId)
+                </td>
+                <td>
+                    @if (!string.IsNullOrEmpty(item.Image))
+                    {
+                        <div>
+                            <img src="@item.Image" alt="bild på bil" class="img-fluid" width="100" height="100" />
+                        </div>
+                    }
+                    else
+                    {
+                        <p>Bild saknas</p>
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Model)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ModelYear)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RegNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PricePerDay)
+                </td>
+                <td class="visually-hidden">
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                @if (item.IsAvailable)
+                {
+                    <td>
+                        <p>Tillgänglig</p>
+                    </td>
+                }
+                else
+                {
+                    <td>
+                        <p style="color: dimgrey">Borttagen</p>
+                    </td>
+                }
+                <td>
+                    <div>
+                        <a href=@Url.Action("EditCar", new { carId = item.CarId }) class="btn btn-primary border-0">Redigera</a>
+                        <a href=@Url.Action("DeleteCar", new { carId = item.CarId }) class="btn btn-danger">Ta bort</a>
+                    </div>
+                </td>
+            </tr>
+
+        }
+    </tbody>
+</table>

@@ -4,14 +4,10 @@
     ViewData["Title"] = "AllFinishedBookings";
 }
 
-<h4>Historiska bokningar</h4>
+<h4 class="primary-text-color">Historiska bokningar</h4>
 
-<p>
-    <a asp-action="Details">Mitt Konto</a>
-    <a asp-action="AllActiveBookings">Pågående Bokningar</a>
-</p>
 <table class="table">
-    <thead>
+    <thead class="primary-text-color">
         <tr>
             <th>
                 <p>Boknings-Id</p>
@@ -45,7 +41,7 @@
             </th>
         </tr>
     </thead>
-    <tbody>
+    <tbody style="color: dimgrey">
         @foreach (var item in Model)
         {
             <tr>
@@ -56,7 +52,7 @@
                     @if (!string.IsNullOrEmpty(item.Car.Image))
                     {
                         <div>
-                            <img src="@item.Car.Image" alt="bild på bil" class="img-fluid" width="80" height="80" />
+                            <img src="@item.Car.Image" alt="bild på bil" class="img-fluid" width="100" height="100" />
                         </div>
                     }
                     else
@@ -67,28 +63,25 @@
                 <th>
                     @Html.DisplayFor(modelItem => item.Car.CarId)
                 </th>
-                @* // IF BOOKING IS FINISHED display text in grey color*@
-                @if(item.IsFinished)
-                {
-                    <td>
-                        <span style="color: dimgrey">@item.Car.Model (@item.Car.ModelYear)</span>
-                    </td>
-                    <td>
-                        <span>@item.Email /@item.AccountId</span>
-                    </td>
-                    <td>
-                        <span style="color: dimgrey">@item.StartDate</span>
-                    </td>
-                    <td>
-                        <span style="color: dimgrey">@item.EndDate</span>
-                    </td>
-                    <td>
-                        <span style="color: dimgrey">@item.TotalCost kr </span>
-                    </td>
-                    <td>
-                        <span style="color: dimgrey">Avslutad</span>
-                    </td>
-                }
+                <td>
+                    @item.Car.Model (@item.Car.ModelYear)
+                </td>
+                <td>
+                    @item.Email /@item.AccountId
+                </td>
+                <td>
+                    @item.StartDate
+                </td>
+                <td>
+                    @item.EndDate
+                </td>
+                <td>
+                    @item.TotalCost kr
+                </td>
+                <td>
+                    Avslutad
+                </td>
+               
                 <td class="visually-hidden">
                     @Html.DisplayFor(modelItem => item.Car)
                 </td>
