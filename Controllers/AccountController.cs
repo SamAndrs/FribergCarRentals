@@ -236,62 +236,57 @@ namespace FribergRentalCars.Controllers
             HttpContext.Session.Clear();
 
             return RedirectToAction("Index", "Home");
-        }   
-
-        // GET: AccountController/Register
-        public ActionResult Register()
-        {
-            return View();
         }
 
-        // POST: AccountController/Register
+        // POST: AccountController/LoginRegister/Register
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Register(RegisterViewModel registerVM)
+        public async Task<ActionResult> Register(RegisterViewModel regVM)
         {
-            if (ModelState.IsValid)
+            if(ModelState.IsValid)
             {
                 try
                 {
-                    if(await _accountRepo.EmailAvailability(registerVM.Account.Email))
+                    if(await _accountRepo.EmailAvailability(regVM.Account.Email))
                     {
                         ModelState.AddModelError("", "Den här emailadressen är redan registrerad.");
-                        return View(registerVM);
+                        return View(regVM);
                     }
-                    else
+                   if(await _userRepo.UserNameAvailaibility(regVM.User.UserName))
                     {
-                       if(await _userRepo.UserNameAvailaibility(registerVM.User.UserName))
-                        {
-                            ModelState.AddModelError("", "Det här användarnamnet är redan registrerat.");
-                            return View(registerVM);
-                        }
-                        else
-                        {
-                            await _accountRepo.AddAsync(registerVM.Account);
-
-                            registerVM.User.AccountId = registerVM.Account.AccountId;
-                            await _userRepo.AddAsync(registerVM.User);
-
-                            HttpContext.Session.SetString("user", registerVM.User.UserName);
-                            HttpContext.Session.SetInt32("accountID", registerVM.Account.AccountId);
-                            HttpContext.Session.SetInt32("UserID", registerVM.User.UserId);
-                            return RedirectToAction(nameof(Details));
-                        }
+                        ModelState.AddModelError("", "Det här användarnamnet är redan registrerat.");
+                        return View(regVM);
                     }
+
+                    await _accountRepo.AddAsync(regVM.Account);
+
+                    regVM.User.AccountId = regVM.Account.AccountId;
+                    await _userRepo.AddAsync(regVM.User);
+
+                    HttpContext.Session.SetString("user", regVM.User.UserName);
+                    HttpContext.Session.SetInt32("accountID", regVM.Account.AccountId);
+                    HttpContext.Session.SetInt32("UserID", regVM.User.UserId);
+                    return RedirectToAction(nameof(Details));
                 }
                 catch (Exception ex)
                 {
                     ModelState.AddModelError("", $"Error creating account: {ex.Message}");
+
                 }
             }
-            return View(registerVM);
+            return View(regVM);
         }
-    
-        
+
         // GET: AccountController/LoginRegister
        public ActionResult LoginRegister()
         {
-            return View();
+            var model = new LoginRegisterViewModel
+            {
+                LoginVM = new LoginViewModel(),
+                RegVM = new RegisterViewModel()
+
+            };
+            return View(model);
         }
 
     }

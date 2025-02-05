@@ -14,6 +14,11 @@ namespace FribergRentalCars.Controllers
             _logger = logger;
         }
 
+        public ActionResult AccessDenied()
+        {
+            return View();
+        }
+
         public IActionResult Index()
         {
                 return View();

@@ -573,14 +573,10 @@ namespace FribergRentalCars.Controllers
 
                 foreach (var booking in accountBookings)
                 {
-                    if(!booking.IsFinished)
-                    {
-                        await _bookRepo.DeleteAsync(booking);
-                    }
-                    /*
+                   
                     booking.EndDate = DateOnly.FromDateTime(DateTime.Today);
                     booking.IsFinished = true;
-                    await _bookRepo.UpdateAsync(booking);*/
+                    await _bookRepo.UpdateAsync(booking);
 
                     await _userRepo.DeleteAsync(user);
                     await _adrRepo.DeleteAsync(adress);

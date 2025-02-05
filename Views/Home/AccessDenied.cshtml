@@ -1,7 +1,17 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@{
+   ViewData["Title"] = "Access Denied";
+
 }
 
-<p>ACCESS DENIED!</p>
+
+<h4 class="primary-text-color">Otillgänglig sida!</h4>
+<div>
+    <p class="third-text-color">Har du inget konto? 
+        <a href=@Url.Action("LoginRegister", "Account") class="btn btn-primary border-0">Skapa konto</a>
+    </p>
+
+    <p class="third-text-color">
+        Om du redan har ett konto, pröva att logga in
+        <a href=@Url.Action("LoginRegister", "Account") class="btn btn-primary border-0">Logga in</a>
+    </p>
+</div>

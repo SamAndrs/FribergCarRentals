@@ -3,12 +3,14 @@
 @{
     ViewData["Title"] = "AllActiveBookings";
 }
+<hr />
+<div>
+    <h4 class="primary-text-color">Alla pågående bokningar</h4>
+    <p>
+        <a href=@Url.Action("AllFinishedBookings", "Admin") class="btn btn-primary border-0">Historiska bokningar</a>
+    </p>
+</div>
 
-<h4 class="primary-text-color">Alla pågående bokningar</h4>
-
-<p>
-    <a href=@Url.Action("AllFinishedBookings", "Admin") class="btn btn-primary border-0">Historiska bokningar</a>
-</p>
 <table class="table">
     <thead class="primary-text-color">
         <tr>
