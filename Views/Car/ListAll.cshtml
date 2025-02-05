@@ -4,10 +4,13 @@
     ViewData["Title"] = "Index";
 }
 
-<h3 class="text-white">Våra Bilar 
-    <a href=@Url.Action("GetAvailable", "Car") class="btn btn-primary border-0">Visa endast tillgängliga</a>
-</h3>
-
+<div>
+    <h4 class="primary-text-color">Våra Bilar</h4>
+</div>
+<div>
+    <a href=@Url.Action("GetAvailable", "Car") class="btn btn-primary btn-sm border-0">Visa endast tillgängliga</a>
+</div>
+<hr />
 <div class="row row-cols-3 row-cols-md-2 g-4 gap-3">
     @foreach(var item in Model)
     {

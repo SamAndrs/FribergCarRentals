@@ -4,89 +4,54 @@
     ViewData["Title"] = "GetAvailable";
 }
 
-<h3>Våra Bilar</h3>
-<h6>(urval) Endast Tillgängliga</h6>
 <div>
-    <a asp-action="ListAll" asp-controller="Car">Tillbaka</a>
+    <h4 class="primary-text-color">
+        Våra Bilar <label class="third-text-color">(Endast tillgängliga)</label>
+    </h4>
 </div>
-<table class="table">
-    <thead>
-        <tr>
-            <th class="visually-hidden">
-                @Html.DisplayNameFor(model => model.CarId)
-            </th>
-            <th>
-                <a>Modell</a>
-            </th>
-            <th>
-                <a>Årtal</a>
-            </th>
-            <th>
-                <a>Reg.Nr</a>
-            </th>
-            <th>
-                <a>Bild</a>
-            </th>
-            <th>
-                <a>Pris/ dag</a>
-            </th>
-            <th class="visually-hidden">
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th class="visually-hidden">
-                @Html.DisplayNameFor(model => model.IsAvailable)
-            </th>
-            <th>
-                @Html.Label("Boka")
-            </th>
-            <th>
-                @Html.Label("Se bil")
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model) {
-            <tr>
-                <td class="visually-hidden">
-                    @Html.DisplayFor(modelItem => item.CarId)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Model)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ModelYear)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.RegNumber)
-                </td>
-                <td>
-                    @if (!string.IsNullOrEmpty(item.Image))
+<div>
+    <a href=@Url.Action("ListAll", "Car") class="btn btn-primary btn-sm border-0">Visa alla bilar</a>
+</div>
+<hr />
+<div div class="row row-cols-3 row-cols-md-2 g-4 gap-3">
+    @foreach(var item in Model)
+    {
+        <div class="card fourth-color border-light mb-3 rounded-2" style="width: 18rem;">
+            <div class="card-header card-title text-center primary-color"><strong>@Html.DisplayFor(modelItem => item.Model)</strong></div>
+            @if (!string.IsNullOrEmpty(item.Image))
+            {
+                <img src="@item.Image" alt="bild på bil" class="card-img-top rounded mx-auto d-block" />
+            }
+            else
+            {
+                <p class="text-white">Bild saknas</p>
+            }
+            <div class="card-body  text-white" style="font-size: 14px">
+                <p><strong>Årsmodell:</strong> @Html.DisplayFor(modelItem => item.ModelYear)</p>
+                <p><strong>Reg.Nr:</strong>  @Html.DisplayFor(modelItem => item.RegNumber)</p>
+                <p><strong>Pris/dag:</strong> @Html.DisplayFor(modelItem => item.PricePerDay)kr</p>
+            </div>
+            <div class="card-body">
+                @if (item.IsAvailable)
+                {
+                    @if (!string.IsNullOrEmpty(Context.Session.GetString("user")))
                     {
-                        <div>
-                            <img src="@item.Image" alt="bild på bil" class="img-fluid" width="150" height="150"/>
-                        </div>
+                        <a href=@Url.Action("Create", "Booking", new { id = item.CarId}) class="card-link btn btn-primary border-0">Boka</a>
                     }
                     else
                     {
-                        <p>Bild saknas</p>
+                        <a href=@Url.Action("LoginRegister", "Account") class="card-link btn btn-primary border-0">Boka</a>
                     }
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PricePerDay)
-                </td>
-                <td class="visually-hidden">
-                    @Html.DisplayFor(modelItem => item.Description)
-                </td>
-                <td class="visually-hidden">
-                    @Html.DisplayFor(modelItem => item.IsAvailable)
-                </td>
-                <td>
-                    <button onclick="window.location='@Url.Action("Create", "Booking", new { id = item.CarId })'" class="btn btn-primary">Boka</button>
-                </td>
-            <td>
-                <a asp-action="Details" asp-route-id="@item.CarId">Beskrivning</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+                    <a href=@Url.Action("Details", "Car", new { id = item.CarId}) class="card-link btn btn-primary border-0">Detaljer</a>
+                }
+                else
+                {
+                    <p class="text-center"><strong>Ej bokningsbar</strong></p>
+                }
+                <p class="visually-hidden">@Html.DisplayFor(modelItem => item.CarId)</p>
+                <p class="visually-hidden">@Html.DisplayFor(modelItem => item.Description)</p>
+                <p class="visually-hidden"> @Html.DisplayFor(modelItem => item.IsAvailable)</p>
+            </div>
+        </div>
+    }
+</div>

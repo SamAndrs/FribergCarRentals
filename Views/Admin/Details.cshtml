@@ -20,46 +20,46 @@
 </div>
 <hr />
 <div>    
-    <dl class="row">
-        <dl class="row primary-text-color">
-            <dt class="col-sm-2">
-                <a>Förnamn</a>
-            </dt>
-            <dd class="col-sm-9 third-text-color">
-                @Html.DisplayFor(model => model.FirstName)
-            </dd>
-            <dt class="col-sm-2">
-                <a>Efternamn</a>
-            </dt>
-            <dd class="col-sm-9 third-text-color">
-                @Html.DisplayFor(model => model.LastName)
-            </dd>
+    <dl class="row primary-text-color">
+        <dt class="col-sm-2">
+            <a>Förnamn</a>
+        </dt>
+        <dd class="col-sm-9 third-text-color">
+            @Html.DisplayFor(model => model.FirstName)
+        </dd>
+        <dt class="col-sm-2">
+            <a>Efternamn</a>
+        </dt>
+        <dd class="col-sm-9 third-text-color">
+            @Html.DisplayFor(model => model.LastName)
+        </dd>
 
-            <dd class="visually-hidden">
-                @Html.DisplayFor(model => model.Adress.AdressId)
-            </dd>
+        <dd class="visually-hidden">
+            @Html.DisplayFor(model => model.Adress.AdressId)
+        </dd>
 
-            <dt class="col-sm-2">
-                <a>Adress</a>
-            </dt>
-            <dd class="col-sm-9 third-text-color">
-                @Html.DisplayFor(model => model.Adress.Street),
-                @Html.DisplayFor(model => model.Adress.PostalCode),
-                @Html.DisplayFor(model => model.Adress.City)
-            </dd>
+        <dt class="col-sm-2">
+            <a>Adress</a>
+        </dt>
+        <dd class="col-sm-9 third-text-color">
+            @Html.DisplayFor(model => model.Adress.Street),
+            @Html.DisplayFor(model => model.Adress.PostalCode),
+            @Html.DisplayFor(model => model.Adress.City)
+        </dd>
 
-            <dt class="col-sm-2">
-                <a>Telefon-nummer</a>
-            </dt>
-            <dd class="col-sm-9 third-text-color">
-                @Html.DisplayFor(model => model.PhoneNumber)
-            </dd>
-            <dt class="col-sm-2">
-                <a>Email</a>
-            </dt>
-            <dd class="col-sm-9 third-text-color">
-                @Html.DisplayFor(model => model.Email)
-            </dd>
+        <dt class="col-sm-2">
+            <a>Telefon-nummer</a>
+        </dt>
+        <dd class="col-sm-9 third-text-color">
+            @Html.DisplayFor(model => model.PhoneNumber)
+        </dd>
+        <dt class="col-sm-2">
+            <a>Email</a>
+        </dt>
+        <dd class="col-sm-9 third-text-color">
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+            
     </dl>
 </div>
 <div>

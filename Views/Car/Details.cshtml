@@ -4,37 +4,36 @@
     ViewData["Title"] = "Details";
 }
 
-<h4>Detailjer för: @Model.Model</h4>
+<div>
+    <ul class="list-group list-group-horizontal">
+        <li class="list-group-item  bg-transparent">
+            <h4 class="primary-text-color">Uppgifter för: </h4>
+        </li>
+        <li class="list-group-item  bg-transparent">
+            <h4 class="third-text-color"> @Model.Model</h4>
+        </li>
+    </ul>
+</div>
+<div>
+    <a href=@Url.Action("ListAll", "Car") class="btn btn-primary border-0">Till våra bilar</a>
+</div>
+<hr />
 
 <div>
-    <h4>Car</h4>
-    <hr />
     <dl class="row">
-        <dd class="visually-hidden">
-            @Html.DisplayFor(model => model.CarId)
-        </dd>
-        <dt class = "col-sm-2">
-            <a>Modell</a>
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Model)
-        </dd>
-        <dt class = "col-sm-2">
-            <a>Årtal</a>
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ModelYear)
-        </dd>
-        <dt class="col-sm-2">
-            <a>Reg.Nr</a>
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.RegNumber)
-        </dd>
-        <dt class = "col-sm-2">
-            <a></a>
-        </dt>
-        <dd class = "col-sm-10">
+        <dd class="visually-hidden"> @Html.DisplayFor(model => model.CarId)</dd>
+        
+        <dt class = "col-sm-2 primary-text-color">Modell</dt>
+        <dd class="col-sm-10 third-text-color"> @Html.DisplayFor(model => model.Model) </dd>
+        
+        <dt class="col-sm-2 primary-text-color">Årsmodell</dt>
+        <dd class="col-sm-10 third-text-color">@Html.DisplayFor(model => model.ModelYear)</dd>
+        
+        <dt class="col-sm-2 primary-text-color">Reg.Nr</dt>
+        <dd class="col-sm-10 third-text-color">@Html.DisplayFor(model => model.RegNumber)</dd>
+        
+        <dt class="col-sm-2 primary-text-color">Bild</dt>
+        <dd class="col-sm-10 third-text-color">
             <td>
                 @if (!string.IsNullOrEmpty(Model.Image))
                 {
@@ -48,45 +47,35 @@
                 }
             </td>
         </dd>
-        <dt class = "col-sm-2">
-            <a>Pris/ dag</a>
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PricePerDay)
-        </dd>
-        <dt class = "col-sm-2">
-            <a>Beskrivning</a>
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class = "col-sm-2">
-            <a>Boka</a>
-        </dt>
-        <dd class = "col-sm-10">
+        
+        <dt class="col-sm-2 primary-text-color">Pris/ dygn</dt>
+        <dd class="col-sm-10 third-text-color">@Html.DisplayFor(model => model.PricePerDay)</dd>
+        
+        <dt class="col-sm-2 primary-text-color">Beskrivning</dt>
+        <dd class="col-sm-10 third-text-color">@Html.DisplayFor(model => model.Description)</dd>
+        
+        <dt class="col-sm-2 primary-text-color">Boka denna bil?</dt>
+        <dd class="col-sm-10 third-text-color">
             @if(Model.IsAvailable)
             {
                 if (!string.IsNullOrEmpty(Context.Session.GetString("user")))
                 {
-                    <button onclick="window.location='@Url.Action("Create", "Booking", new { id = Model.CarId })'" class="btn btn-primary">Boka</button>
+                    <button onclick="window.location='@Url.Action("Create", "Booking", new { id = Model.CarId })'" class="btn btn-primary border-0">Boka</button>
                 }
                 else
                 {
                     <span>
                         Du måste vara inloggad för att kunna boka en bil.
                         <form asp-controller="Account" asp-action="LoginRegister">
-                            <input type="submit" value="Registrera/ Logga in" class="btn btn-primary" />
+                            <input type="submit" value="Registrera/ Logga in" class="btn btn-primary border-0" />
                         </form>
                     </span>
                 }
             }
             else
             {
-                <a>För närvarande uthyrd</a>
+                <label>För närvarande otillgänglig</label>
             }
         </dd>
     </dl>
-</div>
-<div>
-    <a asp-action="ListAll">Tillbaka</a>
 </div>
