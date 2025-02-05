@@ -2,45 +2,38 @@
 
 @{
     ViewData["Title"] = "Confirmation";
-    var user = @Context.Session.GetString("user");
 }
 
-<h1>Boknings bekräftelse för @user</h1>
+<div>
+    <ul class="list-group list-group-horizontal">
+        <li class="list-group-item  bg-transparent">
+            <h4 class="primary-text-color">Bokningsbekräftelse för: </h4>
+        </li>
+        <li class="list-group-item  bg-transparent">
+            <h4 class="third-text-color"> @ViewBag.UserName</h4>
+        </li>
+    </ul>
+</div>
 
 <table class="table">
-    <thead>
+    <thead class="primary-text-color">
         <tr>
-            <th>
-                <p>Bild</p>
-            </th>
-           <th>
-                <p>Modell</p>
-           </th>
-            <th>
-                <p>Årsmodell</p>
-            </th>
-            <th>
-                <p>RegNr</p>
-            </th>
-            <th>
-                <p>Pris/ dag</p>
-            </th>
-            <th>
-                <p>Från datum</p>
-            </th>
-            <th>
-                <p>Till datum</p>
-            </th>
+            <th scope="col">Bild</th>
+            <th scope="col">Bilmodell</th>
+            <th scope="col">År</th>
+            <th scope="col">Reg.Nr</th>
+            <th scope="col">Pris/ dygn</th>
+            <th scope="col">Från datum</th>
+            <th scope="col">Till datum</th>
+            
             <th class="visually-hidden">
                 @Html.DisplayNameFor(model => model.CarId)
             </th>
-            <th>
-                <p>Total kostnad</p>
-            </th>
-            <th></th>
+            
+            <th scope="col">Total kostnad</th>
         </tr>
     </thead>
-    <tbody>
+    <tbody class="third-text-color">
         <tr>
             <td>
                 @if (!string.IsNullOrEmpty(Model.Car.Image))
@@ -64,7 +57,7 @@
                 @Html.DisplayFor(model => model.Car.RegNumber)
             </td>
             <td>
-                @Html.DisplayFor(model => model.Car.PricePerDay)
+                @Html.DisplayFor(model => model.Car.PricePerDay)kr
             </td>
             
             <td>
@@ -77,12 +70,13 @@
                 @Html.DisplayFor(model => model.CarId)
             </td>
             <td>
-                @Html.DisplayFor(model => model.TotalCost)
+                @Html.DisplayFor(model => model.TotalCost)kr
             </td>
         </tr>
 
     </tbody>
 </table>
-<p>
-    <a asp-action="Details" asp-controller="Account">Till Mina uppgifter</a>
-</p>
+<div>
+    <a href=@Url.Action("Details", "Account", new { id = Model.AccountId}) class="btn btn-primary border-0">Mina Sidor</a>
+    <a href=@Url.Action("ListAccountBookings", "Booking", new { id = Model.AccountId}) class="btn btn-primary border-0">Mina Bokningar</a>
+</div>

@@ -53,7 +53,6 @@ namespace FribergRentalCars.Controllers
 
         public async Task<ActionResult> Confirmation(Booking booking)
         {
-            //var booking = await _bookRepo.GetIdByAsync(id);
             var car = await _carRepo.GetIdByAsync(booking.CarId);
             return View(booking);
         }
@@ -61,6 +60,7 @@ namespace FribergRentalCars.Controllers
         // GET: BookingController/Create
         public async Task<ActionResult> Create(int id)
         {
+            ViewBag.UserName = HttpContext.Session.GetString("user");
             var car = await _carRepo.GetIdByAsync(id);
             BookingViewModel bookVM = new BookingViewModel
             {
@@ -77,6 +77,7 @@ namespace FribergRentalCars.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> ConfirmBooking(BookingViewModel bookVM)
         {
+            ViewBag.UserName = HttpContext.Session.GetString("user");
             Booking newBooking = new Booking
             {
                 AccountId = (int)HttpContext.Session.GetInt32("accountID")!,
@@ -136,7 +137,7 @@ namespace FribergRentalCars.Controllers
                 }
                 catch(Exception)
                 {
-                    ModelState.AddModelError("", "Bilen är inte tillgänglig att hyra.");
+                    ModelState.AddModelError("", "Bilen finns inte.");
                 }
                 
                 if(CheckFinished(item))

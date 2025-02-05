@@ -4,58 +4,34 @@
     ViewData["Title"] = "ListAccountBookings";
 }
 
-<h1>Mina bokningar</h1>
+<h4 class="primary-text-color">Mina bokningar</h4>
 
 <p>
-    <a asp-action="Details" asp-controller="Account">Tillbaka</a>
+    <a asp-action="Details" asp-controller="Account" class="btn btn-primary border-0">Tillbaka</a>
 </p>
 <table class="table">
-    <thead>
+    <thead class="primary-text-color">
         <tr>
-            <th class="visually-hidden">
-                <p>BookingId</p>
-            </th>
-            <th>
-                <p>Bil</p>
-            </th>
-            <th>
-                <p>
-                    Modell (år)
-                </p>
-            </th>
-            <th>
-                <p>Reg.Nr</p>
-            </th>
-            <th>
-                <p>Pris/dag</p>
-            </th>
-            <th>
-                <p>Hyrd</p>
-                <p>Från</p>
-            </th>
-            <th>
-                <p>Till</p>
-            </th>
-            <th>
-                <p>Total kostnad</p>
-            </th>
-            <th>
-                <p>Status</p>
-            </th>
-            <th class="visually-hidden">
-                @Html.DisplayNameFor(model => model.Car)
-            </th>
-            <th class="visually-hidden">
-                @Html.DisplayNameFor(model => model.Car.CarId)
-            </th>
+            <th class="visually-hidden">BookingId</th>
+
+            <th scope="col">Bil</th>
+            <th scope="col">Modell (år)</th>
+            <th scope="col">Reg.Nr</th>
+            <th scope="col">Pris/ dygn</th>
+            <th scope="col">Hyrd Från</th>
+            <th scope="col">Hyrd Till</th>
+            <th scope="col">Total Kostnad</th>
+            <th scope="col">Status</th>
+            <th scope="col">Åtgärd</th>
+            
+            <th class="visually-hidden">@Html.DisplayNameFor(model => model.Car)</th>
+            <th class="visually-hidden">@Html.DisplayNameFor(model => model.Car.CarId)</th>
         </tr>
     </thead>
-    <tbody>
+    <tbody class="third-text-color">
         @foreach (var item in Model) {
             <tr>
-                <td class="visually-hidden">
-                    @Html.DisplayFor(modelItem => item.BookingId)
-                </td>
+                <td class="visually-hidden">@Html.DisplayFor(modelItem => item.BookingId)</td>
                 <td>
                     @if(!string.IsNullOrEmpty(item.Car.Image))
                     {
@@ -65,7 +41,7 @@
                     }
                     else
                     {
-                        <p>Bild saknas</p>
+                        <p class="primary-text-color">Bild saknas</p>
                     }
                 </td>
                 @* // IF BOOKING IS FINISHED display text in grey color*@
@@ -115,22 +91,16 @@
                         @Html.DisplayFor(modelItem => item.TotalCost)kr
                     </td>
 
+                    <td>Pågående</td>
                     <td>
                         <form asp-action="Cancel" asp-route-id="@item.BookingId">
-                           <span>
-                                Pågående |
-                                <input type="submit" value="Avboka" class="btn btn-danger" />
-                           </span> 
+                            <input type="submit" value="Avboka" class="btn btn-danger" />
                         </form>
                     </td>
                }
 
-                <td class="visually-hidden">
-                    @Html.DisplayFor(modelItem => item.Car)
-                </td>
-                <td class="visually-hidden">
-                    @Html.DisplayFor(modelItem => item.Car.CarId)
-                </td>
+                <td class="visually-hidden">@Html.DisplayFor(modelItem => item.Car)</td>
+                <td class="visually-hidden">@Html.DisplayFor(modelItem => item.Car.CarId)</td>
         </tr>
 }
     </tbody>

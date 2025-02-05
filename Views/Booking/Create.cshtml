@@ -4,43 +4,42 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Ny bokning för @Context.Session.GetString("user")</h1>
-
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="ConfirmBooking" asp-controller="Booking">
-            <div class="form-group">
-                <input type="hidden" asp-for="TotalCost" value=@Model.TotalCost class="form-control" />
-            </div>
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="StartDate" class="control-label"></label>
-                <input type="date" asp-for="StartDate" class="form-control" />
-                <span asp-validation-for="StartDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="EndDate" class="control-label"></label>
-                <input type="date" asp-for="EndDate" class="form-control"/>
-                <span asp-validation-for="EndDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="hidden" asp-for="CarId" value=@Model.CarId />
-            </div>
-            <div class="form-group">
-                <input type="hidden" asp-for="IsFinished" value=@Model.IsFinished />
-            </div>
-            
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-
-        </form>
-    </div>
+<div>
+    <ul class="list-group list-group-horizontal">
+        <li class="list-group-item  bg-transparent">
+            <h4 class="primary-text-color">Ny bokning för: </h4>
+        </li>
+        <li class="list-group-item  bg-transparent">
+            <h4 class="third-text-color"> @ViewBag.UserName</h4>
+        </li>
+    </ul>
 </div>
 
-<div>
-    <a asp-controller="Car" asp-action="ListAll">Tillbaka</a>
+<hr />
+<div class="col-md-4 primary-text-color">
+    <form asp-action="ConfirmBooking" asp-controller="Booking">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        
+        <input type="hidden" asp-for="IsFinished" value=@Model.IsFinished />
+        <input type="hidden" asp-for="CarId" value=@Model.CarId />
+        <input type="hidden" asp-for="TotalCost" value=@Model.TotalCost class="form-control" />
+               
+        <div class="form-group p-2">
+            <label asp-for="StartDate" class="control-label"></label>
+            <input type="date" asp-for="StartDate" class="form-control" />
+            <span asp-validation-for="StartDate" class="text-danger"></span>
+        </div>
+        <div class="form-group p-2">
+            <label asp-for="EndDate" class="control-label"></label>
+            <input type="date" asp-for="EndDate" class="form-control" />
+            <span asp-validation-for="EndDate" class="text-danger"></span>
+        </div>     
+
+        <div class="form-group p-2">
+            <input type="submit" value="Boka" class="btn btn-primary border-0" />
+            <a href=@Url.Action("GetAvailable", "Car") class="btn btn-primary border-0">Till våra bilar</a>
+        </div>
+    </form>
 </div>
 
 
