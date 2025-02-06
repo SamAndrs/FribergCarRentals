@@ -73,7 +73,6 @@ namespace FribergRentalCars.Data
         {
             _appDbContext.Users.Update(user);
             await _appDbContext.SaveChangesAsync();
-        }
-
+        }      
     }
 }

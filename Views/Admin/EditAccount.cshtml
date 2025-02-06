@@ -124,7 +124,7 @@
 
         <div class="form-group">
             <input type="submit" value="Spara ändringar" class="btn btn-primary border-0" />
-            <a href=@Url.Action("AllAccountBookings", "Admin", new {id = Model?.AccountId}) class="btn btn-primary border-0">Konto Bokningar</a>
+            <a href=@Url.Action("ActiveAccountBookings", "Admin", new {id = Model?.AccountId}) class="btn btn-primary border-0">Konto Bokningar</a>
         </div>
     </form>
 </div>

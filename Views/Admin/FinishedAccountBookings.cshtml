@@ -1,7 +1,7 @@
 ﻿@model List<FribergRentalCars.Models.Booking>
 
 @{
-    ViewData["Title"] = "AllAccountBookings";
+    ViewData["Title"] = "FinishedAccountBookings";
 }
 
 <div>
@@ -16,6 +16,7 @@
 </div>
 <div>
     <a href=@Url.Action("EditAccount", "Admin", new { id = ViewBag.UserID}) class="btn btn-primary border-0">Tillbaka</a>
+    <a href=@Url.Action("ActiveAccountBookings", "Admin", new { id = ViewBag.UserID}) class="btn btn-primary border-0">Aktuella Bokningar</a>
 </div>
 
 <table class="table">
@@ -50,7 +51,7 @@
             </th>
         </tr>
     </thead>
-    <tbody class="third-text-color">
+    <tbody style="color: dimgray">
         @foreach (var item in Model)
         {
             <tr>
@@ -72,48 +73,23 @@
                 <th>
                     @Html.DisplayFor(modelItem => item.Car.CarId)
                 </th>
-                @* // IF BOOKING IS FINISHED display text in grey color*@
-                @if(item.IsFinished)
-                {
-                    <td>
-                        <span style="color: dimgrey">@item.Car.Model (@item.Car.ModelYear)</span>
-                    </td>
-                    
-                    <td>
-                        <span style="color: dimgrey">@item.StartDate</span>
-                    </td>
-                    <td>
-                        <span style="color: dimgrey">@item.EndDate</span>
-                    </td>
-                    <td>
-                        <span style="color: dimgrey">@item.TotalCost kr </span>
-                    </td>
-                    <td>
-                        <span style="color: dimgrey">Avslutad</span>
-                    </td>
-                }
-                @*// IF BOOKING IS NOT FINISHED display text in black color*@
-                else
-                {
-                    <td>
-                        <span>@item.Car.Model (@item.Car.ModelYear)</span>
-                    </td>
-                                      
-                    <td>
-                        @Html.DisplayFor(modelItem => item.StartDate)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.EndDate)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.TotalCost)kr
-                    </td>
+                <td>
+                    @item.Car.Model (@item.Car.ModelYear)
+                </td>
 
-                    <td>
-                       Pågående | <a href=@Url.Action("CancelAccountBooking", "Admin", new { id = item.BookingId}) class="btn btn-danger">Avboka</a>
-                       
-                    </td>
-                }
+                <td>
+                    @Html.DisplayFor(modelItem => item.StartDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EndDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TotalCost)kr
+                </td>
+
+                <td>
+                    Avslutad
+                </td>
 
                 <td class="visually-hidden">
                     @Html.DisplayFor(modelItem => item.Car)

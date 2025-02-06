@@ -34,7 +34,7 @@ namespace FribergRentalCars.Controllers
             {
                 return NotFound(id);
             }
-            var account = await _accountRepo.GetIdByAsync(id);
+            var account = await _accountRepo.GetByIdAsync(id);
             if(account == null)
             {
                 return NotFound(account);
@@ -65,7 +65,7 @@ namespace FribergRentalCars.Controllers
             }
             else
             {
-                var account = await _accountRepo.GetIdByAsync(emailVM.Account.AccountId);
+                var account = await _accountRepo.GetByIdAsync(emailVM.Account.AccountId);
                 account.Email = emailVM.NewEmail;
                 await _accountRepo.UpdateAsync(account);
                 return RedirectToAction(nameof(Details));

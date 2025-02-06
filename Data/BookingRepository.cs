@@ -25,6 +25,11 @@ namespace FribergRentalCars.Data
             await _appDbContext.SaveChangesAsync();
         }
 
+        public async Task<IEnumerable<Booking>> GetAllAsync()
+        {
+            return await _appDbContext.Bookings.ToListAsync();
+        }
+
         public async Task<IEnumerable<Booking>> GetAllActiveAsync()
         {
             return await _appDbContext.Bookings.Where(b => b.IsFinished == false).ToListAsync();
@@ -45,6 +50,13 @@ namespace FribergRentalCars.Data
             return await _appDbContext.Bookings.Where(b => b.AccountId == id).ToListAsync();
         }
 
+        public async Task<IEnumerable<Booking>> GetActiveAccountBookings(int id)
+        {
+            return await _appDbContext.Bookings.
+                Where(b => b.AccountId == id).
+                Where(b => b.IsFinished == false).ToListAsync();
+        }
+
         public async Task<IEnumerable<Booking>> GetFinishedAccountBookings(int id)
         {
             return await _appDbContext.Bookings.
@@ -52,7 +64,7 @@ namespace FribergRentalCars.Data
                 Where(b => b.IsFinished == true).ToListAsync();
         }
 
-        public async Task<Booking> GetIdByAsync(int id)
+        public async Task<Booking> GetByIdAsync(int id)
         {
             return await _appDbContext.Bookings.FindAsync(id);
         }

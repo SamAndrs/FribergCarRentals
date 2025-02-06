@@ -30,7 +30,7 @@ namespace FribergRentalCars.Data
             return await _appDbContext.Adresses.ToListAsync();
         }
 
-        public async Task<Adress> GetIdByAsync(int id)
+        public async Task<Adress> GetByIdAsync(int id)
         {
             return await _appDbContext.Adresses.FindAsync(id);
         }

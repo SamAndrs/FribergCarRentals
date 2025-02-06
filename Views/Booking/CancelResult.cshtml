@@ -1,0 +1,39 @@
+﻿
+@{
+    ViewData["Title"] = "CancelConfirmation";
+}
+
+@{
+    var successMessage = TempData["SuccessMessage"] as string;
+    var errorMessage = TempData["ErrorMessage"] as string;
+}
+
+<hr />
+@if (!string.IsNullOrEmpty(successMessage))
+{
+    <div class="alert alert-success col-md-4">
+        @successMessage
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger col-md-4">
+        @errorMessage
+    </div>
+}
+<hr />
+
+@*// If logged in as administrator, link back to admin account page instead of regular.*@
+@if(Context.Session.GetInt32("IsAdmin") == 1)
+{
+    <div>
+        <a asp-action="Details" asp-controller="Admin" class="btn btn-primary border-0">Mina Sidor</a>
+    </div>
+}
+else
+{
+    <div>
+        <a asp-action="Details" asp-controller="Account" class="btn btn-primary border-0">Mina Sidor</a>
+    </div>
+}

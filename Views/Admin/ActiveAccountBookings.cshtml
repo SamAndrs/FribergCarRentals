@@ -1,0 +1,101 @@
+﻿@model List<FribergRentalCars.Models.Booking>
+
+@{
+    ViewData["Title"] = "ActiveAccountBookings";
+}
+
+<div>
+    <ul class="list-group list-group-horizontal">
+        <li class="list-group-item  bg-transparent">
+            <h4 class="primary-text-color">Alla bokningar för:</h4>
+        </li>
+        <li class="list-group-item  bg-transparent">
+            <h4 class="third-text-color">@ViewBag.UserName</h4>
+        </li>
+    </ul>
+</div>
+<div>
+    <a href=@Url.Action("EditAccount", "Admin", new { id = ViewBag.UserID}) class="btn btn-primary border-0">Tillbaka</a>
+    <a href=@Url.Action("FinishedAccountBookings", "Admin", new { id = ViewBag.UserID}) class="btn btn-primary border-0">Historiska Bokningar</a>
+</div>
+
+<table class="table">
+    <thead>
+        <tr class="primary-text-color">
+            <th>
+                <p>Boknings-Id</p>
+            </th>
+            <th>
+                <p>Bil</p>
+            </th>
+            <th>
+                <p>Bil-Id</p>
+            </th>
+            <th>
+                <p>
+                    Modell (år)
+                </p>
+            </th>
+            <th>
+                <p>Hyrd</p>
+                <p>Från</p>
+            </th>
+            <th>
+                <p>Till</p>
+            </th>
+            <th>
+                <p>Total kostnad</p>
+            </th>
+            <th>
+                <p>Status</p>
+            </th>
+        </tr>
+    </thead>
+    <tbody class="third-text-color">
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BookingId)
+                </td>
+                <td>
+                    @if (!string.IsNullOrEmpty(item.Car.Image))
+                    {
+                        <div>
+                            <img src="@item.Car.Image" alt="bild på bil" class="img-fluid" width="100" height="100" />
+                        </div>
+                    }
+                    else
+                    {
+                        <p>Bild saknas</p>
+                    }
+                </td>
+                <th>
+                    @Html.DisplayFor(modelItem => item.Car.CarId)
+                </th>
+                <td>
+                    @item.Car.Model (@item.Car.ModelYear)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.StartDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EndDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TotalCost)kr
+                </td>
+
+                <td>
+                    Pågående | <a href=@Url.Action("CancelAccountBooking", "Admin", new { id = item.BookingId}) class="btn btn-danger">Avboka</a>
+                </td>
+
+                <td class="visually-hidden">
+                    @Html.DisplayFor(modelItem => item.Car)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

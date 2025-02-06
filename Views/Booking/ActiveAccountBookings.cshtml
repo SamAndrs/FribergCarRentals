@@ -1,13 +1,14 @@
 ﻿@model IEnumerable<FribergRentalCars.Models.Booking>
 
 @{
-    ViewData["Title"] = "ListAccountBookings";
+    ViewData["Title"] = "ActiveAccountBookings";
 }
 
-<h4 class="primary-text-color">Mina bokningar</h4>
+<h4 class="primary-text-color">Mina bokningar (aktuella)</h4>
 
 <p>
     <a asp-action="Details" asp-controller="Account" class="btn btn-primary border-0">Tillbaka</a>
+    <a href=@Url.Action("FinishedAccountBookings", "Booking", new {id = ViewBag.AccountID}) class="btn btn-primary border-0">Historiska bokningar</a>
 </p>
 <table class="table">
     <thead class="primary-text-color">
@@ -30,48 +31,24 @@
     </thead>
     <tbody class="third-text-color">
         @foreach (var item in Model) {
-            <tr>
-                <td class="visually-hidden">@Html.DisplayFor(modelItem => item.BookingId)</td>
-                <td>
-                    @if(!string.IsNullOrEmpty(item.Car.Image))
-                    {
-                        <div>
-                            <img src="@item.Car.Image" alt="bild på bil" class="img-fluid" width="80" height="80"/>
-                        </div>
-                    }
-                    else
-                    {
-                        <p class="primary-text-color">Bild saknas</p>
-                    }
-                </td>
-                @* // IF BOOKING IS FINISHED display text in grey color*@
-               @if(item.IsFinished)
-               {
+            @if (!item.IsFinished) 
+            {
+                <tr>
+                    <td class="visually-hidden">@Html.DisplayFor(modelItem => item.BookingId)</td>
+
                     <td>
-                        <span style="color: dimgrey">@item.Car.Model (@item.Car.ModelYear)</span>
+                        @if (!string.IsNullOrEmpty(item.Car.Image))
+                        {
+                            <div>
+                                <img src="@item.Car.Image" alt="bild på bil" class="img-fluid" width="80" height="80" />
+                            </div>
+                        }
+                        else
+                        {
+                            <p class="primary-text-color">Bild saknas</p>
+                        }
                     </td>
-                    <td>
-                        <span style="color: dimgrey">@item.Car.RegNumber</span>
-                    </td>
-                    <td>
-                        <span style="color: dimgrey">@item.Car.PricePerDay kr</span>
-                    </td>
-                    <td>
-                        <span style="color: dimgrey">@item.StartDate</span>
-                    </td>
-                    <td>
-                        <span style="color: dimgrey">@item.EndDate</span>
-                    </td>
-                    <td>
-                        <span style="color: dimgrey">@item.TotalCost kr </span>
-                    </td>
-                    <td>
-                        <span style="color: dimgrey">Avslutad</span>
-                    </td>
-               }
-               @*// IF BOOKING IS NOT FINISHED display text in black color*@
-               else
-                {
+
                     <td>
                         <span>@item.Car.Model (@item.Car.ModelYear)</span>
                     </td>
@@ -97,11 +74,17 @@
                             <input type="submit" value="Avboka" class="btn btn-danger" />
                         </form>
                     </td>
-               }
 
-                <td class="visually-hidden">@Html.DisplayFor(modelItem => item.Car)</td>
-                <td class="visually-hidden">@Html.DisplayFor(modelItem => item.Car.CarId)</td>
-        </tr>
+                    <td class="visually-hidden">@Html.DisplayFor(modelItem => item.Car)</td>
+                    <td class="visually-hidden">@Html.DisplayFor(modelItem => item.Car.CarId)</td>
+                </tr>
+            }
+            @* // Error handling in case item has just turned finished. If so, show nothing*@
+            else
+            {
+                <tr></tr>
+            }
+            
 }
     </tbody>
 </table>

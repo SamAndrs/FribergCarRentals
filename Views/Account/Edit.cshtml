@@ -70,7 +70,7 @@
     <div class="form-group col-md-10 p-2">
         <input type="submit" value="Spara" class="btn btn-primary border-0" />
         <a href=@Url.Action("ChangePassword", "Account") class="btn btn-primary border-0">Ändra lösenord</a>
-        <a href=@Url.Action("ListAccountBookings", "Booking", new {id = Model?.AccountId}) class="btn btn-primary border-0">Mina Bokningar</a>
+        <a href=@Url.Action("ActiveAccountBookings", "Booking", new {id = Model?.AccountId}) class="btn btn-primary border-0">Mina Bokningar</a>
         <a href=@Url.Action("Details", "Account", new {id = Model?.AccountId}) class="btn btn-primary border-0">Tillbaka</a>
     </div>
 </div>

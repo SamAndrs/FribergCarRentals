@@ -58,5 +58,5 @@
 </div>
 <div class="p-2">
     <a href=@Url.Action("Edit", "Account", new {id = Model?.AccountId}) class="btn btn-primary border-0">Ändra uppgifter</a>
-    <a href=@Url.Action("ListAccountBookings", "Booking", new {id = Model?.AccountId}) class="btn btn-primary border-0">Mina bokningar</a>
+    <a href=@Url.Action("ActiveAccountBookings", "Booking", new {id = Model?.AccountId}) class="btn btn-primary border-0">Mina bokningar</a>
 </div>

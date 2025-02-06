@@ -2,23 +2,17 @@
 
 namespace FribergRentalCars.Data.Interfaces
 {
-    public interface IBookingRepository
+    public interface IBookingRepository : IRepository<Booking>
     {
         Task<IEnumerable<Booking>> GetAllActiveAsync();
 
         Task<IEnumerable<Booking>> GetAllFinishedAsync();
 
-        Task<Booking> GetIdByAsync(int id);
-
-        Task AddAsync(Booking booking);
-
-        Task UpdateAsync(Booking booking);
-
-        Task DeleteAsync(Booking booking); // TO DO: REMOVE
-
         Task<IEnumerable<Booking>> GetBookingsByCarIdAsync(int id);
 
         Task<IEnumerable<Booking>> GetBookingsByAccountIdAsync(int id);
+
+        Task<IEnumerable<Booking>> GetActiveAccountBookings(int id);
 
         Task<IEnumerable<Booking>> GetFinishedAccountBookings(int id);
     }

@@ -8,6 +8,8 @@ namespace FribergRentalCars.ViewModels
     {
         public int CarId { get; set; }
 
+        public int AccountId { get; set; }
+
         public int TotalCost { get; set; }
 
         [Required]

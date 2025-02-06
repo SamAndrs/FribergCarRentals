@@ -17,13 +17,15 @@
 
 <hr />
 <div class="col-md-4 primary-text-color">
-    <form asp-action="ConfirmBooking" asp-controller="Booking">
+    @*<form asp-action="ConfirmBooking" asp-controller="Booking">*@
+    <form asp-action="Create" asp-controller="Booking">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         
         <input type="hidden" asp-for="IsFinished" value=@Model.IsFinished />
         <input type="hidden" asp-for="CarId" value=@Model.CarId />
+        <input type="hidden" asp-for="AccountId" value=@Model.AccountId />
         <input type="hidden" asp-for="TotalCost" value=@Model.TotalCost class="form-control" />
-               
+
         <div class="form-group p-2">
             <label asp-for="StartDate" class="control-label"></label>
             <input type="date" asp-for="StartDate" class="form-control" />

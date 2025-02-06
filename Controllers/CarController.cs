@@ -32,7 +32,7 @@ namespace FribergRentalCars.Controllers
         // GET: CarController/Details/5
         public async Task<IActionResult> Details(int id)
         {
-            var car = await _carRepository.GetIdByAsync(id);
+            var car = await _carRepository.GetByIdAsync(id);
             if(car == null)
             {
                 return NotFound();

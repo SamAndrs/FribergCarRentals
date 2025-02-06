@@ -20,7 +20,38 @@ namespace FribergRentalCars.Controllers
             this._accRepo = accountRepository;
             this._bookRepo = bookingRepository;
         }
-             
+
+        // GET: BookingController/ListAccountBookings/5
+        public async Task<ActionResult> ActiveAccountBookings(int id)
+        {
+            ViewBag.AccountId = HttpContext.Session.GetInt32("accountID");
+            var bookings = await _bookRepo.GetActiveAccountBookings(id);
+            if (id == null)
+            {
+                return NotFound(id);
+            }
+
+            foreach (var item in bookings)
+            {
+                try
+                {
+                    item.Car = await _carRepo.GetByIdAsync(item.CarId);
+                }
+                catch (Exception)
+                {
+                    ModelState.AddModelError("", "Bilen finns inte.");
+                }
+
+                if (CheckFinished(item))
+                {
+                    await _bookRepo.UpdateAsync(item);
+                }
+            }
+            return View(bookings);
+        }
+
+
+
         // POST: BookingController/Cancel
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -28,43 +59,38 @@ namespace FribergRentalCars.Controllers
         {
             try
             {
-                var booking = await _bookRepo.GetIdByAsync(id);
+                var booking = await _bookRepo.GetByIdAsync(id);
                 await _bookRepo.DeleteAsync(booking);
-                return RedirectToAction(nameof(CancelConfirmation));
+                TempData["SuccessMessage"] = "Avbokning lyckad!";
+                return RedirectToAction(nameof(CancelResult));
             }
             catch(Exception)
             {
-                NotFound();
-                return RedirectToAction(nameof(CancelError));
+                TempData["ErrorMessage"] = "Avbokning misslyckades!";
+                return RedirectToAction(nameof(CancelResult));
             }
         }
 
         // GET: BookingController/CancelConfirmation
-        public ActionResult CancelConfirmation()
+        public ActionResult CancelResult()
         {
             return View();
         }
 
-        public ActionResult CancelError()
+        public ActionResult Confirmation(Booking booking)
         {
-            return View();
-        }
-
-
-        public async Task<ActionResult> Confirmation(Booking booking)
-        {
-            var car = await _carRepo.GetIdByAsync(booking.CarId);
             return View(booking);
         }
 
-        // GET: BookingController/Create
+        // GET: BookingController/Create/5
         public async Task<ActionResult> Create(int id)
         {
             ViewBag.UserName = HttpContext.Session.GetString("user");
-            var car = await _carRepo.GetIdByAsync(id);
+            var car = await _carRepo.GetByIdAsync(id);
             BookingViewModel bookVM = new BookingViewModel
             {
                 CarId = car.CarId,
+                AccountId = (int)HttpContext.Session.GetInt32("accountID")!,
                 TotalCost = car.PricePerDay,
                 StartDate = DateOnly.FromDateTime(DateTime.Today),
                 EndDate = DateOnly.FromDateTime(DateTime.Today)
@@ -72,36 +98,28 @@ namespace FribergRentalCars.Controllers
             return View(bookVM);
         }
 
-        // POST: BookingController/ConfirmBooking
+        // POST: BookingController/Create/model
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> ConfirmBooking(BookingViewModel bookVM)
+        public async Task<ActionResult> Create(BookingViewModel bookVM)
         {
             ViewBag.UserName = HttpContext.Session.GetString("user");
             Booking newBooking = new Booking
             {
-                AccountId = (int)HttpContext.Session.GetInt32("accountID")!,
-                CarId = bookVM.CarId,
-                TotalCost = bookVM.TotalCost,
-                StartDate = bookVM.StartDate,
-                EndDate = bookVM.EndDate,
-                Car = await _carRepo.GetIdByAsync(bookVM.CarId)
-            };     
-            
+               AccountId = bookVM.AccountId,
+               CarId = bookVM.CarId,
+               StartDate = bookVM.StartDate,
+               EndDate = bookVM.EndDate,
+               TotalCost = bookVM.TotalCost,
+               Car = await _carRepo.GetByIdAsync(bookVM.CarId),
+               IsFinished = bookVM.IsFinished,
+            };
+
             if (ModelState.IsValid)
             {
-                if(bookVM.CarId == null)
-                {
-                    ModelState.AddModelError("", "Bilen finns inte!");
-                }
-                else if(newBooking.AccountId == null)
-                {
-                    ModelState.AddModelError("", "Användaren finns inte!");
-                }
-                else if(bookVM.StartDate > bookVM.EndDate)
+                if (bookVM.StartDate > bookVM.EndDate)
                 {
                     ModelState.AddModelError("", "Slutdatum kan inte ligga före Startdatum!");
-                    return View("Create", bookVM);
                 }
                 else
                 {
@@ -110,30 +128,33 @@ namespace FribergRentalCars.Controllers
                     if (booked)
                     {
                         ModelState.AddModelError("", "Bilen är redan bokad under dessa datum.");
-                        return View("Create", bookVM);
-                    }                 
-
-                    newBooking.TotalCost = (newBooking.EndDate.DayNumber - newBooking.StartDate.DayNumber) * newBooking.Car.PricePerDay;
-                    await _bookRepo.AddAsync(newBooking);
-                    return View("Confirmation", newBooking);
-                }
+                    }
+                    else
+                    {
+                        newBooking.TotalCost = (newBooking.EndDate.DayNumber - newBooking.StartDate.DayNumber) * newBooking.Car.PricePerDay;
+                        await _bookRepo.AddAsync(newBooking);
+                        return View("Confirmation", newBooking);
+                    }
+                } 
             }
             return View(bookVM);
         }
 
-        public async Task<ActionResult> ListAccountBookings(int id)
+        // GET: BookingController/ListAccountBookings/5
+        public async Task<ActionResult> FinishedAccountBookings(int id)
         {
-            var bookings = await _bookRepo.GetBookingsByAccountIdAsync(id);
+            ViewBag.AccountId = HttpContext.Session.GetInt32("accountID");
+            var bookings = await _bookRepo.GetFinishedAccountBookings(id);
             if(id == null)
             {
-                return NotFound();
+                return NotFound(id);
             }
             
             foreach (var item in bookings)
             {
                 try
                 { 
-                    item.Car = await _carRepo.GetIdByAsync(item.CarId);
+                    item.Car = await _carRepo.GetByIdAsync(item.CarId);
                 }
                 catch(Exception)
                 {
@@ -144,7 +165,6 @@ namespace FribergRentalCars.Controllers
                 {
                     await _bookRepo.UpdateAsync(item);
                 }
-                
             }
             return View(bookings);
         }
@@ -169,7 +189,6 @@ namespace FribergRentalCars.Controllers
             }
             return false;
         }
-
         #endregion
 
 
