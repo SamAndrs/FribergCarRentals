@@ -2,125 +2,89 @@
 @{
     ViewData["Title"] = "DeleteAccount";
 }
-<div>
-    <ul class="list-group bg-transparent primary-text-color">
-        <li class="list-group-item">
-            <h4>Ta bort Användare och Konto</h4>
+
+<hr />
+<div class="col-sm-10">
+    <ul class="list-group list-group-horizontal">
+        <li class="list-group-item bg-transparent">
+            <h5 class="primary-text-color">Är du säker på att du vill radera användare:</h5>
         </li>
-        <li class="list-group-item">
-            <h5>Är du säker på att du vill radera användare:</h5>
+        <li class="list-group-item bg-transparent">
             <h5 class="third-text-color"> @Model.User.UserName?</h5>
         </li>
-        <li class="list-group-item">
-            <h6>Konto för @Model.Account.FirstName @Model.Account.LastName kommer också raderas.</h6>
+    </ul>
+    <ul class="list-group list-group-horizontal">
+        <li class="list-group-item bg-transparent">
+            <h6 class="primary-text-color">Konto för</h6>
         </li>
-
+        <li class="list-group-item bg-transparent">
+            <h6 class="third-text-color">@Model.Account.FirstName @Model.Account.LastName</h6>
+        </li>
+        <li class="list-group-item bg-transparent">
+            <h6 class="primary-text-color">kommer också raderas.</h6>
+        </li>
     </ul>
 </div>
-
-
-
+<hr />
 
 <div>
-    
-    <hr />
-    <table>
-        <tr>
-            <td>
-    <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.User.UserId)
-    </dt>
-    <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.User.UserId)
-    </dd>
-    <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.User.UserName)
-    </dt>
-    <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.User.UserName)
-    </dd>
-    <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.User.IsAdmin)
-    </dt>
-                @if (Model.User.IsAdmin)
-                {
-        <p>Ja</p>
-                }
-                else
-                {
-        <p>Nej</p>
-                }
+    <dl class="row primary-text-color">
 
-    <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.User.AccountId)
-    </dt>
-    <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.User.AccountId)
-    </dd>
-    <dl class="row">
-        <dt class="col-sm-2">
-                        @Html.DisplayNameFor(model => model.Account.FirstName)
-        </dt>
-        <dd class="col-sm-10">
-                        @Html.DisplayFor(model => model.Account.FirstName)
-        </dd>
-        <dt class="col-sm-2">
-                        @Html.DisplayNameFor(model => model.Account.LastName)
-        </dt>
-        <dd class="col-sm-10">
-                        @Html.DisplayFor(model => model.Account.LastName)
-        </dd>
+        @* Användar uppgifter *@
+        <dt class="col-sm-2">Användar ID:</dt>
+        <dd class="col-sm-10 third-text-color">@Html.DisplayFor(model => model.User.UserId) </dd>
 
-        <dt class="col-sm-2">
-                        @Html.DisplayNameFor(model => model.Account.PhoneNumber)
-        </dt>
-        <dd class="col-sm-10">
-                        @Html.DisplayFor(model => model.Account.PhoneNumber)
+        <dt class="col-sm-2">Användarnamn:</dt>
+        <dd class="col-sm-10 third-text-color">@Html.DisplayFor(model => model.User.UserName) </dd>
+
+        <dt class="col-sm-2">Administratör?:</dt>
+        <dd class="col-sm-10 third-text-color">
+            @if(Model.User.IsAdmin)
+            {
+                <p class="third-text-color">Ja</p>
+            }
+            else
+            {
+                <p class="third-text-color">Nej</p>
+            }
         </dd>
-        <dt class="col-sm-2">
-                        @Html.DisplayNameFor(model => model.Account.Email)
-        </dt>
-        <dd class="col-sm-10">
-                        @Html.DisplayFor(model => model.Account.Email)
-        </dd>
+        <hr />
+        @* Konto uppgifter *@
+        <dt class="col-sm-2">Konto ID:</dt>
+        <dd class="col-sm-10 third-text-color">@Html.DisplayFor(model => model.Account.AccountId)</dd>
+
+        <dt class="col-sm-2">Förnamn:</dt>
+        <dd class="col-sm-10 third-text-color">@Html.DisplayFor(model => model.Account.FirstName)</dd>
+
+        <dt class="col-sm-2">Efternamn:</dt>
+        <dd class="col-sm-10 third-text-color">@Html.DisplayFor(model => model.Account.LastName)</dd>
+
+        <dt class="col-sm-2">Telefon:</dt>
+        <dd class="col-sm-10 third-text-color">@Html.DisplayFor(model => model.Account.PhoneNumber)</dd>
+
+        <dt class="col-sm-2">Email:</dt>
+        <dd class="col-sm-10 third-text-color">@Html.DisplayFor(model => model.Account.Email)</dd>
+
+        <hr />
+        @* Adress uppgifter *@
+        <dt class="col-sm-2">Adress ID:</dt>
+        <dd class="col-sm-10 third-text-color">@Html.DisplayFor(model => model.Account.AdressId)</dd>
+
+        <dt class="col-sm-2">Gatunamn:</dt>
+        <dd class="col-sm-10 third-text-color">@Html.DisplayFor(model => model.Account.Adress.Street)</dd>
+
+        <dt class="col-sm-2">Postnummer:</dt>
+        <dd class="col-sm-10 third-text-color">@Html.DisplayFor(model => model.Account.Adress.PostalCode)</dd>
+
+        <dt class="col-sm-2">Stad/ Ort:</dt>
+        <dd class="col-sm-10 third-text-color">@Html.DisplayFor(model => model.Account.Adress.City)</dd>
     </dl>
-    
-            </td>
+</div>
 
-            <td>
-    <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.Account.AdressId)
-    </dt>
-    <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.Account.AdressId)
-    </dd>
-
-    <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.Account.Adress.Street)
-    </dt>
-    <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.Account.Adress.Street)
-    </dd>
-    <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.Account.Adress.PostalCode)
-    </dt>
-    <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.Account.Adress.PostalCode)
-    </dd>
-    <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.Account.Adress.City)
-    </dt>
-    <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.Account.Adress.City)
-    </dd>
-            </td>
-
-        </tr>
-
-    </table>
-    
-    <form asp-action="DeleteAccount">
-       <input type="hidden" asp-for="User.UserId" />
+   
+<div>    
+    <form asp-action="DeleteConfirm">
+        <input type="hidden" asp-for="User.UserId" />
         <input type="submit" value="Radera" class="btn btn-danger" />
     </form>
     <a asp-action="ListAllAccounts">Tillbaka till kontolista</a>

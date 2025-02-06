@@ -188,11 +188,6 @@ namespace FribergRentalCars.Controllers
             return View(account);
         }
 
-        // GET: AccountController/Login
-        public ActionResult Login()
-        {
-            return View();
-        }
 
         // POST: AccountController/Login
         [HttpPost]
@@ -274,7 +269,7 @@ namespace FribergRentalCars.Controllers
 
                 }
             }
-            return View(regVM);
+            return View("LoginRegister", regVM);
         }
 
         // GET: AccountController/LoginRegister
