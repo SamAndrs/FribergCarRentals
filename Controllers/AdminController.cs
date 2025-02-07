@@ -142,7 +142,7 @@ namespace FribergRentalCars.Controllers
                 listObjekt.Email = IsAccountGDPR(account, listObjekt);
 
                 // Control check: Is Booking supposed to be finished?
-                if (CheckFinished(item))
+                if (IsBookingFinished(item))
                     await _bookRepo.UpdateAsync(item);
 
                 BookingsList.Add(listObjekt);
@@ -174,7 +174,7 @@ namespace FribergRentalCars.Controllers
                 var listObjekt = CreateBookingVM(item, email);
 
                 // Control check: Is Booking not set to finished? -do so
-                if (CheckFinished(item))
+                if (IsBookingFinished(item))
                 {
                     await _bookRepo.UpdateAsync(item);
                 }
@@ -476,48 +476,7 @@ namespace FribergRentalCars.Controllers
         [AdminAuthorizationFilter]
         public async Task<ActionResult> EditAccount(EditAccountViewModel model)
         {
-            if(model == null)
-            {
-                ModelState.AddModelError("", "Konto-objektet finns inte.");
-            }
-
-            var user = model.User;
-            var account = model.Account;
-            var adress = model.Adress;
-
-            var oldUserName = model.User.UserName;
-            if(ModelState.IsValid)
-            {
-                if(model.UserName != oldUserName)
-                {
-                    if (await _userRepo.UserNameAvailaibility(model.UserName))
-                    {
-                        ModelState.AddModelError("", "Användarnamnet är redan taget!");
-                        return View(model);
-                    }
-                    else
-                    {
-                        model.User.UserName = model.UserName;
-                        oldUserName = model.UserName;
-                    }
-                }
-                else
-                {
-                    try
-                    {
-                        await _userRepo.UpdateAsync(model.User);
-                        await _accRepo.UpdateAsync(model.Account);
-                        await _adrRepo.UpdateAsync(model.Adress);
-                        return RedirectToAction(nameof(ListAllAccounts));
-                    }
-                    catch
-                    {
-                        ModelState.AddModelError("", "Det gick inte att ändra användaruppgifterna.");
-                    }
-                }
-            }
-            /*
-            var user = await _userRepo.GetByIdAsync(id);
+            var user = await _userRepo.GetByIdAsync(model.UserId);
             var account = await _accRepo.GetByIdAsync(user.UserId);
             var adress = await _adrRepo.GetByIdAsync(account.AccountId);       
 
@@ -567,7 +526,7 @@ namespace FribergRentalCars.Controllers
                     ModelState.AddModelError("", "Det blev något fel");
                 } 
            
-            }*/
+            }
             return View(model);
         }
 
@@ -597,7 +556,7 @@ namespace FribergRentalCars.Controllers
 
         #region // HELPER METHODS ------------------------------------------------------
 
-        public bool CheckFinished(Booking booking)
+        public bool IsBookingFinished(Booking booking)
         {
             if (booking.EndDate < DateOnly.FromDateTime(DateTime.Now) && booking.IsFinished == false)
             {
@@ -645,15 +604,10 @@ namespace FribergRentalCars.Controllers
         {
             var model = new EditAccountViewModel
             {
-                /*UserId = user.UserId,
+                UserId = user.UserId,
                 AccountId = user.AccountId,
 
-                AdressId = account.AdressId,*/
-                User = user,
-                Account = account,
-
-                Adress = adress,
-
+                AdressId = account.AdressId,
                 Street = adress.Street,
                 PostalCode = adress.PostalCode,
                 City = adress.City,

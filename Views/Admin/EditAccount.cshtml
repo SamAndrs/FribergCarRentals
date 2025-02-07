@@ -19,15 +19,10 @@
 <div class="primary-text-color table-responsive">
     <form asp-action="EditAccount">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        @*<div class="visually-hidden">
+        <div class="visually-hidden">
             <input type="hidden" asp-for="UserId" />
             <input type="hidden" asp-for="AccountId" />
             <input type="hidden" asp-for="AdressId" />
-        </div>*@
-        <div class="visually-hidden">
-            <input type="hidden" asp-for="User" />
-            <input type="hidden" asp-for="Account" />
-            <input type="hidden" asp-for="Adress" />
         </div>
         <table class="table primary-text-color">
             <thead>
@@ -41,20 +36,11 @@
                 <tr>
                     @* Användar Uppgifter *@
                     <td>
-                        @*
                         <div class="form-group p-2">
                             <label asp-for="UserId" class="control-label"><strong>Användar-Id:</strong> 
                                 <label class="third-text-color">@Model.UserId</label>
                             </label>
-                        </div>*@
-
-                        <div class="form-group p-2">
-                            <label asp-for="User.UserId" class="control-label">
-                                <strong>Användar-Id:</strong>
-                                <label class="third-text-color">@Model.User.UserId</label>
-                            </label>
                         </div>
-
 
                         <div class="form-group p-2">
                             <label asp-for="UserName" class="control-label"><strong>Användarnamn</strong></label>
@@ -81,20 +67,11 @@
                     </td>
                     @* Konto uppgifter *@
                     <td>
-                        @*
                         <div>
                             <label asp-for="AccountId" class="control-label"><strong>Konto-Id: </strong>
                                 <label class="third-text-color">@Model.AccountId</label>
                             </label>
                         </div>
-                        *@
-                        <div>
-                            <label asp-for="Account.AccountId" class="control-label">
-                                <strong>Konto-Id: </strong>
-                                <label class="third-text-color">@Model.Account.AccountId</label>
-                            </label>
-                        </div>
-
 
                         <div class="form-group">
                             <label asp-for="FirstName" class="control-label"><strong>Förnamn:</strong></label>
@@ -120,21 +97,12 @@
                     </td>
                     @* Adress uppgifter *@
                     <td>
-                        @*
                         <div>
                             <label asp-for="AdressId" class="control-label"><strong>Adress Id: </strong>
                                 <label class="third-text-color">@Model.AdressId</label>
                             </label>
                         </div>
-                        *@
-                        <div>
-                            <label asp-for="Adress.AdressId" class="control-label">
-                                <strong>Adress Id: </strong>
-                                <label class="third-text-color">@Model.Adress.AdressId</label>
-                            </label>
-                        </div>
-
-
+                        
                         <div class="form-group">
                             <label asp-for="Street" class="control-label"><strong>Gatunamn:</strong></label>
                             <input asp-for="Street" class="form-control" />
@@ -159,14 +127,13 @@
             <input type="submit" value="Spara ändringar" class="btn btn-primary border-0" />
             @{
                 Context.Session.SetString("tempUserName", Model.UserName);
-                //Context.Session.SetInt32("tempAccountID", Model.AccountId);
-                //Context.Session.SetInt32("tempUserID", Model.UserId);
-                Context.Session.SetInt32("tempAccountID", Model.Account.AccountId);
-                Context.Session.SetInt32("tempUserID", Model.User.UserId);
+                Context.Session.SetInt32("tempAccountID", Model.AccountId);
+                Context.Session.SetInt32("tempUserID", Model.UserId);
             }
-            @*<a href=@Url.Action("ActiveAccountBookings", "Admin", new {id = Model?.AccountId}) class="btn btn-primary border-0">Konto Bokningar</a>*@
-            <a href=@Url.Action("ActiveAccountBookings", "Admin", new {id = Model?.Account.AccountId}) class="btn btn-primary border-0">Konto Bokningar</a>
+            <a href=@Url.Action("ActiveAccountBookings", "Admin", new {id = Model?.AccountId}) class="btn btn-primary border-0">Konto Bokningar</a>
+
         </div>
+
     </form>
 </div>
 
