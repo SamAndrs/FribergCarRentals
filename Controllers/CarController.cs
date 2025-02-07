@@ -33,11 +33,35 @@ namespace FribergRentalCars.Controllers
         public async Task<IActionResult> Details(int id)
         {
             var car = await _carRepository.GetByIdAsync(id);
-            if(car == null)
-            {
-                return NotFound();
-            }
+            if (!IsObjectValid(id, car, $"Bilen kunde inte hittas."))
+                return View("ErrorPage", "Home");
+
             return View(car);
         }
+
+
+        #region // HELPER METHODS ---------------------------------------------------
+        public bool IsObjectValid(int id, Object obj, string errormessage)
+        {
+            if (id <= 0 || obj == null)
+            {
+                TempData["ErrorMessage"] = errormessage;
+                Console.WriteLine($"Objekt med ID: {id} ej hittat");
+                return false;
+            }
+            return true;
+        }
+
+        public bool IsObjectValid(int id, string errormessage)
+        {
+            if (id <= 0)
+            {
+                TempData["ErrorMessage"] = errormessage;
+                Console.WriteLine($"Objekt med ID: {id} ej hittat");
+                return false;
+            }
+            return true;
+        }
+        #endregion
     }
 }

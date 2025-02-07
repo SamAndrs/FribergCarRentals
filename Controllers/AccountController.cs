@@ -14,7 +14,7 @@ namespace FribergRentalCars.Controllers
         public readonly IAccountRepository _accountRepo;
 
         private readonly IUserRepository _userRepo;
-        
+
         private readonly IBookingRepository _bookRepo;
 
         public AccountController(IAccountRepository accountRepository, IUserRepository userRepository, IBookingRepository bookingRepository)
@@ -30,15 +30,10 @@ namespace FribergRentalCars.Controllers
         public async Task<ActionResult> ChangeEmail(int id)
         {
             ViewBag.UserName = HttpContext.Session.GetString("user");
-            if (id <= 0)
-            {
-                return NotFound(id);
-            }
+
             var account = await _accountRepo.GetByIdAsync(id);
-            if(account == null)
-            {
-                return NotFound(account);
-            }
+            if (!IsObjectValid(id, account, $"Användare kunde inte hittas."))
+                return View("ErrorPage", "Home");           
 
             EmailViewModel emailVM = new EmailViewModel
             {
@@ -77,18 +72,16 @@ namespace FribergRentalCars.Controllers
         public async Task<ActionResult> ChangePassword()
         {
             var userName = HttpContext.Session.GetString("user");
-            if(string.IsNullOrEmpty(userName))
+            if (string.IsNullOrEmpty(userName))
             {
                 return NotFound(userName);
             }
             ViewBag.UserName = userName;
 
             var user = await _userRepo.GetUserByUserNameAsync(userName);
-            if(user == null)
-            {
-                return NotFound(user);
-            }
-           
+            if (!IsObjectValid(user.UserId, user, $"Användare kunde inte hittas."))
+                return View("ErrorPage", "Home");
+
             PasswordViewModel model = new PasswordViewModel
             {
                 User = user
@@ -125,16 +118,15 @@ namespace FribergRentalCars.Controllers
         }
 
         // GET: AccountController/Details/5
-        public async Task <IActionResult> Details()
+        public async Task<IActionResult> Details()
         {
-            var userName = HttpContext.Session.GetString("user");
-            ViewBag.UserName = userName;
             var account = await _accountRepo.GetWithAdressAsync((int)HttpContext.Session.GetInt32("accountID")!);
-            if (account == null)
-            {
-                NotFound();
-            }
-            return View(account);
+            
+            var userName = HttpContext.Session.GetString("user");
+            
+            ViewBag.UserName = userName;
+            
+            return View(account);           
         }
 
 
@@ -143,16 +135,11 @@ namespace FribergRentalCars.Controllers
         {
             var userName = HttpContext.Session.GetString("user");
             ViewBag.UserName = userName;
-            if (id == null)
-            {
-                return NotFound();
-            }
-            var account = await _accountRepo.GetWithAdressAsync(id);
 
-            if (account == null)
-            {
-                return NotFound();
-            }
+            var account = await _accountRepo.GetWithAdressAsync(id);
+            if (!IsObjectValid(id, account, $"Användarkonto kunde inte hittas."))
+                return View("ErrorPage", "Home");
+
             return View(account);
         }
 
@@ -161,11 +148,6 @@ namespace FribergRentalCars.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Account account)
         {
-            if (id != account.AccountId)
-            {
-                NotFound();
-            }
-            
             if (ModelState.IsValid)
             {
                 try
@@ -174,14 +156,7 @@ namespace FribergRentalCars.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (account.AccountId == null)
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    ModelState.AddModelError("", "Kontouppgifter gick inte att uppdatera.");
                 }
                 return RedirectToAction(nameof(Details));
             }
@@ -192,7 +167,7 @@ namespace FribergRentalCars.Controllers
         // POST: AccountController/Login
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task <ActionResult> Login(LoginViewModel loginVM)
+        public async Task<ActionResult> Login(LoginViewModel loginVM)
         {
             if (ModelState.IsValid)
             {
@@ -216,7 +191,7 @@ namespace FribergRentalCars.Controllers
                     HttpContext.Session.SetString("user", user.UserName);
                     HttpContext.Session.SetInt32("UserID", user.UserId);
                     return RedirectToAction("Details");
-        }
+                }
                 else
                 {
                     ModelState.AddModelError("", "Lösenordet eller användarnamn/ email är inkorrekt.");
@@ -224,7 +199,7 @@ namespace FribergRentalCars.Controllers
             }
             return View(loginVM);
         }
-        
+
         // GET: AccountController/ Logout
         public ActionResult Logout()
         {
@@ -238,16 +213,16 @@ namespace FribergRentalCars.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel regVM)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 try
                 {
-                    if(await _accountRepo.EmailAvailability(regVM.Account.Email))
+                    if (await _accountRepo.EmailAvailability(regVM.Account.Email))
                     {
                         ModelState.AddModelError("", "Den här emailadressen är redan registrerad.");
                         return View(regVM);
                     }
-                   if(await _userRepo.UserNameAvailaibility(regVM.User.UserName))
+                    if (await _userRepo.UserNameAvailaibility(regVM.User.UserName))
                     {
                         ModelState.AddModelError("", "Det här användarnamnet är redan registrerat.");
                         return View(regVM);
@@ -265,7 +240,7 @@ namespace FribergRentalCars.Controllers
                 }
                 catch (Exception ex)
                 {
-                    ModelState.AddModelError("", $"Error creating account: {ex.Message}");
+                    ModelState.AddModelError("", $"Det gick inte att skapa kontot: {ex.Message}");
 
                 }
             }
@@ -273,7 +248,7 @@ namespace FribergRentalCars.Controllers
         }
 
         // GET: AccountController/LoginRegister
-       public ActionResult LoginRegister()
+        public ActionResult LoginRegister()
         {
             var model = new LoginRegisterViewModel
             {
@@ -284,5 +259,33 @@ namespace FribergRentalCars.Controllers
             return View(model);
         }
 
+
+        #region // HELPER METHODS ------------------------------------------------------
+
+        public bool IsObjectValid(int id, Object obj, string errormessage)
+        {
+            if (id <= 0 || obj == null)
+            {
+                TempData["ErrorMessage"] = errormessage;
+                Console.WriteLine($"Objekt med ID: {id} ej hittat");
+                return false;
+            }
+            return true;
+        }
+
+        public bool IsObjectValid(int id, string errormessage)
+        {
+            if (id <= 0)
+            {
+                TempData["ErrorMessage"] = errormessage;
+                Console.WriteLine($"Objekt med ID: {id} ej hittat");
+                return false;
+            }
+            return true;
+        }
+        #endregion
     }
 }
+
+   
+    

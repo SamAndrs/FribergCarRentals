@@ -26,22 +26,13 @@ namespace FribergRentalCars.Controllers
         {
             ViewBag.AccountId = HttpContext.Session.GetInt32("accountID");
             var bookings = await _bookRepo.GetActiveAccountBookings(id);
-            if (id == null)
-            {
-                return NotFound(id);
-            }
 
             foreach (var item in bookings)
             {
-                try
-                {
-                    item.Car = await _carRepo.GetByIdAsync(item.CarId);
-                }
-                catch (Exception)
-                {
-                    ModelState.AddModelError("", "Bilen finns inte.");
-                }
-
+                item.Car = await _carRepo.GetByIdAsync(item.CarId);
+                if (!IsObjectValid(item.CarId, item.Car, $"Bil objekt kunde inte hittas."))
+                    return View("ErrorPage", "Home");
+                
                 if (CheckFinished(item))
                 {
                     await _bookRepo.UpdateAsync(item);
@@ -51,22 +42,19 @@ namespace FribergRentalCars.Controllers
         }
 
 
-
         // POST: BookingController/Cancel
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Cancel(int id)
         {
-            try
+            var booking = await _bookRepo.GetByIdAsync(id);
+            if (!IsObjectValid(id, booking, $"Bokningen kunde inte hittas."))
+                return View("CancelResult", "Booking");
+
+            else
             {
-                var booking = await _bookRepo.GetByIdAsync(id);
                 await _bookRepo.DeleteAsync(booking);
                 TempData["SuccessMessage"] = "Avbokning lyckad!";
-                return RedirectToAction(nameof(CancelResult));
-            }
-            catch(Exception)
-            {
-                TempData["ErrorMessage"] = "Avbokning misslyckades!";
                 return RedirectToAction(nameof(CancelResult));
             }
         }
@@ -86,15 +74,13 @@ namespace FribergRentalCars.Controllers
         public async Task<ActionResult> Create(int id)
         {
             ViewBag.UserName = HttpContext.Session.GetString("user");
+            
             var car = await _carRepo.GetByIdAsync(id);
-            BookingViewModel bookVM = new BookingViewModel
-            {
-                CarId = car.CarId,
-                AccountId = (int)HttpContext.Session.GetInt32("accountID")!,
-                TotalCost = car.PricePerDay,
-                StartDate = DateOnly.FromDateTime(DateTime.Today),
-                EndDate = DateOnly.FromDateTime(DateTime.Today)
-            };
+            if (!IsObjectValid(id, car, $"Bilen kunde inte hittas."))
+                return View("ErrorPage", "Home");
+
+            var bookVM = CreateBookingVM(car, (int)HttpContext.Session.GetInt32("accountID")!);
+            
             return View(bookVM);
         }
 
@@ -104,16 +90,12 @@ namespace FribergRentalCars.Controllers
         public async Task<ActionResult> Create(BookingViewModel bookVM)
         {
             ViewBag.UserName = HttpContext.Session.GetString("user");
-            Booking newBooking = new Booking
-            {
-               AccountId = bookVM.AccountId,
-               CarId = bookVM.CarId,
-               StartDate = bookVM.StartDate,
-               EndDate = bookVM.EndDate,
-               TotalCost = bookVM.TotalCost,
-               Car = await _carRepo.GetByIdAsync(bookVM.CarId),
-               IsFinished = bookVM.IsFinished,
-            };
+
+            var car = await _carRepo.GetByIdAsync(bookVM.CarId);
+            if (!IsObjectValid(bookVM.CarId, car, $"Bilen kunde inte hittas."))
+                return View("ErrorPage", "Home");
+
+            var newBooking = CreateNewBooking(bookVM, car);
 
             if (ModelState.IsValid)
             {
@@ -143,24 +125,18 @@ namespace FribergRentalCars.Controllers
         // GET: BookingController/ListAccountBookings/5
         public async Task<ActionResult> FinishedAccountBookings(int id)
         {
-            ViewBag.AccountId = HttpContext.Session.GetInt32("accountID");
             var bookings = await _bookRepo.GetFinishedAccountBookings(id);
-            if(id == null)
-            {
-                return NotFound(id);
-            }
-            
+            if (!IsObjectValid(id, $"Felaktig bokning."))
+                return View("ErrorPage", "Home");
+
+            ViewBag.AccountId = HttpContext.Session.GetInt32("accountID");
+           
             foreach (var item in bookings)
             {
-                try
-                { 
-                    item.Car = await _carRepo.GetByIdAsync(item.CarId);
-                }
-                catch(Exception)
-                {
-                    ModelState.AddModelError("", "Bilen finns inte.");
-                }
-                
+                item.Car = await _carRepo.GetByIdAsync(item.CarId);
+                if (!IsObjectValid(item.CarId, item.Car, $"En bil kunde inte hittas."))
+                    return View("ErrorPage", "Home");
+                                
                 if(CheckFinished(item))
                 {
                     await _bookRepo.UpdateAsync(item);
@@ -169,7 +145,7 @@ namespace FribergRentalCars.Controllers
             return View(bookings);
         }
 
-        #region HELPER METHODS ---------------------------------------------------
+        #region // HELPER METHODS ---------------------------------------------------
         public async Task<bool> IsOverlapping(int carID, Booking booking)
         {
             var existingBookings = await _bookRepo.GetBookingsByCarIdAsync(carID);
@@ -188,6 +164,58 @@ namespace FribergRentalCars.Controllers
                 return true;
             }
             return false;
+        }
+
+        public Booking CreateNewBooking(BookingViewModel bookVM, Car car)
+        {
+            Booking newBooking = new Booking
+            {
+                AccountId = bookVM.AccountId,
+                CarId = bookVM.CarId,
+                StartDate = bookVM.StartDate,
+                EndDate = bookVM.EndDate,
+                TotalCost = bookVM.TotalCost,
+                Car = car,
+                IsFinished = bookVM.IsFinished,
+            };
+
+            return newBooking;
+        }
+        
+        public BookingViewModel CreateBookingVM(Car car, int id)
+        {
+           var bookVM = new BookingViewModel
+            {
+                CarId = car.CarId,
+                AccountId = id,
+                TotalCost = car.PricePerDay,
+                StartDate = DateOnly.FromDateTime(DateTime.Today),
+                EndDate = DateOnly.FromDateTime(DateTime.Today)
+            };
+
+            return bookVM;
+        }
+
+        public bool IsObjectValid(int id, Object obj, string errormessage)
+        {
+            if (id <= 0 || obj == null)
+            {
+                TempData["ErrorMessage"] = errormessage;
+                Console.WriteLine($"Objekt med ID: {id} ej hittat");
+                return false;
+            }
+            return true;
+        }
+
+        public bool IsObjectValid(int id, string errormessage)
+        {
+            if (id <= 0)
+            {
+                TempData["ErrorMessage"] = errormessage;
+                Console.WriteLine($"Objekt med ID: {id} ej hittat");
+                return false;
+            }
+            return true;
         }
         #endregion
 
