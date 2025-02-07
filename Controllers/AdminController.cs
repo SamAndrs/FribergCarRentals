@@ -91,12 +91,12 @@ namespace FribergRentalCars.Controllers
                 // Password check
                 if (loginVM.Password == user.Password)
                 {
-                    HttpContext.Session.SetInt32("accountID", user.AccountId);
-                    HttpContext.Session.SetString("user", user.UserName);
-                    HttpContext.Session.SetInt32("UserID", user.UserId);
                     // Control check if Admin
                     if (user.IsAdmin)
                     {
+                        HttpContext.Session.SetInt32("accountID", user.AccountId);
+                        HttpContext.Session.SetString("user", user.UserName);
+                        HttpContext.Session.SetInt32("UserID", user.UserId);
                         HttpContext.Session.SetInt32("isAdmin", 1);
                         return RedirectToAction(nameof(Details));
                     }
@@ -264,7 +264,7 @@ namespace FribergRentalCars.Controllers
                 try
                 {
                     await _carRepo.AddAsync(car);
-                    return RedirectToAction(nameof(ListAllCars));
+                    return RedirectToAction(nameof(ListAllAvailableCars));
                 }
                 catch
                 {

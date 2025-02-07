@@ -1,31 +1,11 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
-@*
-@{
-    // debug
-    Context.Session.SetString("user", "DarthVader");
-    Context.Session.SetInt32("accountID", 2);
-    Context.Session.SetInt32("UserID", 2);
 
-    var user = Context.Session.GetString("user");
-    Context.Session.SetInt32("isAdmin", 1);
-    var accID = Context.Session.GetInt32("accountID");
-}
-
-<div>
-   
-    <p class="third-text-color">@user - @accID</p>
-</div>
-*@
 <section class="center-screen">
     <div class="container">
-        <div id="box-1">
-            <div></div>
-
-        </div>
-        <div id="box-2">
-            <img src="https://autobarn.se/wp-content/uploads/2020/07/Autobarn_Marmagard_front_mobile.png" class="img-fluid" id="yard" alt="Friberg Rentals gård" />
+        <div>
+            <img src="https://autobarn.se/wp-content/uploads/2020/07/Autobarn_Marmagard_front_mobile.png" class="img-fluid" alt="Friberg Rentals gård" />
         </div>
 
     </div>
