@@ -13,7 +13,7 @@ using System.Security.Principal;
 
 namespace FribergRentalCars.Controllers
 {
-    public class AdminController : BaseController
+    public class AdminController : Controller
     {
         private readonly IAccountRepository _accRepo;
         private readonly IAdressRepository _adrRepo;
@@ -122,49 +122,29 @@ namespace FribergRentalCars.Controllers
 
             foreach(var item in allBookings)
             {
-                try
+                item.Car = await _carRepo.GetByIdAsync(item.CarId);
+                if (item.Car == null)
                 {
-                    item.Car = await _carRepo.GetByIdAsync(item.CarId);
-                }
-                catch (Exception)
-                {
-                    ModelState.AddModelError("item.Car", "Bilobjektet finns inte.");
+                    TempData["ErrorMessage"] = $"Bil objektet med ID: {item.CarId} okänt.";
+                    return View("ErrorPage", "Home");
                 }
 
                 var account = await _accRepo.GetByIdAsync((int)item.AccountId!);
-                if(account == null)
+                if (account == null)
                 {
-                    ModelState.AddModelError("", "Kontot hittades inte!");
-                }
-
-                var listObjekt = new AllBookingsViewModel
-                {
-                    BookingId = item.BookingId,
-                    AccountId = item.AccountId,
-                    //Email = account.Email,
-                    CarId = item.CarId,
-                    Car = item.Car,
-                    StartDate = item.StartDate,
-                    EndDate = item.EndDate,
-                    TotalCost = item.TotalCost,
-                    IsFinished = item.IsFinished
-                };
-                               
-                if(account == null || string.IsNullOrEmpty(account.Email))
-                {
-                    listObjekt.Email = "--GDPR--";
-                }
-                else
-                {
-                    listObjekt.Email = account.Email;
-                }
-               
-                // Check if a booking is due. If so set to finished
-                if(CheckFinished(item))
-                {
-                    await _bookRepo.UpdateAsync(item);
+                    TempData["ErrorMessage"] = $"Användarkonto med ID: {item.AccountId} hittades inte.";
+                    return View("ErrorPage", "Home");
                 }
                 
+                var listObjekt = CreateBookingVM(item);
+
+                // Check if GDPR is applied for Account
+                listObjekt.Email = IsAccountGDPR(account, listObjekt);
+
+                // Control check: Is Booking supposed to be finished?
+                if (CheckFinished(item))
+                    await _bookRepo.UpdateAsync(item);
+
                 BookingsList.Add(listObjekt);
             }
             return View(BookingsList);
@@ -180,43 +160,20 @@ namespace FribergRentalCars.Controllers
 
             foreach (var item in allBookings)
             {
-                try
+                item.Car = await _carRepo.GetByIdAsync(item.CarId);
+                if (item.Car == null)
                 {
-                    item.Car = await _carRepo.GetByIdAsync(item.CarId);
-                }
-                catch (Exception)
-                {
-                    ModelState.AddModelError("item.Car", "Bilobjektet finns inte.");
+                    TempData["ErrorMessage"] = $"Bil objektet med ID: {item.CarId} okänt.";
+                    return View("ErrorPage", "Home");
                 }
 
-                var email = "";
-                try
-                {
-                    var account = await _accRepo.GetByIdAsync((int)item.AccountId!);
-                    if(account != null)
-                    {
-                        email = account.Email;
-                    }
-                }
-                catch
-                {
-                    email = "--GDPR--";
-                }
+                // Check if GDPR is applied for Account
+                var account = await _accRepo.GetByIdAsync((int)item.AccountId!);
+                var email = IsAccountGDPR(account);
 
-                var listObjekt = new AllBookingsViewModel
-                {
-                    BookingId = item.BookingId,
-                    AccountId = item.AccountId,
-                    Email = email,
-                    CarId = item.CarId,
-                    Car = item.Car,
-                    StartDate = item.StartDate,
-                    EndDate = item.EndDate,
-                    TotalCost = item.TotalCost,
-                    IsFinished = item.IsFinished
-                };
+                var listObjekt = CreateBookingVM(item, email);
 
-                // Check if a booking is due. If so set to finished
+                // Control check: Is Booking not set to finished? -do so
                 if (CheckFinished(item))
                 {
                     await _bookRepo.UpdateAsync(item);
@@ -232,21 +189,19 @@ namespace FribergRentalCars.Controllers
         public async Task<ActionResult> ActiveAccountBookings(int id)
         {
             var accBookings = await _bookRepo.GetActiveAccountBookings(id);
+            
             // Retrieve User id for getting back to Edit Account properly (takes userId as parameter)
-            var userId = HttpContext.Session.GetInt32("UserId");
-            ViewBag.UserID = userId;
+            ViewBag.UserID = HttpContext.Session.GetInt32("tempUserID");
             // Retrieve UserName for listing bookings for account, properly
-            ViewBag.UserName = await _userRepo.FindUserNameByIdAsync((int)userId!);
+            ViewBag.UserName = HttpContext.Session.GetString("tempUserName");
 
             foreach (var item in accBookings)
             {
-                try
+                item.Car = await _carRepo.GetByIdAsync(item.CarId);
+                if (item.Car == null)
                 {
-                    item.Car = await _carRepo.GetByIdAsync(item.CarId);
-                }
-                catch (Exception)
-                {
-                    ModelState.AddModelError("item.Car", "Bilobjektet finns inte.");
+                    TempData["ErrorMessage"] = $"Bil objektet med ID: {item.CarId} okänt.";
+                    return View("ErrorPage", "Home");
                 }
             }
             return View(accBookings);
@@ -255,63 +210,47 @@ namespace FribergRentalCars.Controllers
         [AdminAuthorizationFilter]
         public async Task<ActionResult> CancelAccountBooking(int id)
         {
-            try
+            var booking = await _bookRepo.GetByIdAsync(id);
+            if (booking == null)
             {
-                var booking = await _bookRepo.GetByIdAsync(id);
-                await _bookRepo.DeleteAsync(booking);
-                return RedirectToAction("AllAccountBookings");
+                TempData["ErrorMessage"] = $"Bokning med ID: {id} kunde inte hittas.";
+                return View("ErrorPage", "Home");
             }
-            catch
+            else
             {
-                ModelState.AddModelError("", "Kunde inte radera bokningen.");
-                return NotFound(id);
-                
+                await _bookRepo.DeleteAsync(booking);
+                return RedirectToAction("ActiveAccountBookings");
             }
         }
-
-        [AdminAuthorizationFilter]
-        public async Task<ActionResult> CancelListBooking(int id)
-        {
-            try
-            {
-                var booking = await _bookRepo.GetByIdAsync(id);
-                await _bookRepo.DeleteAsync(booking);
-                return RedirectToAction("AllActiveBookings");
-            }
-            catch
-            {
-                ModelState.AddModelError("", "Kunde inte radera bokningen.");
-                return NotFound(id);
-
-            }
-        }
-
 
         // GET: AdminController/FinishedAccountBookings/5
         [AdminAuthorizationFilter]
         public async Task<ActionResult> FinishedAccountBookings(int id)
         {
+            if (id <=0)
+            {
+                TempData["ErrorMessage"] = $"Användarkonto med ID: {id} okänt.";
+                return View("ErrorPage", "Home");
+            }
+
             var oldBookings = await _bookRepo.GetFinishedAccountBookings(id);
+
             // Retrieve User id for getting back to Edit Account properly (takes userId as parameter)
-            var userId = HttpContext.Session.GetInt32("UserId");
-            ViewBag.UserID = userId;
+            ViewBag.UserID = HttpContext.Session.GetInt32("tempUserID");
             // Retrieve UserName for listing bookings for account, properly
-            ViewBag.UserName = await _userRepo.FindUserNameByIdAsync((int)userId!);
+            ViewBag.UserName = HttpContext.Session.GetString("tempUserName");
 
             foreach (var item in oldBookings)
             {
-                try
+                item.Car = await _carRepo.GetByIdAsync(item.CarId);
+                if (item.Car == null)
                 {
-                    item.Car = await _carRepo.GetByIdAsync(item.CarId);
-                }
-                catch (Exception)
-                {
-                    ModelState.AddModelError("item.Car", "Bilobjektet finns inte.");
+                    TempData["ErrorMessage"] = $"Bilobjektet med ID: {item.CarId} kunde inte hittas.";
+                    return View("ErrorPage", "Home");
                 }
             }
             return View(oldBookings);
         }
-
         #endregion
 
         #region // CARS
@@ -348,14 +287,11 @@ namespace FribergRentalCars.Controllers
         [AdminAuthorizationFilter]
         public async Task<ActionResult> EditCar(int carId)
         {
-            if(carId == null)
-            {
-                ModelState.AddModelError("", $"Ingen bil med ID: {carId} funnen.");
-            }
             var car = await _carRepo.GetByIdAsync(carId);
-            if(car == null)
+            if (carId <= 0 || car == null)
             {
-                ModelState.AddModelError("", $"Bil ID korrekt, men bil objekt saknas.");
+                TempData["ErrorMessage"] = $"Bilobjekt med ID: {carId} kunde inte hittas.";
+                return View("ErrorPage", "Home");
             }
             return View(car);
         }
@@ -364,24 +300,18 @@ namespace FribergRentalCars.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [AdminAuthorizationFilter]
-        public async Task<ActionResult> EditCar(int carId, Car car)
+        public async Task<ActionResult> EditCar(Car car)
         {
-            if(carId != car.CarId)
-            {
-                ModelState.AddModelError("", $"modell ID: {carId} och bil ID: {car.CarId} ej samma.");
-            }
-
             if(ModelState.IsValid)
             {
                 try
                 {
                     await _carRepo.UpdateAsync(car);
-                    return RedirectToAction(nameof(ListAllCars));
+                    return RedirectToAction(nameof(ListAllAvailableCars));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
                     ModelState.AddModelError("", "Bilobjektet kunde inte uppdateras i databasen.");
-                    NotFound(car);
                 }
             }
             return View(car);
@@ -395,7 +325,7 @@ namespace FribergRentalCars.Controllers
             return View(allCars);
         }
 
-        // GET: AdminController/ListAllCars
+        // GET: AdminController/ListAllAvailableCars
         [AdminAuthorizationFilter]
         public async Task<ActionResult> ListAllAvailableCars()
         {
@@ -440,6 +370,7 @@ namespace FribergRentalCars.Controllers
                     {
                         await _accRepo.AddAsync(regVM.Account);
 
+                        // Set User [ForeignKey] AccountId to same as Account Id
                         regVM.User.AccountId = regVM.Account.AccountId;
                         await _userRepo.AddAsync(regVM.User);
                         return RedirectToAction(nameof(ListAllAccounts));
@@ -457,68 +388,49 @@ namespace FribergRentalCars.Controllers
         [AdminAuthorizationFilter]
         public async Task<ActionResult> DeleteAccount(int id)
         {
-            if(id <= 0)
-            {
-                Console.WriteLine($"ID: {id} not found!");
-                return NotFound(id);
-            }
-
             var user = await _userRepo.GetByIdAsync(id);
-            if(user == null)
+            if (id <= 0 || user == null)
             {
-                Console.WriteLine($"No User with ID: {id} found!");
-                return NotFound(user);
-            }
+                TempData["ErrorMessage"] = $"Användare med ID: {id} kunde inte hittas.";
+                return View("ErrorPage", "Home");
+            }           
 
             var account = await _accRepo.GetWithAdressAsync(user.AccountId);
-            if(account == null)
+            if (user.AccountId <= 0 || account == null)
             {
-                Console.WriteLine($"No Account with User.AccountId: {user.AccountId} found!");
-                return NotFound(user.AccountId);
+                TempData["ErrorMessage"] = $"Konto med ID: {id} kunde inte hittas.";
+                return View("ErrorPage", "Home");
             }
-            else if(account.Adress == null)
+            else if(account.AdressId <= 0 || account.Adress == null)
             {
-                Console.WriteLine($"No Adress with Account.AdressId: {account.AdressId} found!");
-                return NotFound(account.Adress);
+                TempData["ErrorMessage"] = $"Adress med ID: {id} kunde inte hittas.";
+                return View("ErrorPage", "Home");
             }
             else
             {
-                var model = new DeleteUserViewModel
-                {
-                    User = user,
-                    Account = account,
-                    Adress = account.Adress
-                };
-
+                var model = CreateDeleteVM(user, account, account.Adress);
                 return View(model);
             } 
         }
 
-       
+        // POST: AdminController/DeleteConfirm/ model
         [HttpPost]
         [ValidateAntiForgeryToken]
         [AdminAuthorizationFilter]
         public async Task<ActionResult> DeleteConfirm(DeleteUserViewModel model)
         {
-            try
+            if(model.User == null || model.Account == null || model.Adress == null)
+            {
+                TempData["ErrorMessage"] = $"Användare med ID {model.User.UserId} kunde inte raderas.";
+                return View("ErrorPage", "Home");
+            }
+            else
             {
                 List<Booking> accountBookings = new List<Booking>
                            (await _bookRepo.GetBookingsByAccountIdAsync(model.Account.AccountId));
 
-                foreach (var booking in accountBookings)
-                {
-                    // If a booking is not finished, erase it
-                    if(!booking.IsFinished)
-                    {
-                        await _bookRepo.DeleteAsync(booking);
-                    }
-                    // If a booking IS finished, set its AccountId to null, to apply GDPR
-                    else
-                    {
-                        booking.AccountId = null;
-                        await _bookRepo.UpdateAsync(booking);
-                    }
-                }
+                // Update Account bookings to apply GDPR
+                UpdateBookings(accountBookings);
 
                 await _userRepo.DeleteAsync(model.User);
                 await _adrRepo.DeleteAsync(model.Adress);
@@ -526,81 +438,88 @@ namespace FribergRentalCars.Controllers
 
                 return RedirectToAction(nameof(ListAllAccounts));
             }
-            catch
-            {
-                ModelState.AddModelError("", "Användaren kunde inte raderas");
-                return RedirectToAction(nameof(ListAllAccounts));
-            }
-           
         }
 
         // GET: AdminController/EditAccount/5
         [AdminAuthorizationFilter]
         public async Task<ActionResult> EditAccount(int id)
         {
-            if(id <= 0)
-            {
-                return NotFound(id);
-            }
-
             var user = await _userRepo.GetByIdAsync(id);
-            if(user == null)
+            if (id <= 0 || User == null)
             {
-                return NotFound(user);
+                TempData["ErrorMessage"] = $"Användare med ID {id} kunde inte hittas.";
+                return View("ErrorPage", "Home");
             }
 
-            var account = await _accRepo.GetByIdAsync(user.UserId);
-            if(account == null)
+            var account = await _accRepo.GetByIdAsync(user.AccountId);
+            if (user.AccountId <= 0 || account == null)
             {
-                return NotFound(account);
+                TempData["ErrorMessage"] = $"Användarkonto med ID {user.AccountId} kunde inte hittas.";
+                return View("ErrorPage", "Home");
             }
 
             var adress = await _adrRepo.GetByIdAsync(account.AccountId);
-            if(adress == null)
+            if (account.AdressId <= 0 || adress == null)
             {
-                return NotFound(adress);
+                TempData["ErrorMessage"] = $"Adressen med ID {account.AdressId} kunde inte hittas.";
+                return View("ErrorPage", "Home");
             }
 
-            var model = new EditAccountViewModel
-            {
-                UserId = user.UserId,
-                AccountId = user.AccountId,
-
-                AdressId = account.AdressId,
-                Street = adress.Street,
-                PostalCode = adress.PostalCode,
-                City = adress.City,
-
-                FirstName = account.FirstName,
-                LastName = account.LastName,
-                PhoneNumber = account.PhoneNumber,
-                Email = account.Email,
-
-                UserName = user.UserName,
-                Password = user.Password,
-                IsAdmin = user.IsAdmin
-
-            };
-
-            // Set Session variable for getting back from Account Bookings view
-            HttpContext.Session.SetInt32("UserId", user.UserId);
-            return View(model);
+            var modelVM = CreateEditVM(user, account, account.Adress);
+            
+            return View(modelVM);
         }
 
         // POST: AdminController/EditAccount/Model
         [HttpPost]
         [ValidateAntiForgeryToken]
         [AdminAuthorizationFilter]
-        public async Task<ActionResult> EditAccount(int id, EditAccountViewModel model)
+        public async Task<ActionResult> EditAccount(EditAccountViewModel model)
         {
             if(model == null)
             {
                 ModelState.AddModelError("", "Konto-objektet finns inte.");
             }
 
+            var user = model.User;
+            var account = model.Account;
+            var adress = model.Adress;
+
+            var oldUserName = model.User.UserName;
+            if(ModelState.IsValid)
+            {
+                if(model.UserName != oldUserName)
+                {
+                    if (await _userRepo.UserNameAvailaibility(model.UserName))
+                    {
+                        ModelState.AddModelError("", "Användarnamnet är redan taget!");
+                        return View(model);
+                    }
+                    else
+                    {
+                        model.User.UserName = model.UserName;
+                        oldUserName = model.UserName;
+                    }
+                }
+                else
+                {
+                    try
+                    {
+                        await _userRepo.UpdateAsync(model.User);
+                        await _accRepo.UpdateAsync(model.Account);
+                        await _adrRepo.UpdateAsync(model.Adress);
+                        return RedirectToAction(nameof(ListAllAccounts));
+                    }
+                    catch
+                    {
+                        ModelState.AddModelError("", "Det gick inte att ändra användaruppgifterna.");
+                    }
+                }
+            }
+            /*
             var user = await _userRepo.GetByIdAsync(id);
             var account = await _accRepo.GetByIdAsync(user.UserId);
-            var adress = await _adrRepo.GetByIdAsync(account.AccountId);
+            var adress = await _adrRepo.GetByIdAsync(account.AccountId);       
 
             var oldUserName = user.UserName;
             if(ModelState.IsValid)
@@ -647,7 +566,8 @@ namespace FribergRentalCars.Controllers
                 {
                     ModelState.AddModelError("", "Det blev något fel");
                 } 
-            }
+           
+            }*/
             return View(model);
         }
 
@@ -685,6 +605,128 @@ namespace FribergRentalCars.Controllers
                 return true;
             }
             return false;
+        }
+
+        public AllBookingsViewModel CreateBookingVM(Booking booking)
+        {
+            var model = new AllBookingsViewModel
+            {
+                BookingId = booking.BookingId,
+                AccountId = booking.AccountId,
+                //Email = account.Email,
+                CarId = booking.CarId,
+                Car = booking.Car,
+                StartDate = booking.StartDate,
+                EndDate = booking.EndDate,
+                TotalCost = booking.TotalCost,
+                IsFinished = booking.IsFinished
+            };
+            return model;
+        }
+
+        public AllBookingsViewModel CreateBookingVM(Booking booking, string email)
+        {
+            var model = new AllBookingsViewModel
+            {
+                BookingId = booking.BookingId,
+                AccountId = booking.AccountId,
+                Email = email,
+                CarId = booking.CarId,
+                Car = booking.Car,
+                StartDate = booking.StartDate,
+                EndDate = booking.EndDate,
+                TotalCost = booking.TotalCost,
+                IsFinished = booking.IsFinished
+            };
+            return model;
+        }
+
+        public EditAccountViewModel CreateEditVM(User user, Account account, Adress adress)
+        {
+            var model = new EditAccountViewModel
+            {
+                /*UserId = user.UserId,
+                AccountId = user.AccountId,
+
+                AdressId = account.AdressId,*/
+                User = user,
+                Account = account,
+
+                Adress = adress,
+
+                Street = adress.Street,
+                PostalCode = adress.PostalCode,
+                City = adress.City,
+
+                FirstName = account.FirstName,
+                LastName = account.LastName,
+                PhoneNumber = account.PhoneNumber,
+                Email = account.Email,
+
+                UserName = user.UserName,
+                Password = user.Password,
+                IsAdmin = user.IsAdmin
+            };
+            return model;
+        }
+
+        public string IsAccountGDPR(Account account, AllBookingsViewModel objekt)
+        {
+
+            if (account == null || string.IsNullOrEmpty(account.Email))
+            {
+                objekt.Email = "--GDPR--";
+            }
+            else
+            {
+                objekt.Email = account.Email;
+            }
+
+            return objekt.Email;
+        }
+
+        public string IsAccountGDPR(Account account)
+        {
+            var checkEmail = "";
+            try
+            {
+                if (account != null)
+                    checkEmail = account.Email;
+            }
+            catch
+            {
+                checkEmail = "--GDPR--";
+            }
+            return checkEmail;
+        }
+
+        public DeleteUserViewModel CreateDeleteVM(User user, Account account, Adress adress)
+        {
+            var model = new DeleteUserViewModel
+            {
+                User = user,
+                Account = account,
+                Adress = account.Adress
+            };
+            return model;
+        }
+
+        public async Task UpdateBookings(List<Booking> accountBookings)
+        {
+            foreach (var booking in accountBookings)
+            {
+                // If a booking is not finished, erase it
+                if (!booking.IsFinished)
+                {
+                    await _bookRepo.DeleteAsync(booking);
+                }
+                // If a booking IS finished, set its AccountId to null, to apply GDPR
+                else
+                {
+                    booking.AccountId = null;
+                    await _bookRepo.UpdateAsync(booking);
+                }
+            }
         }
 
         #endregion

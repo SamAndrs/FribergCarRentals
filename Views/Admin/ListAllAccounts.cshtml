@@ -60,7 +60,13 @@
                     @Html.DisplayFor(modelItem => item.Account.Email)
                 </td>
                 <td>
-                    <a href=@Url.Action("EditAccount", new { id = item.User.UserId }) class="btn btn-primary border-0">Redigera</a>
+                    @{
+                        Context.Session.SetString("tempUserName", item.User.UserName);
+                        Context.Session.SetInt32("tempAccountID", item.Account.AccountId);
+                        Context.Session.SetInt32("tempUserID", item.User.UserId);
+                        <a href=@Url.Action("EditAccount", new { id = item.User.UserId}) class="btn btn-primary border-0">Redigera</a>
+                    }
+                    
                     <a href=@Url.Action("DeleteAccount", new { id = item.User.UserId }) class="btn btn-danger">Ta bort</a> 
                 </td>
             </tr>

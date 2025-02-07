@@ -54,7 +54,7 @@
                     @Html.DisplayFor(modelItem => item.BookingId)
                 </td>
                 <td>
-                    @if (!string.IsNullOrEmpty(item.Car.Image))
+                    @if(!string.IsNullOrEmpty(item.Car.Image))
                     {
                         <div>
                             <img src="@item.Car.Image" alt="bild på bil" class="img-fluid" width="80" height="80" />
@@ -87,7 +87,8 @@
                     </td>
 
                     <td>
-                        Pågående | <a href=@Url.Action("CancelListBooking", "Admin", new { id = item.BookingId}) class="btn btn-danger">Avboka</a>
+                        @*Pågående | <a href=@Url.Action("CancelListBooking", "Admin", new { id = item.BookingId}) class="btn btn-danger">Avboka</a>*@
+                    Pågående | <a href=@Url.Action("CancelAccountBooking", "Admin", new { id = item.BookingId}) class="btn btn-danger">Avboka</a>
                     </td>
                 
 
