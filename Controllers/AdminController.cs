@@ -123,18 +123,12 @@ namespace FribergRentalCars.Controllers
             foreach(var item in allBookings)
             {
                 item.Car = await _carRepo.GetByIdAsync(item.CarId);
-                if (item.Car == null)
-                {
-                    TempData["ErrorMessage"] = $"Bil objektet med ID: {item.CarId} okänt.";
+                if (!IsObjectValid(item.CarId, item.Car, $"Bil objektet med ID: {item.CarId} okänt."))
                     return View("ErrorPage", "Home");
-                }
 
                 var account = await _accRepo.GetByIdAsync((int)item.AccountId!);
-                if (account == null)
-                {
-                    TempData["ErrorMessage"] = $"Användarkonto med ID: {item.AccountId} hittades inte.";
+                if (!IsObjectValid((int)item.AccountId!, account, $"Användarkonto med ID: {item.AccountId} hittades inte."))
                     return View("ErrorPage", "Home");
-                }
                 
                 var listObjekt = CreateBookingVM(item);
 
@@ -161,11 +155,8 @@ namespace FribergRentalCars.Controllers
             foreach (var item in allBookings)
             {
                 item.Car = await _carRepo.GetByIdAsync(item.CarId);
-                if (item.Car == null)
-                {
-                    TempData["ErrorMessage"] = $"Bil objektet med ID: {item.CarId} okänt.";
+                if (!IsObjectValid(item.CarId, item.Car, $"Bil objektet med ID: {item.CarId} okänt."))
                     return View("ErrorPage", "Home");
-                }
 
                 var email = "";
                 try
@@ -208,11 +199,8 @@ namespace FribergRentalCars.Controllers
             foreach (var item in accBookings)
             {
                 item.Car = await _carRepo.GetByIdAsync(item.CarId);
-                if (item.Car == null)
-                {
-                    TempData["ErrorMessage"] = $"Bil objektet med ID: {item.CarId} okänt.";
+                if (!IsObjectValid(item.CarId, item.Car, $"Bil objektet med ID: {item.CarId} okänt."))
                     return View("ErrorPage", "Home");
-                }
             }
             return View(accBookings);
         }
@@ -221,9 +209,8 @@ namespace FribergRentalCars.Controllers
         public async Task<ActionResult> CancelAccountBooking(int id)
         {
             var booking = await _bookRepo.GetByIdAsync(id);
-            if (booking == null)
+            if (!IsObjectValid(id, booking, $"Inget boknings-objekt med ID: {id} hittat."))
             {
-                TempData["ErrorMessage"] = $"Bokning med ID: {id} kunde inte hittas.";
                 return View("ErrorPage", "Home");
             }
             else
@@ -237,12 +224,9 @@ namespace FribergRentalCars.Controllers
         [AdminAuthorizationFilter]
         public async Task<ActionResult> FinishedAccountBookings(int id)
         {
-            if (id <=0)
-            {
-                TempData["ErrorMessage"] = $"Användarkonto med ID: {id} okänt.";
+            if(IsObjectValid(id, $"Användarkonto med ID: {id} okänt"))
                 return View("ErrorPage", "Home");
-            }
-
+            
             var oldBookings = await _bookRepo.GetFinishedAccountBookings(id);
 
             // Retrieve User id for getting back to Edit Account properly (takes userId as parameter)
@@ -253,11 +237,8 @@ namespace FribergRentalCars.Controllers
             foreach (var item in oldBookings)
             {
                 item.Car = await _carRepo.GetByIdAsync(item.CarId);
-                if (item.Car == null)
-                {
-                    TempData["ErrorMessage"] = $"Bilobjektet med ID: {item.CarId} kunde inte hittas.";
+                if (!IsObjectValid(item.CarId, item.Car, $"Bil objektet med ID: {item.CarId} okänt."))
                     return View("ErrorPage", "Home");
-                }
             }
             return View(oldBookings);
         }
@@ -298,11 +279,9 @@ namespace FribergRentalCars.Controllers
         public async Task<ActionResult> EditCar(int carId)
         {
             var car = await _carRepo.GetByIdAsync(carId);
-            if (carId <= 0 || car == null)
-            {
-                TempData["ErrorMessage"] = $"Bilobjekt med ID: {carId} kunde inte hittas.";
+            if (!IsObjectValid(carId, car, $"Bilobjekt med ID: {carId} okänt."))
                 return View("ErrorPage", "Home");
-            }
+
             return View(car);
         }
 
@@ -399,21 +378,16 @@ namespace FribergRentalCars.Controllers
         public async Task<ActionResult> DeleteAccount(int id)
         {
             var user = await _userRepo.GetByIdAsync(id);
-            if (id <= 0 || user == null)
-            {
-                TempData["ErrorMessage"] = $"Användare med ID: {id} kunde inte hittas.";
+            if (!IsObjectValid(id, user, $"Användare med ID: {id} kunde inte hittas."))
                 return View("ErrorPage", "Home");
-            }           
-
+            
             var account = await _accRepo.GetWithAdressAsync(user.AccountId);
-            if (user.AccountId <= 0 || account == null)
+            if (!IsObjectValid(user.AccountId, account, $"Konto med ID: {user.AccountId} kunde inte hittas."))
             {
-                TempData["ErrorMessage"] = $"Konto med ID: {id} kunde inte hittas.";
                 return View("ErrorPage", "Home");
             }
-            else if(account.AdressId <= 0 || account.Adress == null)
+            else if (!IsObjectValid(account.AdressId, account.Adress, $"Adress med ID: {account.AdressId} kunde inte hittas."))
             {
-                TempData["ErrorMessage"] = $"Adress med ID: {id} kunde inte hittas.";
                 return View("ErrorPage", "Home");
             }
             else
@@ -429,7 +403,7 @@ namespace FribergRentalCars.Controllers
         [AdminAuthorizationFilter]
         public async Task<ActionResult> DeleteConfirm(DeleteUserViewModel model)
         {
-            if(model.User == null || model.Account == null || model.Adress == null)
+            if (model.User == null || model.Account == null || model.Adress == null)
             {
                 TempData["ErrorMessage"] = $"Användare med ID {model.User.UserId} kunde inte raderas.";
                 return View("ErrorPage", "Home");
@@ -455,25 +429,16 @@ namespace FribergRentalCars.Controllers
         public async Task<ActionResult> EditAccount(int id)
         {
             var user = await _userRepo.GetByIdAsync(id);
-            if (id <= 0 || User == null)
-            {
-                TempData["ErrorMessage"] = $"Användare med ID {id} kunde inte hittas.";
+            if (!IsObjectValid(id, user, $"Användare med ID: {id} kunde inte hittas."))
                 return View("ErrorPage", "Home");
-            }
 
             var account = await _accRepo.GetByIdAsync(user.AccountId);
-            if (user.AccountId <= 0 || account == null)
-            {
-                TempData["ErrorMessage"] = $"Användarkonto med ID {user.AccountId} kunde inte hittas.";
+            if (!IsObjectValid(user.AccountId, account, $"Användarkonto med ID: {user.AccountId} kunde inte hittas."))
                 return View("ErrorPage", "Home");
-            }
-
+            
             var adress = await _adrRepo.GetByIdAsync(account.AccountId);
-            if (account.AdressId <= 0 || adress == null)
-            {
-                TempData["ErrorMessage"] = $"Adressen med ID {account.AdressId} kunde inte hittas.";
+            if (!IsObjectValid(account.AdressId, adress, $"Adress med ID: {user.AccountId} kunde inte hittas."))
                 return View("ErrorPage", "Home");
-            }
 
             var modelVM = CreateEditVM(user, account, account.Adress);
             
@@ -535,10 +500,9 @@ namespace FribergRentalCars.Controllers
             foreach(var user in allUsers)
             {
                 var account = await _accRepo.GetByIdAsync(user.AccountId);
-                if (user.AccountId <= 0 || account == null)
-                {
-                    TempData["ErrorMessage"] = $"Användarkonto med ID {user.AccountId} kunde inte hittas.";
-                    return View("ErrorPage", "Home");
+                if (!IsObjectValid(user.AccountId, account, $"Användarkonto med ID: {user.AccountId} kunde inte hittas."))
+                { 
+                    return View("ErrorPage", "Home"); 
                 }
                 else
                 {
@@ -557,18 +521,6 @@ namespace FribergRentalCars.Controllers
         #endregion
 
         #region // HELPER METHODS ------------------------------------------------------
-
-        public bool IsBookingFinished(Booking booking)
-        {
-            if (booking.EndDate < DateOnly.FromDateTime(DateTime.Now) && booking.IsFinished == false)
-            {
-                booking.IsFinished = true;
-                return true;
-            }
-            return false;
-        }
-
-       
 
         public AllBookingsViewModel CreateBookingVM(Booking booking)
         {
@@ -600,6 +552,17 @@ namespace FribergRentalCars.Controllers
                 EndDate = booking.EndDate,
                 TotalCost = booking.TotalCost,
                 IsFinished = booking.IsFinished
+            };
+            return model;
+        }
+
+        public DeleteUserViewModel CreateDeleteVM(User user, Account account, Adress adress)
+        {
+            var model = new DeleteUserViewModel
+            {
+                User = user,
+                Account = account,
+                Adress = account.Adress
             };
             return model;
         }
@@ -643,15 +606,34 @@ namespace FribergRentalCars.Controllers
             return objekt.Email;
         }
 
-        public DeleteUserViewModel CreateDeleteVM(User user, Account account, Adress adress)
+        public bool IsBookingFinished(Booking booking)
         {
-            var model = new DeleteUserViewModel
+            if (booking.EndDate < DateOnly.FromDateTime(DateTime.Now) && booking.IsFinished == false)
             {
-                User = user,
-                Account = account,
-                Adress = account.Adress
-            };
-            return model;
+                booking.IsFinished = true;
+                return true;
+            }
+            return false;
+        }
+
+        public bool IsObjectValid(int id, Object obj, string errormessage)
+        {
+            if (id <= 0 || obj == null)
+            {
+                TempData["ErrorMessage"] = errormessage;
+                return false;
+            }
+            return true;
+        }
+
+        public bool IsObjectValid(int id, string errormessage)
+        {
+            if (id <= 0)
+            {
+                TempData["ErrorMessage"] = errormessage;
+                return false;
+            }
+            return true;
         }
 
         public void SetEditAccountVMValues(User user, Account account, Adress adress, EditAccountViewModel model)
