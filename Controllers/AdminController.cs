@@ -508,21 +508,7 @@ namespace FribergRentalCars.Controllers
                 }
                 else
                 {
-                    // set User data
-                    user.UserName = model.UserName;
-                    user.Password = model.Password;
-                    user.ConfirmPassword = model.Password;
-
-                    // Set Account data
-                    account.FirstName = model.FirstName;
-                    account.LastName = model.LastName;
-                    account.PhoneNumber = model.PhoneNumber;
-                    account.Email = model.Email;
-
-                    // Set Adress data
-                    adress.Street = model.Street;
-                    adress.PostalCode = model.PostalCode;
-                    adress.City = model.City;
+                    SetEditAccountVMValues(user, account, adress, model);
                 }
                 try
                 {
@@ -533,9 +519,8 @@ namespace FribergRentalCars.Controllers
                 }
                 catch
                 {
-                    ModelState.AddModelError("", "Det blev något fel");
+                    ModelState.AddModelError("", "Det gick inte att ändra Användar uppgifterna.");
                 } 
-           
             }
             return View(model);
         }
@@ -550,15 +535,22 @@ namespace FribergRentalCars.Controllers
             foreach(var user in allUsers)
             {
                 var account = await _accRepo.GetByIdAsync(user.AccountId);
-                var newAccVM = new ListAllAccountsViewModel
+                if (user.AccountId <= 0 || account == null)
                 {
-                    User = user,
-                    Account = account,
-                    Adress = account.Adress
-                };
-                accVMList.Add(newAccVM);
+                    TempData["ErrorMessage"] = $"Användarkonto med ID {user.AccountId} kunde inte hittas.";
+                    return View("ErrorPage", "Home");
+                }
+                else
+                {
+                    var newAccVM = new ListAllAccountsViewModel
+                    {
+                        User = user,
+                        Account = account,
+                        Adress = account.Adress
+                    };
+                    accVMList.Add(newAccVM);
+                }
             }
-
             return View(accVMList);
         }
 
@@ -575,6 +567,8 @@ namespace FribergRentalCars.Controllers
             }
             return false;
         }
+
+       
 
         public AllBookingsViewModel CreateBookingVM(Booking booking)
         {
@@ -658,6 +652,25 @@ namespace FribergRentalCars.Controllers
                 Adress = account.Adress
             };
             return model;
+        }
+
+        public void SetEditAccountVMValues(User user, Account account, Adress adress, EditAccountViewModel model)
+        {
+            // set User data
+            user.UserName = model.UserName;
+            user.Password = model.Password;
+            user.ConfirmPassword = model.Password;
+
+            // Set Account data
+            account.FirstName = model.FirstName;
+            account.LastName = model.LastName;
+            account.PhoneNumber = model.PhoneNumber;
+            account.Email = model.Email;
+
+            // Set Adress data
+            adress.Street = model.Street;
+            adress.PostalCode = model.PostalCode;
+            adress.City = model.City;
         }
 
         public async Task UpdateBookings(List<Booking> accountBookings)
