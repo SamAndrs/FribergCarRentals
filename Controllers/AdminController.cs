@@ -167,12 +167,22 @@ namespace FribergRentalCars.Controllers
                     return View("ErrorPage", "Home");
                 }
 
-                // Check if GDPR is applied for Account
-                var account = await _accRepo.GetByIdAsync((int)item.AccountId!);
-                var email = IsAccountGDPR(account);
-
+                var email = "";
+                try
+                {
+                    var account = await _accRepo.GetByIdAsync((int)item.AccountId!);
+                    if(account != null)
+                    {
+                        email = account.Email;
+                    }
+                }
+                catch
+                {
+                    email = "--GDPR--";
+                }
+                                
                 var listObjekt = CreateBookingVM(item, email);
-
+                
                 // Control check: Is Booking not set to finished? -do so
                 if (IsBookingFinished(item))
                 {
@@ -637,21 +647,6 @@ namespace FribergRentalCars.Controllers
             }
 
             return objekt.Email;
-        }
-
-        public string IsAccountGDPR(Account account)
-        {
-            var checkEmail = "";
-            try
-            {
-                if (account != null)
-                    checkEmail = account.Email;
-            }
-            catch
-            {
-                checkEmail = "--GDPR--";
-            }
-            return checkEmail;
         }
 
         public DeleteUserViewModel CreateDeleteVM(User user, Account account, Adress adress)
