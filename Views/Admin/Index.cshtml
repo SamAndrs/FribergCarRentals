@@ -2,11 +2,22 @@
 
 @{
     ViewData["Title"] = "Logga in";
+
+    var errorMessage = TempData["ErrorMessage"] as string;
 }
 
 <div>
     <h4 class="primary-text-color">Logga in: Administratör</h4>
 </div>
+
+@{
+    if(!string.IsNullOrEmpty(errorMessage))
+    {
+        <div class="alert alert-danger col-md-4">
+            @errorMessage
+        </div>
+    }
+}
 
 <hr />
 <div class="row primary-text-color">

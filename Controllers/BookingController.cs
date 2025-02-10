@@ -1,10 +1,12 @@
 ﻿using FribergRentalCars.Data.Interfaces;
 using FribergRentalCars.Models;
 using FribergRentalCars.ViewModels;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.IdentityModel.Tokens;
 
 namespace FribergRentalCars.Controllers
 {
@@ -27,17 +29,25 @@ namespace FribergRentalCars.Controllers
             ViewBag.AccountId = HttpContext.Session.GetInt32("accountID");
             var bookings = await _bookRepo.GetActiveAccountBookings(id);
 
-            foreach (var item in bookings)
+            bool hasBookings = bookings.Any();
+            if(hasBookings)
             {
-                item.Car = await _carRepo.GetByIdAsync(item.CarId);
-                if (!IsObjectValid(item.CarId, item.Car, $"Bil objekt kunde inte hittas."))
-                    return View("ErrorPage", "Home");
-                
-                if (CheckFinished(item))
+                foreach (var item in bookings)
                 {
-                    await _bookRepo.UpdateAsync(item);
+                    item.Car = await _carRepo.GetByIdAsync(item.CarId);
+                    if (!IsObjectValid(item.CarId, item.Car, $"Bil objekt kunde inte hittas."))
+                        return View("ErrorPage", "Home");
+
+                    if (CheckFinished(item))
+                    {
+                        await _bookRepo.UpdateAsync(item);
+                    }
                 }
             }
+            else
+                ViewBag.EmptyList = "Det finns inga registrerade bokningar.";
+
+            
             return View(bookings);
         }
 
@@ -115,10 +125,12 @@ namespace FribergRentalCars.Controllers
                     {
                         newBooking.TotalCost = (newBooking.EndDate.DayNumber - newBooking.StartDate.DayNumber) * newBooking.Car.PricePerDay;
                         await _bookRepo.AddAsync(newBooking);
+                        TempData["SuccessMessage"] = "Tack för din bokning!";
                         return View("Confirmation", newBooking);
                     }
                 } 
             }
+            TempData["ErrorMessage"] = "Bokningen kunde inte genomföras!";
             return View(bookVM);
         }
 

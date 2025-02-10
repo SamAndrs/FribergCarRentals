@@ -4,6 +4,11 @@
     ViewData["Title"] = "Confirmation";
 }
 
+@{
+    var successMessage = TempData["SuccessMessage"] as string;
+    var errorMessage = TempData["ErrorMessage"] as string;
+}
+
 <div>
     <ul class="list-group list-group-horizontal">
         <li class="list-group-item  bg-transparent">
@@ -14,6 +19,21 @@
         </li>
     </ul>
 </div>
+<hr />
+
+@if (!string.IsNullOrEmpty(successMessage))
+{
+    <div class="alert alert-success col-md-4">
+        @successMessage
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger col-md-4">
+        @errorMessage
+    </div>
+}
 
 <table class="table">
     <thead class="primary-text-color">

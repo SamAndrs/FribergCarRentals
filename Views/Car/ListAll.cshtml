@@ -14,7 +14,7 @@
 <div class="row row-cols-3 row-cols-md-2 g-4 gap-3">
     @foreach(var item in Model)
     {
-        <div class="card fourth-color border-light mb-3 rounded-2" style="width: 14rem">
+        <div class="card fourth-color mb-3" tabindex="0">
             <div class="card-header card-title text-center primary-color"><strong>@Html.DisplayFor(modelItem => item.Model)</strong></div>
             @if (!string.IsNullOrEmpty(item.Image))
             {
@@ -22,9 +22,9 @@
             }
             else
             {
-                <p class="text-white">Bild saknas</p>
+                <p class="text-center">Bild saknas</p>
             }
-            <div class="card-body  text-white" style="font-size: 14px">
+            <div class="card-body" style="font-size: 14px">
                 <p><strong>Årsmodell:</strong> @Html.DisplayFor(modelItem => item.ModelYear)</p>
                 <p><strong>Reg.Nr:</strong>  @Html.DisplayFor(modelItem => item.RegNumber)</p>
                 <p><strong>Pris/dag:</strong> @Html.DisplayFor(modelItem => item.PricePerDay)kr</p>
@@ -44,7 +44,7 @@
                 }
                 else
                 {
-                    <p class="text-center primary-text-color"><strong>Ej bokningsbar</strong></p>
+                    <p class="text-center" style="color: var(--primary-color)"><strong>Ej bokningsbar</strong></p>
                 }
                 <p class="visually-hidden">@Html.DisplayFor(modelItem => item.CarId)</p>
                 <p class="visually-hidden">@Html.DisplayFor(modelItem => item.Description)</p>

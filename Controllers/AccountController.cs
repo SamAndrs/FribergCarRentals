@@ -191,6 +191,7 @@ namespace FribergRentalCars.Controllers
                     HttpContext.Session.SetString("user", user.UserName);
                     HttpContext.Session.SetInt32("UserID", user.UserId);
                     return RedirectToAction("Details");
+
                 }
                 else
                 {

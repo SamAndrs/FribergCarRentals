@@ -140,17 +140,20 @@
         }
     </header>
     
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+    <div class="content">
+        <div class="container">
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
+        </div>
     </div>
+
 
     <footer class="pt-5 pb-4 bg-dark third-text-color">
         <div class="container text-center text-md-left" style="font-size: 12px">
             <div class="row text-center text-md-left">
                 
-                <div class="col-md-3 col-lg-3 col-xl-3 mx-auto mt-3">
+                <div class="col-12 col-md-3 col-lg-3 col-xl-3 mx-auto mt-3">
                     <h6 class="text-uppercase mb-4">Om oss</h6>
                     <p class="text-start">
                         Marcus Friberg, IT-gurun och superentreprenören som revolutionerade techvärlden, har nyligen tagit en oväntad sväng i sitt liv. Efter att ha rönt stora ekonomiska framgångar med sin senaste webbapplikation, bestämde han sig för att göra slag i saken och fokusera på sin stora hobby – begagnade bilar.
@@ -162,7 +165,7 @@
 
                 </div>
 
-                <div class="col-md-3 col-lg-3 col-xl-3 mx-auto mt-3">
+                <div class="col-12 col-md-3 col-lg-3 col-xl-3 mx-auto mt-3">
                     <h6 class="text-uppercase mb-4">Följ oss på</h6>
                 
                     <div>
@@ -197,22 +200,25 @@
                     </div>
                 </div>
 
-                <div class="col-md-3 col-lg-3 col-xl-3 mx-auto mt-3">
+                <div class="col-12 col-md-3 col-lg-3 col-xl-3 mx-auto mt-3">
                     <h6 class="text-uppercase text-start mb-4">Kontakta oss</h6>                    
                     <p class="text-start">
-                        <i class="fas fa-home mr-3"> Adress</i>
+                        <i class="fas fa-home mr-3"> </i>
+                        <label style="font-size: 14px"> Friberggatan 8, 85 96 32 Sundsvall</label>
                     </p>
                     <p class="text-start">
                         <a href="FriberCarRentals@gmail.com" class="text-white">
-                            <i class="fas fa-envelope mr-3"> FriberCarRentals@gmail.com</i>
+                            <i class="fas fa-envelope mr-3"> </i>
+                            <label style="font-size: 14px"> FriberCarRentals@gmail.com</label>
                         </a>
                     </p>
                     <p class="text-start">
-                        <i class="fas fa-phone mr-3"> 0xx-xx xx xx</i>
+                        <i class="fas fa-phone mr-3"> </i>
+                        <label style="font-size: 14px"> 071-29 73 00</label>
                     </p>
                 </div>
 
-                <div>
+                <div class="col-12 text-start">
                     <p id="copyright" class="text-start">&copy; 2025 - FribergRentalCars</p>
                 </div>
             </div>
@@ -220,7 +226,6 @@
         </div>
 
     </footer>
-
   
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

@@ -100,6 +100,11 @@ namespace FribergRentalCars.Controllers
                         HttpContext.Session.SetInt32("isAdmin", 1);
                         return RedirectToAction(nameof(Details));
                     }
+                    else
+                    {
+                        TempData["ErrorMessage"] = "Du verkar inte ha administratörsrättigheter.";
+                        return RedirectToAction(nameof(Index));
+                    }
                 }
                 else
                 {
@@ -189,19 +194,26 @@ namespace FribergRentalCars.Controllers
         [AdminAuthorizationFilter]
         public async Task<ActionResult> ActiveAccountBookings(int id)
         {
-            var accBookings = await _bookRepo.GetActiveAccountBookings(id);
-            
             // Retrieve User id for getting back to Edit Account properly (takes userId as parameter)
             ViewBag.UserID = HttpContext.Session.GetInt32("tempUserID");
             // Retrieve UserName for listing bookings for account, properly
             ViewBag.UserName = HttpContext.Session.GetString("tempUserName");
 
-            foreach (var item in accBookings)
+            var accBookings = await _bookRepo.GetActiveAccountBookings(id);
+
+            bool hasBookings = accBookings.Any();
+            if(hasBookings)
             {
-                item.Car = await _carRepo.GetByIdAsync(item.CarId);
-                if (!IsObjectValid(item.CarId, item.Car, $"Bil objektet med ID: {item.CarId} okänt."))
-                    return View("ErrorPage", "Home");
+                foreach (var item in accBookings)
+                {
+                    item.Car = await _carRepo.GetByIdAsync(item.CarId);
+                    if (!IsObjectValid(item.CarId, item.Car, $"Bil objektet med ID: {item.CarId} okänt."))
+                        return View("ErrorPage", "Home");
+                }
             }
+            else
+                ViewBag.EmptyList = "Det finns inga registrerade bokningar.";
+
             return View(accBookings);
         }
 
